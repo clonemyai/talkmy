@@ -502,6 +502,10 @@
       @media (prefers-reduced-motion: reduce) {
         .lang-bubble, .share-bubble, .car-slide.active { animation: none; }
       }
+      /* Section subtitles and slide headings: never strand a last word alone. */
+      .sec-head { max-width: 48rem; }
+      .sec-head p { text-wrap: pretty; text-wrap: balance; }
+      .sec-head h2 { text-wrap: balance; }
     </style>
     <script>
       /* Restore a saved theme choice before first paint, so the page never flashes the wrong mode. */
