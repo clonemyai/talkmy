@@ -214,7 +214,7 @@
     <blockquote><p>&ldquo;Talkmy is the tool that allows for the load-bearing parts to be frictionless.&rdquo;</p></blockquote>
 
     <h2 id="limits">8. State and honest limitations</h2>
-    <p><strong>State, <time class="rdate" datetime="2026-11-18">2026-11-18</time>:</strong> name, icon, tagline, and domain locked; website live at talkmy.ai. The current app is Talkmy 2.0, build 9, running on the founder's test iPhones: hold-to-talk voice clips answered out loud by Gemini through Talkmy's cloud function, photo questions with tap-to-magnify answers, a play button beside each answer, spoken controls for the voice, the words, and the buttons, weather answers, YouTube and Maps cards, the share corner, and the on-device capsule. The app is not publicly released yet: there is no App Store or Google Play page for it, and this site links to none. The parents handover test is still the gate that matters.</p>
+    <p><strong>State, <time class="rdate" datetime="2026-11-18">2026-11-18</time>:</strong> name, icon, tagline, and domain locked; website live at talkmy.ai. The current app is Talkmy <span class="appver">2.0</span>, build <span class="appbuild">19</span>, running on the founder's test iPhones: hold-to-talk voice clips answered out loud by Gemini through Talkmy's cloud function, photo questions with tap-to-magnify answers, a play button beside each answer, spoken controls for the voice, the words, and the buttons, weather answers, YouTube and Maps cards, the share corner, and the on-device capsule. The app is not publicly released yet: there is no App Store or Google Play page for it, and this site links to none. The parents handover test is still the gate that matters.</p>
     <p><strong>Limitations, unsoftened:</strong></p>
     <ul>
       <li><strong>The parents handover test has not been recorded yet.</strong> The founder's own hands have run the app end to end on real phones; his parents' first unassisted run is still ahead. Until it happens, every usability claim in this paper is a design claim, not a measured one.</li>
@@ -249,6 +249,27 @@
           el.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(d);
         }
       });
+    })();
+  </script>
+  <script>
+    /* The version and build in the State line render from /app-version.json,
+       the site's single source of truth for the app's current version (each
+       build round regenerates it from the Xcode project; see HOSTING.md).
+       The numbers in the markup are the fallback when the fetch fails or
+       JavaScript is off. */
+    (function () {
+      fetch("/app-version.json", { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (v) {
+          if (!v) return;
+          document.querySelectorAll(".appver").forEach(function (el) {
+            if (v.version != null) el.textContent = v.version;
+          });
+          document.querySelectorAll(".appbuild").forEach(function (el) {
+            if (v.build != null) el.textContent = v.build;
+          });
+        })
+        .catch(function () { /* the fallback numbers stand */ });
     })();
   </script>
 </body>
