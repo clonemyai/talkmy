@@ -190,6 +190,18 @@
       .strip b { color: var(--marigold); font-weight: 900; }
 
       /* ---------- demo phone ---------- */
+      /* Static shape (Tony, 2026-11-18): the phone starts at the bigger,
+         longer silhouette he boxed, its bottom edge level with the bottom
+         of the right column's content, and it never changes size again.
+         The thread inside scrolls instead of the phone growing (see
+         .chat). Desktop screen height 530px: the right column stands
+         576px tall in the capped 1120px layout, minus the 26px notch and
+         the 20px frame. The complete photo exchange needs more thread
+         than that box holds, so the box wins and the internal scroll
+         absorbs the difference. On mobile the screen takes a fixed
+         height sized from the fullest demo state, the complete photo
+         exchange, plus a small breathing margin, capped so the whole
+         phone fits the screen it is viewed on (see the 900px query). */
       .demo-grid { display: grid; grid-template-columns: 400px 1fr; gap: 48px; align-items: start; }
       .phone {
         background: var(--surface); border: 10px solid var(--phone-frame); border-radius: 46px;
@@ -197,11 +209,16 @@
       }
       .phone-notch { height: 26px; display: flex; justify-content: center; align-items: center; }
       .phone-notch i { width: 90px; height: 8px; border-radius: 99px; background: var(--line); display: block; }
-      .phone-screen { padding: 8px 18px 22px; display: flex; flex-direction: column; min-height: 480px; }
+      .phone-screen { padding: 8px 18px 22px; display: flex; flex-direction: column; height: 530px; }
       .phone-head { display: flex; align-items: center; gap: 10px; padding: 6px 2px 14px; border-bottom: 2px solid var(--line); }
       .phone-head .ph-name { font-family: "Nunito", sans-serif; font-weight: 900; font-size: 1.2rem; }
       .phone-head .ph-sub { color: var(--ink-soft); font-size: .95rem; font-weight: 700; }
-      .chat { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px 0; overflow: hidden; }
+      /* The thread scrolls inside the static phone, newest content rolling
+         into view like a real chat; the scrollbar stays invisible, the way
+         a phone shows none. Scrolling is overflow protection (a magnified
+         answer, a long translation), not the primary behavior. */
+      .chat { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 16px 0; overflow: hidden auto; min-height: 0; scrollbar-width: none; }
+      .chat::-webkit-scrollbar { display: none; }
       .msg { max-width: 88%; padding: 12px 16px; font-size: 1.08rem; line-height: 1.45; animation: pop .3s ease; }
       .msg.ai { background: var(--ai-bubble); color: var(--ink); border-radius: 20px 20px 20px 6px; align-self: flex-start; }
       .msg.user { background: var(--user-bubble); color: var(--user-bubble-ink); border-radius: 20px 20px 6px 20px; align-self: flex-end; font-weight: 700; }
@@ -337,6 +354,12 @@
          row sits close under the line (Tony's follow-up rulings,
          2026-11-18). */
       #try { border-top: 2px solid var(--line); padding-top: 35px; margin-top: 65px; }
+      /* Try header (Tony, 2026-11-18): the title and intro lift out to a
+         full-width header above the two columns, the treatment the hero
+         headline got, instead of sitting boxed in the phone column's
+         width. The intro keeps a reading measure of its own. */
+      #try .sec-head { max-width: none; }
+      #try .sec-head p { max-width: 48rem; }
       .carousel { border-top: 2px solid var(--line); margin-top: 49px; }
       .carousel .car-slide { padding-top: 23px; }
       .foot-in { display: flex; gap: 20px; align-items: flex-end; justify-content: space-between; }
@@ -358,6 +381,14 @@
         .hero-grid, .demo-grid, .panels, .ladder, .found-grid { grid-template-columns: 1fr; }
         .steps, .rules { grid-template-columns: 1fr; }
         .demo-grid { gap: 30px; }
+        /* Mobile phone shape: fixed screen height, the fullest demo state
+           (complete photo exchange, measured 966px of screen at 390px)
+           plus a 24px breathing margin, capped at 92% of the viewport
+           height (minus the 46px of notch and frame) so the whole phone
+           always fits on the screen it is viewed on (Tony's mobile
+           caution). Where the cap bites, the thread scroll inside takes
+           the difference. */
+        .phone-screen { height: 990px; height: min(990px, calc(92vh - 46px)); height: min(990px, calc(92svh - 46px)); }
         section { padding-top: 54px; }
         .carousel { margin-top: 37px; }
         .carousel .car-slide { padding-top: 17px; }
@@ -1890,6 +1921,9 @@
           ];
         }
         var SPEAKER_SVG = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6.5 9H3v6h3.5L11 19V5z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M15 9.5a4 4 0 0 1 0 5\"/><path d=\"M17.5 7a7.5 7.5 0 0 1 0 10\"/></svg>";
+        /* The phone never grows: the thread scrolls inside it instead,
+           the newest content rolling into view the way a real chat does. */
+        function scrollChat() { chat.scrollTop = chat.scrollHeight; }
         function addMsg(text, who) {
           var d = document.createElement("div");
           d.className = "msg " + who;
@@ -1910,6 +1944,7 @@
             chat.appendChild(d);
           }
           while (chat.children.length > 4) chat.removeChild(chat.firstChild);
+          scrollChat();
           return d;
         }
         chat.addEventListener("click", function (e) {
@@ -1936,6 +1971,7 @@
           var timer = setInterval(function () {
             i += step;
             d.textContent = text.slice(0, i);
+            scrollChat();
             if (i >= text.length) { clearInterval(timer); busy = false; }
           }, 18);
         }
@@ -1993,6 +2029,7 @@
           d.appendChild(img);
           chat.appendChild(d);
           while (chat.children.length > 4) chat.removeChild(chat.firstChild);
+          scrollChat();
         }
         function photoAsk() {
           if (busy) return;
