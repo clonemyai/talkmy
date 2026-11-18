@@ -333,16 +333,25 @@
          rides about two-thirds of the way down its gap: most of the air
          sits above the line, the heading close under it. The footer's
          own divider keeps its position (margin-top 94px above), and the
-         space under it is cut (padding-top 10px) so the wordmark block
-         anchors to the bottom of the footer, just above the founder
-         line (Tony's follow-up ruling, 2026-11-18). */
+         space under it is cut (padding-top 10px) so the footer's bottom
+         row sits close under the line (Tony's follow-up rulings,
+         2026-11-18). */
       #try { border-top: 2px solid var(--line); padding-top: 35px; margin-top: 65px; }
       .carousel { border-top: 2px solid var(--line); margin-top: 49px; }
       .carousel .car-slide { padding-top: 23px; }
-      .foot-in { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+      .foot-in { display: flex; gap: 20px; align-items: flex-end; justify-content: space-between; }
+      /* The wordmark block and the founder line share one bottom row
+         (Tony, 2026-11-18): the block stands on the left as its own
+         column (mark + tagline over the links), the founder line on
+         the right, both bottoms on the same line, so the divider above
+         reads as the top edge of one bottom band. At 900px and under
+         they stack in the same order as before, block then founder
+         line, the line keeping its full-width right alignment. */
+      .foot-in .f-brand { display: flex; flex-direction: column; gap: 20px; }
+      .foot-in .f-brand-top { display: flex; align-items: center; gap: 20px; }
       .foot-in .f-tag { font-family: "Nunito", sans-serif; font-weight: 900; font-size: 1.3rem; }
-      .foot-in .f-sub { color: var(--ink-soft); width: 100%; font-size: 1.05rem; }
-      .foot-in .f-made { width: 100%; text-align: right; color: var(--ink-soft); font-size: 1.02rem; font-weight: 600; }
+      .foot-in .f-sub { color: var(--ink-soft); font-size: 1.05rem; }
+      .foot-in .f-made { text-align: right; color: var(--ink-soft); font-size: 1.02rem; font-weight: 600; }
       .foot-in .f-made .f-heart { width: 1em; height: 1em; vertical-align: -0.1em; }
 
       @media (max-width: 900px) {
@@ -353,6 +362,8 @@
         .carousel { margin-top: 37px; }
         .carousel .car-slide { padding-top: 17px; }
         .topnav a { padding: 10px 8px; }
+        .foot-in { flex-direction: column; align-items: stretch; }
+        .foot-in .f-brand-top { flex-wrap: wrap; }
       }
       @media (max-width: 640px) {
         .topbar-in { flex-wrap: wrap; row-gap: 2px; padding: 10px 16px; }
@@ -788,9 +799,13 @@
 
       <footer>
         <div class="wrap foot-in">
-          <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
-          <p class="f-tag" data-i18n="footerTag">talkmy™, The AI for everyone.</p>
-          <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></p>
+          <div class="f-brand">
+            <div class="f-brand-top">
+              <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
+              <p class="f-tag" data-i18n="footerTag">talkmy™, The AI for everyone.</p>
+            </div>
+            <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></p>
+          </div>
           <p class="f-made"><span data-i18n="footMade">Made by a founder and his Ai, Vivian, in California</span> <svg class="f-heart" role="img" aria-label="love" viewBox="0 0 24 24"><path fill="#FF5C93" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></p>
         </div>
       </footer>
