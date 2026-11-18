@@ -70,7 +70,7 @@
     </div>
 
     <h1>White Paper</h1>
-    <p class="eff">The AI for everyone. Settled 2026-11-16, updated 2026-11-18.</p>
+    <p class="eff">The AI for everyone. Settled <time class="rdate" datetime="2026-11-16">2026-11-16</time>, updated <time class="rdate" datetime="2026-11-18">2026-11-18</time>.</p>
 
     <div class="short">
       <p>Talkmy™ is a voice-first AI app for seniors. One screen, one bright button, a chat thread. Press and hold, speak in any language, get an answer read aloud in that language. No sign-in, no account, no language picker, no typing required. The north star: <strong>a universal translator communicator: press button and get answers.</strong></p>
@@ -119,7 +119,7 @@
     <p>Talkmy was built to solve the founder's own nightly problem first. That is not a limitation; it is its redundancy. The worst case is bounded in advance: user number one is served every night, so the work cannot go to zero. It is the founder's root decision principle, <em>don't make decisions until you can visualize the escapes</em>, applied to building.</p>
 
     <h3>Nobody ships this shape</h3>
-    <p>A landscape scan (2026-11-16) found the field split into three crowded lanes and one empty one: AI companions sold by the month (ElliQ, Sage, Tiina, Meela); simplified hardware (GrandPad, a locked tablet the family administers, inert without its plan); and teaching services that end at the stock ChatGPT login. The empty lane: no product found whose job is to <em>be the front door to general AI for a senior</em>: open the app, speak in plain words in your own language, get real general-purpose help, with no account ceremony, no prompt craft, no companion character, and no family dashboard watching. Custody in the field is inverted: conversations live on the maker's servers and die when payment stops. Talkmy inverts the doors back. (Competitor prices are as published in November 2026; snapshots, not commitments.)</p>
+    <p>A landscape scan (<time class="rdate" datetime="2026-11-16">2026-11-16</time>) found the field split into three crowded lanes and one empty one: AI companions sold by the month (ElliQ, Sage, Tiina, Meela); simplified hardware (GrandPad, a locked tablet the family administers, inert without its plan); and teaching services that end at the stock ChatGPT login. The empty lane: no product found whose job is to <em>be the front door to general AI for a senior</em>: open the app, speak in plain words in your own language, get real general-purpose help, with no account ceremony, no prompt craft, no companion character, and no family dashboard watching. Custody in the field is inverted: conversations live on the maker's servers and die when payment stops. Talkmy inverts the doors back. (Competitor prices are as published in <time class="rmonth" datetime="2026-11">November 2026</time>; snapshots, not commitments.)</p>
 
     <h2 id="product">3. The product</h2>
 
@@ -192,7 +192,7 @@
     <blockquote><p>&ldquo;Talkmy is the tool that allows for the load-bearing parts to be frictionless.&rdquo;</p></blockquote>
 
     <h2 id="limits">8. State and honest limitations</h2>
-    <p><strong>State, 2026-11-18:</strong> name, icon, tagline, and domain locked; website live at talkmy.ai. The current app is Talkmy 2.0, build 9, running on the founder's test iPhones: hold-to-talk voice clips answered out loud by Gemini through Talkmy's cloud function, photo questions with tap-to-magnify answers, a play button beside each answer, spoken controls for the voice, the words, and the buttons, weather answers, YouTube and Maps cards, the share corner, and the on-device capsule. The app is not publicly released yet: there is no App Store or Google Play page for it, and this site links to none. The parents handover test is still the gate that matters.</p>
+    <p><strong>State, <time class="rdate" datetime="2026-11-18">2026-11-18</time>:</strong> name, icon, tagline, and domain locked; website live at talkmy.ai. The current app is Talkmy 2.0, build 9, running on the founder's test iPhones: hold-to-talk voice clips answered out loud by Gemini through Talkmy's cloud function, photo questions with tap-to-magnify answers, a play button beside each answer, spoken controls for the voice, the words, and the buttons, weather answers, YouTube and Maps cards, the share corner, and the on-device capsule. The app is not publicly released yet: there is no App Store or Google Play page for it, and this site links to none. The parents handover test is still the gate that matters.</p>
     <p><strong>Limitations, unsoftened:</strong></p>
     <ul>
       <li><strong>The parents handover test has not been recorded yet.</strong> The founder's own hands have run the app end to end on real phones; his parents' first unassisted run is still ahead. Until it happens, every usability claim in this paper is a design claim, not a measured one.</li>
@@ -209,5 +209,24 @@
     <a class="back" href="index.html">&larr; Back to Talkmy</a>
     <a class="back" href="privacy.html" style="margin-left:1.5rem">Privacy Policy</a>
   </main>
+  <script>
+    /* Dates render in the reader's own regional format (the browser's
+       locale); the ISO text in the markup is the no-JS fallback. */
+    (function () {
+      var locale = navigator.language || "en-US";
+      document.querySelectorAll("time.rdate").forEach(function (el) {
+        var d = new Date(el.getAttribute("datetime") + "T00:00:00Z");
+        if (!isNaN(d)) {
+          el.textContent = new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" }).format(d);
+        }
+      });
+      document.querySelectorAll("time.rmonth").forEach(function (el) {
+        var d = new Date(el.getAttribute("datetime") + "-01T00:00:00Z");
+        if (!isNaN(d)) {
+          el.textContent = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(d);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
