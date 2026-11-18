@@ -13,8 +13,9 @@
     <style>
       /* ============ TALKMY COLOR SYSTEM — one palette, website + apps ============
          The mode follows the device: prefers-color-scheme below.
-         The preview switch in the Colors section sets data-theme on <html>
-         to force a mode on this page only; "Device" removes it again.      */
+         The pill in the top bar and the switch in the Colors section set
+         data-theme on <html> to override the device on this site; the pill
+         choice is remembered in localStorage, "Follow my device" clears it. */
       :root {
         color-scheme: light;
         --marigold: #FFB81C;
@@ -136,7 +137,10 @@
         background: var(--surface); border-radius: 999px;
         padding: 8px 14px; font-weight: 700; font-size: .95rem; white-space: nowrap;
       }
-      .device-pill .sunmoon { width: 12px; height: 12px; border-radius: 50%; background: var(--marigold); box-shadow: inset -4px -2px 0 0 var(--charcoal); flex: none; }
+      .device-pill { color: var(--ink); }
+      .device-pill:hover { background: var(--surface-2); }
+      .device-pill .sunmoon { width: 13px; height: 13px; border-radius: 50%; background: var(--marigold); border: 2px solid var(--charcoal); flex: none; }
+      .device-pill.is-dark .sunmoon { border-color: transparent; box-shadow: inset -4px -2px 0 0 var(--charcoal); }
 
       /* ---------- hero ---------- */
       .hero { padding: 54px 0 10px; }
@@ -347,6 +351,10 @@
         * { transition: none !important; }
       }
     </style>
+    <script>
+      /* Restore a saved theme choice before first paint, so the page never flashes the wrong mode. */
+      try { var savedTheme = localStorage.getItem("talkmy-theme"); if (savedTheme === "dark" || savedTheme === "light") document.documentElement.setAttribute("data-theme", savedTheme); } catch (e) {}
+    </script>
   </head>
   <body>
     <!-- Reusable Talkmy bubble mark: marigold bubble, charcoal word, soft rounded tail (bottom right) -->
@@ -379,7 +387,7 @@
           <a href="#colors">Colors</a>
           <a href="#icon">The icon</a>
           <a href="whitepaper.html">White paper</a>
-          <span class="device-pill" id="devicePill"><span class="sunmoon" aria-hidden="true"></span><span id="devicePillText">Checking your device setting…</span></span>
+          <button type="button" class="device-pill" id="devicePill" aria-label="Switch between light and dark mode"><span class="sunmoon" aria-hidden="true"></span><span id="devicePillText">Checking your device setting…</span></button>
         </nav>
       </div>
     </header>
@@ -391,7 +399,6 @@
           <div>
             <div class="lockup">
               <svg width="118" height="92" role="img" aria-label="Talkmy logo: a marigold speech bubble with the word talkmy in charcoal"><use href="#talkmy-mark"/></svg>
-              <p class="tagline-small">Locked mark · M1<br />Marigold + charcoal</p>
             </div>
             <h1>The AI for <span class="hl">everyone.</span></h1>
             <p class="lead">Talkmy™ is the assistant you <strong>talk to</strong> — out loud, in your own words, in your own language. No typing. No menus to hunt through. No password gymnastics. If you can hold a conversation, you can use Talkmy.</p>
@@ -649,7 +656,7 @@
       <section id="icon" class="wrap">
         <div class="sec-head">
           <h2>The icon, big and small</h2>
-          <p>The locked M1 mark at every size it will ever ship — the 1024-pixel app-store master down to the smallest home-screen slot. The words soften at 48 pixels; the marigold silhouette never does, and the silhouette is what does the finding.</p>
+          <p>The same mark at every size it will ever ship: the 1024-pixel App Store master down to the smallest home-screen slot. The words soften at 48 pixels; the marigold silhouette never does, and the silhouette is what does the finding.</p>
         </div>
         <div class="ladder-box on-light" style="margin-bottom:20px;">
           <h3>The big end — store &amp; master sizes</h3>
@@ -704,7 +711,7 @@
         <div class="wrap foot-in">
           <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
           <p class="f-tag">talkmy™ — The AI for everyone.</p>
-          <p class="f-sub">Locked mark: M1, vivid marigold + charcoal, soft rounded tail. One color system across website and apps. Light and dark follow the device. Warp 9.</p>
+          <p class="f-sub">Vivid marigold + charcoal, one color system across website and apps. Light and dark follow the device.</p>
           <p class="f-sub"><a href="whitepaper.html">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
         </div>
       </footer>
@@ -714,36 +721,56 @@
       (function () {
         "use strict";
 
-        /* ---------- device mode: read it, show it, follow it ---------- */
+        /* ---------- theme: device by default, the top pill is a real switch ---------- */
         var mq = window.matchMedia("(prefers-color-scheme: dark)");
         var root = document.documentElement;
+        var pill = document.getElementById("devicePill");
         var pillText = document.getElementById("devicePillText");
         var status = document.getElementById("modeStatus");
         var btnDevice = document.getElementById("modeDevice");
         var btnLight = document.getElementById("modeLight");
         var btnDark = document.getElementById("modeDark");
+        var THEME_KEY = "talkmy-theme";
 
         function deviceName() { return mq.matches ? "Dark" : "Light"; }
+        function effectiveTheme() {
+          var forced = root.getAttribute("data-theme");
+          if (forced === "dark" || forced === "light") return forced;
+          return mq.matches ? "dark" : "light";
+        }
         function currentMode() {
           var forced = root.getAttribute("data-theme");
-          if (forced === "dark") return "Dark (preview)";
-          if (forced === "light") return "Light (preview)";
+          if (forced === "dark") return "Dark (your pick, saved on this device)";
+          if (forced === "light") return "Light (your pick, saved on this device)";
           return deviceName() + " (from your device)";
         }
+        function setTheme(mode) {
+          if (mode === "dark" || mode === "light") root.setAttribute("data-theme", mode);
+          else root.removeAttribute("data-theme");
+          try {
+            if (mode) localStorage.setItem(THEME_KEY, mode);
+            else localStorage.removeItem(THEME_KEY);
+          } catch (e) { /* storage unavailable: the choice lasts for this page view only */ }
+          renderMode();
+        }
         function renderMode() {
-          pillText.textContent = "Your device is set to " + deviceName() + " mode";
+          var eff = effectiveTheme();
+          pillText.textContent = (eff === "dark" ? "Dark" : "Light") + " mode · tap for " + (eff === "dark" ? "light" : "dark");
+          pill.classList.toggle("is-dark", eff === "dark");
+          pill.setAttribute("aria-label", "This page is in " + eff + " mode. Switch to " + (eff === "dark" ? "light" : "dark") + " mode.");
           status.innerHTML = "This page is showing <b>" + currentMode() + "</b>. " +
             (root.getAttribute("data-theme")
               ? "Tap \u201CFollow my device\u201D to hand control back to your device setting."
-              : "Change your device between light and dark and watch Talkmy follow — no switch inside the app.");
+              : "Change your device between light and dark and watch Talkmy follow, or tap the pill at the top of the page. The app itself has no switch to find.");
           var mode = root.getAttribute("data-theme");
           btnDevice.setAttribute("aria-pressed", mode ? "false" : "true");
           btnLight.setAttribute("aria-pressed", mode === "light" ? "true" : "false");
           btnDark.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
         }
-        btnDevice.addEventListener("click", function () { root.removeAttribute("data-theme"); renderMode(); });
-        btnLight.addEventListener("click", function () { root.setAttribute("data-theme", "light"); renderMode(); });
-        btnDark.addEventListener("click", function () { root.setAttribute("data-theme", "dark"); renderMode(); });
+        pill.addEventListener("click", function () { setTheme(effectiveTheme() === "dark" ? "light" : "dark"); });
+        btnDevice.addEventListener("click", function () { setTheme(null); });
+        btnLight.addEventListener("click", function () { setTheme("light"); });
+        btnDark.addEventListener("click", function () { setTheme("dark"); });
         if (mq.addEventListener) mq.addEventListener("change", renderMode);
         renderMode();
 
