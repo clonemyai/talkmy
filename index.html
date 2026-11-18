@@ -327,23 +327,28 @@
       .sib-icons figure { margin: 0; text-align: center; }
       .sib-icons figcaption { font-weight: 800; margin-top: 8px; font-size: 1rem; }
 
-      footer { margin-top: 84px; border-top: 2px solid var(--line); padding: 40px 0 54px; }
+      footer { margin-top: 94px; border-top: 2px solid var(--line); padding: 30px 0 14px; }
       /* Quiet seams (Tony, 2026-11-18): the footer's own divider recipe,
-         2px solid var(--line), at these two boundaries only. The Try
-         section also gets extra air above its heading (72px -> 100px);
-         the carousel seam is the hairline alone, spacing untouched. */
-      #try { border-top: 2px solid var(--line); padding-top: 100px; }
-      .carousel { border-top: 2px solid var(--line); }
+         2px solid var(--line), at these two boundaries only. Each line
+         rides about two-thirds of the way down its gap: most of the air
+         sits above the line, the heading close under it. The footer's
+         own divider follows the same split (margin-top 94px above,
+         padding-top 30px below). */
+      #try { border-top: 2px solid var(--line); padding-top: 35px; margin-top: 65px; }
+      .carousel { border-top: 2px solid var(--line); margin-top: 49px; }
+      .carousel .car-slide { padding-top: 23px; }
       .foot-in { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
       .foot-in .f-tag { font-family: "Nunito", sans-serif; font-weight: 900; font-size: 1.3rem; }
       .foot-in .f-sub { color: var(--ink-soft); width: 100%; font-size: 1.05rem; }
-      .foot-in .f-made { margin-left: auto; color: var(--ink-soft); font-size: 1.02rem; font-weight: 600; }
+      .foot-in .f-made { width: 100%; text-align: right; color: var(--ink-soft); font-size: 1.02rem; font-weight: 600; }
 
       @media (max-width: 900px) {
         .hero-grid, .demo-grid, .panels, .ladder, .found-grid { grid-template-columns: 1fr; }
         .steps, .rules { grid-template-columns: 1fr; }
         .demo-grid { gap: 30px; }
         section { padding-top: 54px; }
+        .carousel { margin-top: 37px; }
+        .carousel .car-slide { padding-top: 17px; }
         .topnav a { padding: 10px 8px; }
       }
       @media (max-width: 640px) {
@@ -502,8 +507,10 @@
       .car-dot[aria-current="true"] i { background: var(--marigold); }
 
       /* Floating download bar: the old hero strip, fixed to the bottom, with the
-         store buttons on the right. On narrow screens only the buttons remain. */
-      body { padding-bottom: 88px; }
+         store buttons on the right. On narrow screens only the buttons remain.
+         The body padding is the bar's clearance: the bar stands 65px tall, so
+         72px keeps the footer's last line clear of it with a small buffer. */
+      body { padding-bottom: 72px; }
       .dl-bar {
         position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
         background: #26231F; color: #FFF6E3; box-shadow: 0 -8px 30px rgba(0,0,0,.28);
@@ -542,7 +549,7 @@
         .dl-phrases { display: none; }
         .dl-in { justify-content: center; }
         .dl-btns { margin-left: 0; }
-        body { padding-bottom: 80px; }
+        body { padding-bottom: 72px; }
       }
       @media (prefers-reduced-motion: reduce) {
         .lang-bubble, .share-bubble, .car-slide.active { animation: none; }
@@ -780,8 +787,8 @@
         <div class="wrap foot-in">
           <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
           <p class="f-tag" data-i18n="footerTag">talkmy™, The AI for everyone.</p>
-          <p class="f-made" data-i18n="footMade">Made by a founder and his Ai, Vivian, in California &lt;3</p>
           <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></p>
+          <p class="f-made" data-i18n="footMade">Made by a founder and his Ai, Vivian, in California &lt;3</p>
         </div>
       </footer>
     </main>
