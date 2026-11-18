@@ -58,16 +58,17 @@
     </div>
 
     <h1>Privacy Policy</h1>
-    <p class="eff">Talkmy™, the AI for everyone. In effect from November 17, 2026.</p>
+    <p class="eff">Talkmy™, the AI for everyone. In effect from November 18, 2026.</p>
 
     <div class="short">
       <p><strong>The short version:</strong> Talkmy has no account and no
       sign-in, no advertising, and no tracking. What Talkmy remembers about
-      you stays in a small file on your own phone. When you hold the Talk
-      button and speak, a short clip of your voice, like a voice message,
-      is sent to Google's AI service, which listens to it and makes the
-      answer. A photo, if you are asking about one, is sent with it. We
-      keep no copy, and nothing is tied to your name.</p>
+      you stays in a small file on your own phone, and a few facts from
+      that file travel with your questions so the answers can fit you.
+      When you hold the Talk button and speak, a short clip of your voice,
+      like a voice message, is sent to Google's AI service, which listens
+      to it and makes the answer. A photo, if you are asking about one, is
+      sent with it. We keep no copy, and nothing is tied to your name.</p>
     </div>
 
     <h2>Listening</h2>
@@ -77,20 +78,43 @@
     never listens in the background.</p>
 
     <h2>How answers are made</h2>
-    <p>When you let go of the Talk button, your voice clip is sent to
-    Google's Gemini AI service, through Google's Firebase. Gemini listens
-    to the clip, writes down what you said, and makes the answer. What you
-    said and the answer appear on your screen, and the answer is read
-    aloud by Google's speaking service, Google Cloud Text-to-Speech. If
-    you are asking about a photo, the photo is sent with your clip. If you
-    type instead of speaking, your typed words are sent as text, the same
-    way. Your clip is used only to answer that one question. Under the
-    terms of the paid service Talkmy uses, what you send is not used to
-    train Google's models. Talkmy itself is run by its maker, who runs no
-    servers of his own for this and keeps no copy of your clips, your
-    questions, your photos, or the answers. To reach Google's service, the
-    app uses a random number for the app install. It is not your name, and
-    there is no account for it to belong to.</p>
+    <p>When you let go of the Talk button, your voice clip is sent to a
+    small Talkmy cloud function, run for Talkmy on Google's Firebase. The
+    function passes the clip to Google's Gemini AI, which listens to it,
+    writes down what you said, and makes the answer. What you said and the
+    answer appear on your screen. The last few exchanges of your
+    conversation are sent along as context, so a follow-up question still
+    makes sense. Talkmy stores no copy of your conversation on any
+    server.</p>
+    <p>If you are asking about a photo, the photo is sent with your clip.
+    If you type instead of speaking, your typed words are sent as text to
+    the same Gemini AI, and the answer comes back as words on your screen.
+    You can hear it by tapping the round button beside it.</p>
+    <p>When you spoke your question, the answer is read aloud. Usually
+    Google's speaking service, Google Cloud Text-to-Speech, makes the
+    voice. It receives only the answer's own words, never your voice. If
+    that service cannot be reached, your phone's own built-in voice reads
+    the answer instead.</p>
+    <p>Your clip is used only to answer that one question. Under the
+    terms of the paid Google services Talkmy uses, what you send is not
+    used to train Google's models. Talkmy's own cloud functions keep
+    nothing: there is no database and no stored copy of your clips, your
+    questions, your photos, or the answers. Their logs record only
+    numbers, like how long a clip was, never what was said.</p>
+
+    <h2>No account, and the plumbing behind it</h2>
+    <p>Talkmy never asks for a name, an email, or a password, and there is
+    no account to sign in to. Behind the scenes, so Google's services can
+    be reached safely, the app signs itself in anonymously and
+    automatically. That anonymous identity is a random code made by
+    Firebase. It is not your name, and it is not linked to anything about
+    you. The app also proves it is the real Talkmy app through Apple's
+    app attestation, a check that keeps other programs from using
+    Talkmy's services.</p>
+    <p>Talkmy also keeps a short random number for your install, made up
+    on your phone and kept in your capsule. It stays on your phone. It
+    leaves only inside a bug report you choose to send, described below,
+    so the maker can tell one phone's reports from another's.</p>
 
     <h2>Your voice</h2>
     <p>Talkmy does not use Apple's speech recognition at all, and your
@@ -108,26 +132,90 @@
 
     <h2>Your capsule</h2>
     <p>Talkmy remembers a few things so it can be helpful: your language,
-    the names of your people, and how you like things, such as bigger
-    words on the screen or a slower voice. Those live in a small file,
-    called a capsule, stored on your own phone. It is never sent to us.
-    If you delete Talkmy, the capsule is deleted with it.</p>
+    the place you call home, and how you like things, such as bigger
+    words on the screen, bigger or smaller buttons, a different or slower
+    voice, and short or longer answers. It learns them from what you say
+    and what you choose: from the words Gemini writes down from your
+    clips, from words you type, and from changes you ask for out loud,
+    like "slow down" or "make the words bigger."</p>
+    <p>Those remembered things live in a small file, called a capsule,
+    stored on your own phone. The file itself is never sent anywhere. A
+    few of its facts, your language, your home place, and how you like
+    your answers, are included with each question so the answer can fit
+    you. If you delete Talkmy, the capsule is deleted with it.</p>
 
     <h2>Your photos</h2>
     <p>A photo you take or choose is held in your conversation for the
     question you ask with it, and sent with that question to be answered,
-    as described above. Talkmy does not save photos into your photo
-    library, and keeps no copy of its own.</p>
+    as described above. A photo you take with Talkmy's own camera is not
+    saved into your photo library, and Talkmy keeps no copy of any photo
+    of its own.</p>
+
+    <h2>Weather</h2>
+    <p>Talkmy can answer questions about the weather where you live. It
+    learns where home is only from what you tell it, in your own words,
+    like "I live in Folsom." Talkmy never uses GPS, and it never asks
+    your phone for your location. The place you named is looked up once,
+    through a map lookup service run by Open-Meteo, to find the map
+    coordinates for it, and those coordinates are kept in your capsule.
+    When a forecast is needed, the coordinates are sent to a weather
+    service, Open-Meteo, or in the United States the National Weather
+    Service, and the forecast that comes back is included with your
+    question so the answer can be in your language.</p>
 
     <h2>A family member for assistance</h2>
     <p>Talkmy may ask whether you would like to add a family member who
-    can help you when needed. If you add one, their name, phone number,
-    and email are kept in your capsule, on your phone, and nowhere else.
-    Talkmy does not contact them on its own.</p>
+    can help you when needed. If you say yes, you pick that person
+    yourself in your phone's own contact picker. Talkmy never looks
+    through your address book. It sees only the one person you pick, and
+    keeps their name, how they are related or known to you, their phone
+    number, and their email in your capsule, on your phone, and nowhere
+    else. When answers are made, only their name and that description are
+    included as context, so Talkmy can suggest the right person when
+    something needs a human check. Their phone number and email are never
+    included. Talkmy does not contact them on its own.</p>
+
+    <h2>Opening other apps</h2>
+    <p>Sometimes Talkmy can offer to open another app for you: YouTube to
+    watch a video, or a maps app for directions. It always shows a big
+    card first that reads the search or the place back to you, and
+    nothing opens until you tap the card or say yes. When YouTube opens,
+    the search words you asked for go to YouTube. When a maps app opens,
+    Apple Maps, or Google Maps if you have it and choose it, the place
+    you named goes to that app. From that moment, those apps handle
+    things under their own privacy policies.</p>
+
+    <h2>Sharing Talkmy</h2>
+    <p>The Talkmy name at the top left of the screen is also a sharing
+    button, with a small bubble under it that says so in your language.
+    Tapping it opens your phone's share sheet, carrying a short message
+    about Talkmy in your language and a link to talkmy.ai. Nothing is
+    sent until you choose a person or an app in that sheet, and what is
+    sent is only that message and that link. It includes nothing about
+    you and nothing from your conversations.</p>
+
+    <h2>If something goes wrong</h2>
+    <p>If you tell Talkmy something is wrong, it will ask you to hold Talk
+    and say what happened, in your own words. Talkmy writes your words
+    down and adds a few technical notes: the language you use, the short
+    random number for your install, and recent notes about how the app
+    has been working, such as how long a hold lasted, whether an answer
+    arrived, a place you asked directions to, or the weather line used
+    for an answer. They never include the words of your other questions
+    or of the answers, only counts of how long those were.
+    Before anything is sent, Talkmy tells you in the conversation that
+    the report is ready. It then opens your own Mail app with the report
+    addressed to the people who make Talkmy, at vivian@clonemy.ai. You
+    tap Send yourself. Nothing is sent behind your back. If Mail is not
+    set up on your phone, the report simply stays as words in your
+    conversation, and nothing is sent at all.</p>
 
     <h2>No tracking</h2>
-    <p>Talkmy has no advertising, no analytics, and no trackers. Nothing
-    about how you use it is reported to anyone.</p>
+    <p>Talkmy has no advertising, no analytics, and no trackers. There are
+    no advertising or analytics tools built into the app. Nothing about
+    how you use it is reported to anyone. The only report that ever
+    leaves your phone is a bug report you choose to send yourself, as
+    described above.</p>
 
     <h2>Everyone</h2>
     <p>Talkmy asks no one for an account, a name, or an age. The same

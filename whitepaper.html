@@ -70,7 +70,7 @@
     </div>
 
     <h1>White Paper</h1>
-    <p class="eff">The AI for everyone. Settled 2026-11-16.</p>
+    <p class="eff">The AI for everyone. Settled 2026-11-16, updated 2026-11-18.</p>
 
     <div class="short">
       <p>Talkmy™ is a voice-first AI app for seniors. One screen, one bright button, a chat thread. Press and hold, speak in any language, get an answer read aloud in that language. No sign-in, no account, no language picker, no typing required. The north star: <strong>a universal translator communicator — press button and get answers.</strong></p>
@@ -126,17 +126,17 @@
     <h3>The chain</h3>
     <ol>
       <li><strong>Open the app, you are in it.</strong> No landing page, no gate, nothing to click first.</li>
-      <li><strong>Glass hellos.</strong> Floating, quiet glass bubbles drift in the chat area — hello in the top twenty languages, in groups of about seven, dissolving and replaced. Nothing bright: brightness is a budget, and the whole budget is spent on the Talk button. Each bubble carries its instruction inside it, in its own language: the greeting, plus <em>&ldquo;Hold talk to speak.&rdquo;</em></li>
+      <li><strong>Glass hellos.</strong> Floating, quiet glass bubbles drift in the chat area — hello in twenty-three languages, in groups of about seven, dissolving and replaced. Nothing bright: brightness is a budget, and the whole budget is spent on the Talk button. Each bubble carries its instruction inside it, in its own language: the greeting, plus <em>&ldquo;Hold talk to speak.&rdquo;</em></li>
       <li><strong>Tap, or speak.</strong> Tap her language's bubble and every other hello disappears while the whole screen fades out and reappears in her language. Or simply hold the button and speak — the same fade happens into the language she spoke.</li>
       <li><strong>The manual, on time.</strong> Once her language is known, the chat box quietly holds starter text in that language: what she can say, what she can do. <em>&ldquo;I'm giving them the manual only when I know they can understand it.&rdquo;</em></li>
-      <li><strong>Hold, speak, hear the answer.</strong> The button dents under her finger; a live meter shows her voice being heard; the answer comes back read aloud first, in her language, one thought at a time. A photo can ride along with the question — show it a pill bottle or a letter and ask <em>what is this</em>, without typing a word.</li>
+      <li><strong>Hold, speak, hear the answer.</strong> The button dents under her finger; a big marigold circle with a microphone appears at the center of the screen, with a countdown showing the time she has left, up to sixty seconds. The answer comes back read aloud first, in her language, one thought at a time. A photo can ride along with the question — show it a pill bottle or a letter and ask <em>what is this</em>, without typing a word.</li>
     </ol>
 
     <h3>The redundancy stack</h3>
     <p>No single layer carries the teaching. Each assumes the previous one might fail: the installer's one sentence (<em>&ldquo;You just use it like we chat, like a person, and you can send photos. I installed it for you. It looks like this.&rdquo;</em>); the floating hellos; the tap — Apple's setup screens taught the world that the greeting screen is where you tap your language, and Talkmy honors that convention instead of fighting it; speech detection itself; and a teaching pulse on the Talk button that runs across as many launches as it takes, until she clicks <em>and completes a talk successfully</em> — demonstrated understanding, not a timer — then goes still forever. The deepest layer is not in the app at all: a motivated adult child who would gladly spend one kitchen-table hour to buy back years of small stuff.</p>
 
     <h3>The hellos, precisely</h3>
-    <p>Top twenty languages, divided by three, ordered by population weighted by likely users, with the main seven drawn from the region the phone already reports — no account, no asking. A phone in California floats English, Spanish, Chinese, Vietnamese, Tagalog, and Korean first; a phone in Bavaria floats German, Turkish, Polish, Russian, and Arabic. Grouped, nobody is ever more than about two dissolves — roughly fifteen seconds — from their language. On a tap or a first message, the crowd bows out and only her language remains.</p>
+    <p>Twenty-three languages, in three groups, ordered by population weighted by likely users, with the main seven drawn from the region the phone already reports — no account, no asking.</p> A phone in California floats English, Spanish, Chinese, Vietnamese, Tagalog, and Korean first; a phone in Bavaria floats German, Turkish, Polish, Russian, and Arabic. Grouped, nobody is ever more than about two dissolves — roughly twenty-four seconds — from their language. On a tap or a first message, the crowd bows out and only her language remains.</p>
 
     <h3>The acceptance test</h3>
     <blockquote><p>&ldquo;If they can't understand what to do when they open my app, we've failed.&rdquo;</p></blockquote>
@@ -154,22 +154,26 @@
     <p>The scam guard is built in and deliberately <em>not advertised</em> — an advertised protection is a promise, and a promise creates a duty; unadvertised, it is a kindness. Its law: <em>either it knows, or defers.</em> <strong>Know</strong> — grounded in what was actually shown, naming only the concrete signs genuinely present (urgency, gift-card payment, a sender that does not match, a callback number), never inventing details. <strong>Ask</strong> — one small gentle request at a time. <strong>Defer to people</strong> — family, or the bank via the number on the back of her own card, never a number inside the suspicious message. The canonical line: <em>&ldquo;Let's check together.&rdquo;</em> Confidence never gets a vote.</p>
 
     <h3>Privacy by structure, not by policy</h3>
-    <p>Talkmy only listens while the button is held. No ambient capture, no background recording. Her capsule — her language, her people, how she likes answers given — is built locally on her phone and never uploads. Anyone can copy a button. The moat is the capsule, in the user's own custody.</p>
+    <p>Talkmy only listens while the button is held. No ambient capture, no background recording. Her capsule — her language, her home place, how she likes answers given — is built locally on her phone, and the file itself never leaves it. A few facts from it ride along with each question as context, so the answer fits her; the file stays hers. Anyone can copy a button. The moat is the capsule, in the user's own custody. The full detail lives in the <a href="privacy.html">privacy policy</a>.</p>
 
     <h3>The asking is never metered</h3>
-    <p>No prompt caps on her screen, ever. Asking again costs nothing: tap any answer and it re-reads itself aloud, as many times as she likes.</p>
+    <p>No prompt caps on her screen, ever. Asking again costs nothing: every answer carries a round play button beside it, marked in her language with words from the say-it-again family, and tapping it reads the answer aloud again, as many times as she likes.</p>
 
     <h2 id="architecture">5. Architecture</h2>
     <ul>
-      <li><strong>Ears and voice stay on the phone.</strong> Recognition and synthesis run on-device where the platform offers them. Only transcript text travels to the model; audio never leaves the phone, and the capsule file never uploads.</li>
-      <li><strong>The brain:</strong> Gemini Flash via Firebase AI Logic, with App Check attestation — no API key inside the app — and invisible anonymous authentication, so the no-sign-in doctrine holds. Distilled capsule facts shape each request as context; raw history is not shipped around.</li>
-      <li><strong>The offline option:</strong> Apple Foundation Models, fully on-device, for users who want nothing to leave the phone. It needs a newer iPhone; on a phone that cannot run it, one calm line in the chat box says so, in her language, and Talkmy keeps working the usual way.</li>
-      <li><strong>Messaging is the platform's own door.</strong> Talkmy resolves &ldquo;my son&rdquo; from the capsule, drafts the message, and presents the phone's own send screen. She taps send. Nothing can be sent behind her back.</li>
-      <li><strong>The help hand-off.</strong> When she needs a human, the app interviews her gently, assembles a clean summary, and forwards it to the dedicated contact she named while calm — a phone number and an email, that's all it stores. <em>&ldquo;Even if and when it needs a human, it's still mostly signal.&rdquo;</em></li>
+      <li><strong>The ears are a cloud function.</strong> When she holds Talk, the phone records a short clip, like a voice message. The clip travels to Talkmy's own cloud function, which has Gemini hear it, write down what she said, and answer. The clip is used for that one answer, is deleted from the phone when the hold finishes, and Talkmy keeps no copy. Typed words travel as text to the same brain, and a photo she sends rides along with her question. Only the last few exchanges ride as context; Talkmy stores no conversation on any server.</li>
+      <li><strong>The brain:</strong> Gemini Flash. Voice clips reach it through the cloud function, on Vertex AI; typed questions reach it through Firebase AI Logic. Both routes are vouched for by App Check attestation — no API key inside the app — with invisible anonymous authentication, so the no-sign-in doctrine holds. Distilled capsule facts shape each request as context; the capsule file itself never uploads.</li>
+      <li><strong>The voice:</strong> spoken answers are usually made by Google Cloud Text-to-Speech, which receives only the answer's words, never her voice. If it cannot be reached, the phone's own built-in voice reads the answer instead.</li>
+      <li><strong>There is no offline mode.</strong> An earlier design carried an on-device option; it was scrapped before the current version shipped, because a second, weaker brain made the app harder to trust and harder to use. Talkmy needs the internet to answer, and says so in one calm line, in her language, when there is none.</li>
+      <li><strong>Weather, videos, and directions are hand-offs with a read-back.</strong> Weather answers come from a weather feed (Open-Meteo, with the US National Weather Service as backup) for the home place she told Talkmy in her own words. The app asks for no location permission and uses no GPS. YouTube and Maps open only after she agrees to a big card that reads the search or the destination back to her; Maps offers Apple Maps, and Google Maps too when it is installed and she chooses it.</li>
+      <li><strong>Sharing is the phone's own share sheet.</strong> The Talkmy wordmark at the top left is a button. Tapping it, or the small teaching bubble under it, opens the share sheet with a short prewritten message in her language and the talkmy.ai link. What leaves the phone is only what she picks there.</li>
+      <li><strong>The assistance contact.</strong> She may name one family member for assistance, picked by her in the phone's own contact picker; Talkmy never reads her address book. It stores only their name, role, phone number, and email, in the capsule on her phone, and only the name and role ever ride along as answer context, so a safety deferral can name the right person. Talkmy does not contact them on its own.</li>
+      <li><strong>Bug reports travel by her own Mail.</strong> If she says something is wrong, Talkmy asks her to describe it in her own words, tells her plainly what a report contains, and presents her Mail app's compose screen, addressed to the maker. She taps Send. Nothing can be sent behind her back.</li>
       <li><strong>Platform order:</strong> iOS first, carved to finished; Android mirrors once. Never both in parallel.</li>
     </ul>
 
     <h2 id="model">6. Business model</h2>
+    <p>This is the intended model, stated plainly: Talkmy is not on sale yet, and none of what follows is in the current build.</p>
     <ul>
       <li><strong>The core is never sold by the question.</strong> Asking is uncapped from the parent's side of the glass. She never sees a price tag on asking for help.</li>
       <li><strong>The children pay, and send it to their parents.</strong> Premium is bought by the adult child and gifted onto the parent's phone. The invoice and the gift wrap are the same box.</li>
@@ -188,14 +192,15 @@
     <blockquote><p>&ldquo;Talkmy is the tool that allows for the load-bearing parts to be frictionless.&rdquo;</p></blockquote>
 
     <h2 id="limits">8. State and honest limitations</h2>
-    <p><strong>State, 2026-11-16:</strong> name, icon, tagline, and domain locked; website live; iOS rounds 1 and 2 built and running on a physical test iPhone with the full first-run chain; App Store Connect record created; submission package prepared. The model round — Gemini plus the offline option — is in flight, wired and verified before anything is sent to the App Store. Replies in the current build are stubs.</p>
+    <p><strong>State, 2026-11-18:</strong> name, icon, tagline, and domain locked; website live at talkmy.ai. The current app is Talkmy 2.0, build 9, running on the founder's test iPhones: hold-to-talk voice clips answered out loud by Gemini through Talkmy's cloud function, photo questions with tap-to-magnify answers, a play button beside each answer, spoken controls for the voice, the words, and the buttons, weather answers, YouTube and Maps cards, the share corner, and the on-device capsule. The app is not publicly released yet: there is no App Store or Google Play page for it, and this site links to none. The parents handover test is still the gate that matters.</p>
     <p><strong>Limitations, unsoftened:</strong></p>
     <ul>
-      <li><strong>The parents test has not run.</strong> Motion, real speech, and spoken audio cannot be proven from a simulator. Until the handover happens, every usability claim in this paper is a design claim, not a measured one.</li>
-      <li><strong>Starter texts are best-effort translations</strong>, flagged for native review before any public launch.</li>
+      <li><strong>The parents handover test has not been recorded yet.</strong> The founder's own hands have run the app end to end on real phones; his parents' first unassisted run is still ahead. Until it happens, every usability claim in this paper is a design claim, not a measured one.</li>
+      <li><strong>Translations are best-effort.</strong> The words the app shows in its thirteen interface languages, and the starter texts in its twenty-three hello languages, are flagged for native review before any public launch.</li>
       <li><strong>The scam guard is a discipline, not a guarantee.</strong> Know-or-defer bounds its errors, but deferral depends on a human being reachable.</li>
-      <li><strong>Email depends on the phone's Mail being configured</strong>, which on many seniors' phones it is not. Texting is the reliable lane.</li>
-      <li><strong>The offline option excludes older phones</strong> by hardware — and says so in the app rather than failing silently.</li>
+      <li><strong>Bug reports depend on the phone's Mail being configured</strong>, which on many seniors' phones it is not. When it is not, the report stays as words in the conversation instead of being lost.</li>
+      <li><strong>There is no offline mode</strong>, so no connection means no answers. Talkmy says so in one calm line rather than falling back to a weaker on-phone brain.</li>
+      <li><strong>The app is iPhone only today.</strong> Android is a planned mirror of the finished iOS build, not a shipped app.</li>
       <li><strong>Distribution is a sentence, not a channel.</strong> The model assumes sons and daughters carry it phone to phone. That is a belief about how families work, held by a founder who lives it nightly — unproven at any scale beyond one family.</li>
     </ul>
 
