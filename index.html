@@ -206,7 +206,23 @@
       .phone {
         background: var(--surface); border: 10px solid var(--phone-frame); border-radius: 46px;
         box-shadow: var(--shadow); overflow: hidden; max-width: 400px; margin: 0 auto; width: 100%;
+        position: relative;
       }
+      /* Touch manners (2026-11-18, from a real tester's report): a long
+         press on the phone must feel like pressing the app, never like
+         selecting text. Nothing inside the phone can be selected or call
+         up the copy menu, and its buttons answer on the press itself.
+         Scoped to the phone; the rest of the page's text stays selectable. */
+      .phone, .phone * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+      .phone button { touch-action: manipulation; }
+      /* The Demo marker rides on the phone frame at all times, so nobody
+         can mistake the rehearsal for the real thing. */
+      .demo-tag {
+        position: absolute; top: 5px; right: 14px; z-index: 6;
+        background: var(--marigold); color: #26231F; border: 2px solid #26231F; border-radius: 999px;
+        font-family: "Nunito", sans-serif; font-weight: 800; font-size: .78rem; line-height: 1.5; padding: 1px 10px;
+      }
+      .demo-note { margin: 14px auto 0; max-width: 400px; text-align: center; color: var(--ink-soft); font-size: 1rem; }
       .phone-notch { height: 26px; display: flex; justify-content: center; align-items: center; }
       .phone-notch i { width: 90px; height: 8px; border-radius: 99px; background: var(--line); display: block; }
       .phone-screen { padding: 8px 18px 22px; display: flex; flex-direction: column; height: 530px; }
@@ -709,7 +725,9 @@
           <p data-i18n="tryIntro">No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
         </div>
         <div class="demo-grid">
+          <div class="phone-col">
           <div class="phone" role="img" aria-label="A phone mock-up of Talkmy: a simple conversation, a typing bar, and two big buttons, Picture and Talk" data-i18n-aria="phoneAria">
+            <span class="demo-tag" data-i18n="demoTag">Demo</span>
             <div class="phone-notch" aria-hidden="true"><i></i></div>
             <div class="phone-screen">
               <div class="phone-head">
@@ -735,6 +753,8 @@
                 </button>
               </div>
             </div>
+          </div>
+          <p class="demo-note" data-i18n="demoNote">This phone is just a demo: in the real app, she holds Talk and speaks, and Talkmy answers for real.</p>
           </div>
           <div class="demo-side">
             <h3 data-i18n="askTitle">Ask it like a person</h3>
@@ -965,6 +985,8 @@
     "footerTag": "talkmy™, The AI for everyone.",
     "footerWhitepaper": "White Paper",
     "footerPrivacy": "Privacy Policy",
+        "demoTag": "Demo",
+    "demoNote": "This phone is just a demo: in the real app, she holds Talk and speaks, and Talkmy answers for real.",
     "footMade": "Made by a founder and his Ai, Vivian, in California",
     "barAria": "What Talkmy removes",
     "bar1": "<b>No</b> typing needed",
@@ -1022,6 +1044,8 @@
     "fnd2H": "La forma que conocía",
     "fnd2Quote": "«La tallé en la única forma que conocía, unos padres inmigrantes fuertes e inteligentes a quienes se les negó lo mejor que su entorno tenía para ofrecer.»",
     "footerPrivacy": "Política de privacidad",
+        "demoTag": "Demo",
+    "demoNote": "Este teléfono es solo una demostración: en la aplicación de verdad, ella mantiene pulsado Hablar, habla, y Talkmy responde de verdad.",
     "footMade": "Hecho por un fundador y su Ai, Vivian, en California",
     "footerTag": "talkmy™, La IA para todos.",
     "footerWhitepaper": "Libro blanco",
@@ -1119,6 +1143,8 @@
     "fnd2H": "他熟悉的形状",
     "fnd2Quote": "“我把它做成了我唯一熟悉的形状，坚强聪明的移民父母，他们被挡在了身边环境所能提供的最好的东西之外。”",
     "footerPrivacy": "隐私政策",
+        "demoTag": "演示",
+    "demoNote": "这部手机只是演示：在真正的应用里，她按住说话键，开口说话，Talkmy 就会真的回答。",
     "footMade": "由一位创始人和他的 Ai Vivian 在 California 制作",
     "footerTag": "talkmy™，人人都能用的 AI。",
     "footerWhitepaper": "白皮书",
@@ -1216,6 +1242,8 @@
     "fnd2H": "Hình dáng mà anh ấy biết rõ",
     "fnd2Quote": "“Tôi đã khắc nó theo hình dáng duy nhất mà tôi biết, những bậc cha mẹ nhập cư mạnh mẽ và thông minh, những người bị rào cản ngăn cách khỏi những điều tốt đẹp nhất mà nơi họ sống có thể mang lại.”",
     "footerPrivacy": "Chính sách bảo mật",
+        "demoTag": "Demo",
+    "demoNote": "Chiếc điện thoại này chỉ là bản demo: trong ứng dụng thật, bà giữ nút Nói, nói, và Talkmy trả lời thật.",
     "footMade": "Được làm bởi một nhà sáng lập và Ai của anh ấy, Vivian, tại California",
     "footerTag": "talkmy™, AI cho mọi người.",
     "footerWhitepaper": "Sách trắng",
@@ -1313,6 +1341,8 @@
     "fnd2H": "그가 알던 모습 그대로",
     "fnd2Quote": "“제가 알던 유일한 모습으로 빚어 만들었어요. 강하고 지혜로운 이민자 부모님, 그분들이 살아가는 환경이 줄 수 있는 가장 좋은 것들에서 멀어져 있던 부모님을 위한 모습으로요.”",
     "footerPrivacy": "개인정보처리방침",
+        "demoTag": "데모",
+    "demoNote": "이 휴대폰은 데모일 뿐입니다: 실제 앱에서는 말하기를 누른 채 말씀하시면 Talkmy가 진짜로 답합니다.",
     "footMade": "한 창업자와 그의 Ai, Vivian이 California에서 만들었습니다",
     "footerTag": "talkmy™, 모두를 위한 AI입니다.",
     "footerWhitepaper": "백서",
@@ -1410,6 +1440,8 @@
     "fnd2H": "彼が知っていたかたち",
     "fnd2Quote": "「私が知っていた唯一のかたちに、彫りました。強くて賢い移民の両親、その環境が与えてくれるいちばんよいものから遠ざけられていた両親のかたちです。」",
     "footerPrivacy": "プライバシーポリシー",
+        "demoTag": "デモ",
+    "demoNote": "この電話はデモです：本物のアプリでは、話すボタンを押しながら話すと、Talkmyが本当に答えます。",
     "footMade": "一人の創業者と彼の Ai、Vivian が California で作りました",
     "footerTag": "talkmy™、みんなのためのAIです。",
     "footerWhitepaper": "ホワイトペーパー",
@@ -1507,6 +1539,8 @@
     "fnd2H": "La forme qu'il connaissait",
     "fnd2Quote": "« Je l'ai taillée dans la seule forme que je connaissais, celle de parents immigrés forts et intelligents, tenus à l'écart du meilleur de ce que leur environnement avait à offrir. »",
     "footerPrivacy": "Politique de confidentialité",
+        "demoTag": "Démo",
+    "demoNote": "Ce téléphone n'est qu'une démo : dans la vraie application, elle maintient Parler, parle, et Talkmy répond pour de vrai.",
     "footMade": "Fait par un fondateur et son Ai, Vivian, en California",
     "footerTag": "talkmy™, L'IA pour tout le monde.",
     "footerWhitepaper": "Livre blanc",
@@ -1604,6 +1638,8 @@
     "fnd2H": "Die Form, die er kannte",
     "fnd2Quote": "„Ich habe sie in die einzige Form geschnitzt, die ich kannte, starke, intelligente Einwanderereltern, die vom Besten dessen, was ihre Umgebung zu bieten hatte, ausgeschlossen waren.“",
     "footerPrivacy": "Datenschutzerklärung",
+        "demoTag": "Demo",
+    "demoNote": "Dieses Telefon ist nur eine Demo: In der echten App hält sie Sprechen gedrückt, spricht, und Talkmy antwortet wirklich.",
     "footMade": "Gemacht von einem Gründer und seiner Ai, Vivian, in California",
     "footerTag": "talkmy™, Die KI für alle.",
     "footerWhitepaper": "Whitepaper",
@@ -1701,6 +1737,8 @@
     "fnd2H": "A forma que ele conhecia",
     "fnd2Quote": "“Eu esculpi na única forma que conhecia, pais imigrantes fortes e inteligentes que ficaram de fora do melhor que o ambiente deles tinha a oferecer.”",
     "footerPrivacy": "Política de Privacidade",
+        "demoTag": "Demo",
+    "demoNote": "Este telefone é só uma demonstração: no aplicativo de verdade, ela segura Falar, fala, e o Talkmy responde de verdade.",
     "footMade": "Feito por um fundador e sua Ai, Vivian, na California",
     "footerTag": "talkmy™, A IA para todos.",
     "footerWhitepaper": "Livro branco",
@@ -1798,6 +1836,8 @@
     "fnd2H": "佢識嘅形狀",
     "fnd2Quote": "「我將佢雕成我唯一識嘅形狀，堅強聰明嘅移民父母，佢哋被隔開，攞唔到身邊環境最好嘅嘢。」",
     "footerPrivacy": "私隱政策",
+        "demoTag": "示範",
+    "demoNote": "呢部手機只係示範：喺真正嘅應用程式入面，佢㩒住傾偈講嘢，Talkmy 就會真係答佢。",
     "footMade": "由一位創辦人同佢嘅 Ai Vivian 喺 California 製作",
     "footerTag": "talkmy™，人人都用得嘅 AI。",
     "footerWhitepaper": "白皮書",
@@ -1998,9 +2038,22 @@
           var chip = e.target.closest(".chip");
           if (chip) ask(parseInt(chip.getAttribute("data-qi"), 10));
         });
-        talkBtn.addEventListener("click", function () {
-          ask(Math.floor(Math.random() * qa().length));
-        });
+        /* The demo Talk button is a rehearsal, honestly labeled: this page
+           has no microphone and never listens. A press (tap, or hold and
+           release: it fires on pointerdown, the moment the press lands)
+           runs the listening beat and plays the next sample exchange,
+           rotating through them in order. The busy guard inside ask()
+           absorbs the click that follows a pointerdown press, and a
+           keyboard click still works on its own. */
+        var talkQi = 0;
+        function talkAsk() {
+          if (busy) return;
+          var qi = talkQi;
+          talkQi = (talkQi + 1) % qa().length;
+          ask(qi);
+        }
+        talkBtn.addEventListener("pointerdown", talkAsk);
+        talkBtn.addEventListener("click", talkAsk);
 
         /* ---------- picture demo: a real exchange, her photo and all ----------
            Tapping Picture stands her photo in the thread as the held photo,
@@ -2049,6 +2102,15 @@
           }, 1100);
         }
         picBtn.addEventListener("click", photoAsk);
+        /* Picture answers on the press itself too, like Talk (see talkAsk):
+           pointerdown fires the exchange, the busy guard absorbs the
+           trailing click. */
+        picBtn.addEventListener("pointerdown", function () { photoAsk(); });
+
+        /* A long press inside the phone never opens a menu either: the
+           CSS keeps text unselectable and callout-free, and this swallows
+           the context menu event itself, scoped to the phone only. */
+        document.querySelector(".phone").addEventListener("contextmenu", function (e) { e.preventDefault(); });
 
         /* ---------- hear it out loud ---------- */
         var hearBtn = document.getElementById("hearBtn");
