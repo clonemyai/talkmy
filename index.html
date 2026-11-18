@@ -327,13 +327,15 @@
       .sib-icons figure { margin: 0; text-align: center; }
       .sib-icons figcaption { font-weight: 800; margin-top: 8px; font-size: 1rem; }
 
-      footer { margin-top: 94px; border-top: 2px solid var(--line); padding: 30px 0 14px; }
+      footer { margin-top: 94px; border-top: 2px solid var(--line); padding: 10px 0 14px; }
       /* Quiet seams (Tony, 2026-11-18): the footer's own divider recipe,
          2px solid var(--line), at these two boundaries only. Each line
          rides about two-thirds of the way down its gap: most of the air
          sits above the line, the heading close under it. The footer's
-         own divider follows the same split (margin-top 94px above,
-         padding-top 30px below). */
+         own divider keeps its position (margin-top 94px above), and the
+         space under it is cut (padding-top 10px) so the wordmark block
+         anchors to the bottom of the footer, just above the founder
+         line (Tony's follow-up ruling, 2026-11-18). */
       #try { border-top: 2px solid var(--line); padding-top: 35px; margin-top: 65px; }
       .carousel { border-top: 2px solid var(--line); margin-top: 49px; }
       .carousel .car-slide { padding-top: 23px; }
@@ -341,6 +343,7 @@
       .foot-in .f-tag { font-family: "Nunito", sans-serif; font-weight: 900; font-size: 1.3rem; }
       .foot-in .f-sub { color: var(--ink-soft); width: 100%; font-size: 1.05rem; }
       .foot-in .f-made { width: 100%; text-align: right; color: var(--ink-soft); font-size: 1.02rem; font-weight: 600; }
+      .foot-in .f-made .f-heart { width: 1em; height: 1em; vertical-align: -0.1em; }
 
       @media (max-width: 900px) {
         .hero-grid, .demo-grid, .panels, .ladder, .found-grid { grid-template-columns: 1fr; }
@@ -788,7 +791,7 @@
           <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
           <p class="f-tag" data-i18n="footerTag">talkmy™, The AI for everyone.</p>
           <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></p>
-          <p class="f-made" data-i18n="footMade">Made by a founder and his Ai, Vivian, in California &lt;3</p>
+          <p class="f-made"><span data-i18n="footMade">Made by a founder and his Ai, Vivian, in California</span> <svg class="f-heart" role="img" aria-label="love" viewBox="0 0 24 24"><path fill="#FF5C93" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></p>
         </div>
       </footer>
     </main>
@@ -916,7 +919,7 @@
     "footerTag": "talkmy™, The AI for everyone.",
     "footerWhitepaper": "White Paper",
     "footerPrivacy": "Privacy Policy",
-    "footMade": "Made by a founder and his Ai, Vivian, in California <3",
+    "footMade": "Made by a founder and his Ai, Vivian, in California",
     "barAria": "What Talkmy removes",
     "bar1": "<b>No</b> typing needed",
     "bar2": "<b>No</b> tiny menus",
@@ -973,7 +976,7 @@
     "fnd2H": "La forma que conocía",
     "fnd2Quote": "«La tallé en la única forma que conocía, unos padres inmigrantes fuertes e inteligentes a quienes se les negó lo mejor que su entorno tenía para ofrecer.»",
     "footerPrivacy": "Política de privacidad",
-    "footMade": "Hecho por un fundador y su Ai, Vivian, en California <3",
+    "footMade": "Hecho por un fundador y su Ai, Vivian, en California",
     "footerTag": "talkmy™, La IA para todos.",
     "footerWhitepaper": "Libro blanco",
     "hearBtn": "Escuchar la respuesta en voz alta",
@@ -1070,7 +1073,7 @@
     "fnd2H": "他熟悉的形状",
     "fnd2Quote": "“我把它做成了我唯一熟悉的形状，坚强聪明的移民父母，他们被挡在了身边环境所能提供的最好的东西之外。”",
     "footerPrivacy": "隐私政策",
-    "footMade": "由一位创始人和他的 Ai Vivian 在 California 制作 <3",
+    "footMade": "由一位创始人和他的 Ai Vivian 在 California 制作",
     "footerTag": "talkmy™，人人都能用的 AI。",
     "footerWhitepaper": "白皮书",
     "hearBtn": "大声听回答",
@@ -1167,7 +1170,7 @@
     "fnd2H": "Hình dáng mà anh ấy biết rõ",
     "fnd2Quote": "“Tôi đã khắc nó theo hình dáng duy nhất mà tôi biết, những bậc cha mẹ nhập cư mạnh mẽ và thông minh, những người bị rào cản ngăn cách khỏi những điều tốt đẹp nhất mà nơi họ sống có thể mang lại.”",
     "footerPrivacy": "Chính sách bảo mật",
-    "footMade": "Được làm bởi một nhà sáng lập và Ai của anh ấy, Vivian, tại California <3",
+    "footMade": "Được làm bởi một nhà sáng lập và Ai của anh ấy, Vivian, tại California",
     "footerTag": "talkmy™, AI cho mọi người.",
     "footerWhitepaper": "Sách trắng",
     "hearBtn": "Nghe câu trả lời thành tiếng",
@@ -1264,7 +1267,7 @@
     "fnd2H": "그가 알던 모습 그대로",
     "fnd2Quote": "“제가 알던 유일한 모습으로 빚어 만들었어요. 강하고 지혜로운 이민자 부모님, 그분들이 살아가는 환경이 줄 수 있는 가장 좋은 것들에서 멀어져 있던 부모님을 위한 모습으로요.”",
     "footerPrivacy": "개인정보처리방침",
-    "footMade": "한 창업자와 그의 Ai, Vivian이 California에서 만들었습니다 <3",
+    "footMade": "한 창업자와 그의 Ai, Vivian이 California에서 만들었습니다",
     "footerTag": "talkmy™, 모두를 위한 AI입니다.",
     "footerWhitepaper": "백서",
     "hearBtn": "답변을 소리 내어 듣기",
@@ -1361,7 +1364,7 @@
     "fnd2H": "彼が知っていたかたち",
     "fnd2Quote": "「私が知っていた唯一のかたちに、彫りました。強くて賢い移民の両親、その環境が与えてくれるいちばんよいものから遠ざけられていた両親のかたちです。」",
     "footerPrivacy": "プライバシーポリシー",
-    "footMade": "一人の創業者と彼の Ai、Vivian が California で作りました <3",
+    "footMade": "一人の創業者と彼の Ai、Vivian が California で作りました",
     "footerTag": "talkmy™、みんなのためのAIです。",
     "footerWhitepaper": "ホワイトペーパー",
     "hearBtn": "答えを声で聞く",
@@ -1458,7 +1461,7 @@
     "fnd2H": "La forme qu'il connaissait",
     "fnd2Quote": "« Je l'ai taillée dans la seule forme que je connaissais, celle de parents immigrés forts et intelligents, tenus à l'écart du meilleur de ce que leur environnement avait à offrir. »",
     "footerPrivacy": "Politique de confidentialité",
-    "footMade": "Fait par un fondateur et son Ai, Vivian, en California <3",
+    "footMade": "Fait par un fondateur et son Ai, Vivian, en California",
     "footerTag": "talkmy™, L'IA pour tout le monde.",
     "footerWhitepaper": "Livre blanc",
     "hearBtn": "Écouter la réponse à voix haute",
@@ -1555,7 +1558,7 @@
     "fnd2H": "Die Form, die er kannte",
     "fnd2Quote": "„Ich habe sie in die einzige Form geschnitzt, die ich kannte, starke, intelligente Einwanderereltern, die vom Besten dessen, was ihre Umgebung zu bieten hatte, ausgeschlossen waren.“",
     "footerPrivacy": "Datenschutzerklärung",
-    "footMade": "Gemacht von einem Gründer und seiner Ai, Vivian, in California <3",
+    "footMade": "Gemacht von einem Gründer und seiner Ai, Vivian, in California",
     "footerTag": "talkmy™, Die KI für alle.",
     "footerWhitepaper": "Whitepaper",
     "hearBtn": "Die Antwort laut anhören",
@@ -1652,7 +1655,7 @@
     "fnd2H": "A forma que ele conhecia",
     "fnd2Quote": "“Eu esculpi na única forma que conhecia, pais imigrantes fortes e inteligentes que ficaram de fora do melhor que o ambiente deles tinha a oferecer.”",
     "footerPrivacy": "Política de Privacidade",
-    "footMade": "Feito por um fundador e sua Ai, Vivian, na California <3",
+    "footMade": "Feito por um fundador e sua Ai, Vivian, na California",
     "footerTag": "talkmy™, A IA para todos.",
     "footerWhitepaper": "Livro branco",
     "hearBtn": "Ouvir a resposta em voz alta",
@@ -1749,7 +1752,7 @@
     "fnd2H": "佢識嘅形狀",
     "fnd2Quote": "「我將佢雕成我唯一識嘅形狀，堅強聰明嘅移民父母，佢哋被隔開，攞唔到身邊環境最好嘅嘢。」",
     "footerPrivacy": "私隱政策",
-    "footMade": "由一位創辦人同佢嘅 Ai Vivian 喺 California 製作 <3",
+    "footMade": "由一位創辦人同佢嘅 Ai Vivian 喺 California 製作",
     "footerTag": "talkmy™，人人都用得嘅 AI。",
     "footerWhitepaper": "白皮書",
     "hearBtn": "大聲聽答案",
