@@ -4,18 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="description" content="Talkmy — The AI for everyone. Just talk. No typing, no menus, no hunting. One marigold-and-charcoal color system for the website and the apps, in light and dark, following your device." />
+    <meta name="description" content="Talkmy, The AI for everyone. Just talk. No typing, no menus, no hunting. One marigold-and-charcoal color system for the website and the apps, in light and dark, following your device." />
     <link rel="icon" href="data:," />
-    <title>Talkmy™ — The AI for everyone</title>
+    <title>Talkmy™, The AI for everyone</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
     <style>
-      /* ============ TALKMY COLOR SYSTEM — one palette, website + apps ============
+      /* ============ TALKMY COLOR SYSTEM: one palette, website + apps ============
          The mode follows the device: prefers-color-scheme below.
-         The pill in the top bar and the switch in the Colors section set
-         data-theme on <html> to override the device on this site; the pill
-         choice is remembered in localStorage, "Follow my device" clears it. */
+         The pill in the top bar sets data-theme on <html> to override the
+         device on this site; the choice is remembered in localStorage. */
       :root {
         color-scheme: light;
         --marigold: #FFB81C;
@@ -52,7 +51,7 @@
           --shadow: 0 18px 44px rgba(0, 0, 0, .5);
         }
       }
-      /* Forced preview modes (Colors section switch) */
+      /* Forced modes (top-bar pill) */
       :root[data-theme="light"] {
         color-scheme: light;
         --marigold-deep: #B97E00;
@@ -69,7 +68,7 @@
         --user-bubble: #FFB81C; --user-bubble-ink: #26231F; --ai-bubble: #2E2818;
         --shadow: 0 18px 44px rgba(0, 0, 0, .5);
       }
-      /* Scoped palettes for the side-by-side light/dark panels — same tokens,
+      /* Scoped palettes for the side-by-side light/dark panels, same tokens,
          pinned per panel so both modes can be compared on one screen. */
       .pin-light {
         color-scheme: light;
@@ -384,8 +383,6 @@
           <a href="#try">Try it</a>
           <a href="#how">How it works</a>
           <a href="#family">For families</a>
-          <a href="#colors">Colors</a>
-          <a href="#icon">The icon</a>
           <a href="whitepaper.html">White paper</a>
           <button type="button" class="device-pill" id="devicePill" aria-label="Switch between light and dark mode"><span class="sunmoon" aria-hidden="true"></span><span id="devicePillText">Checking your device setting…</span></button>
         </nav>
@@ -401,7 +398,7 @@
               <svg width="118" height="92" role="img" aria-label="Talkmy logo: a marigold speech bubble with the word talkmy in charcoal"><use href="#talkmy-mark"/></svg>
             </div>
             <h1>The AI for <span class="hl">everyone.</span></h1>
-            <p class="lead">Talkmy™ is the assistant you <strong>talk to</strong> — out loud, in your own words, in your own language. No typing needed. No menus to hunt through. No password gymnastics. If you can hold a conversation, you can use Talkmy.</p>
+            <p class="lead">Talkmy™ is the assistant you <strong>talk to</strong>, out loud, in your own words, in your own language. No typing needed. No menus to hunt through. No password gymnastics. If you can hold a conversation, you can use Talkmy.</p>
             <div class="cta-row">
               <a class="btn btn-gold" href="#try">Try talking to it</a>
               <a class="btn btn-ghost" href="#colors">See the colors</a>
@@ -409,7 +406,7 @@
             <div class="hero-points">
               <span>Hold the big Talk button. A Picture button sits beside it.</span>
               <span>Answers spoken out loud, in big clear words.</span>
-              <span>Made first for seniors — so it works for everyone.</span>
+              <span>Made first for seniors, so it works for everyone.</span>
             </div>
           </div>
           <div class="hero-art">
@@ -436,7 +433,7 @@
       <section id="try" class="wrap">
         <div class="sec-head">
           <h2>Try it the way she would</h2>
-          <p>No keyboard appears. No settings open. She holds one big yellow button and says what she needs — try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
+          <p>No keyboard appears. No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
         </div>
         <div class="demo-grid">
           <div class="phone" role="img" aria-label="A phone mock-up of Talkmy: a simple conversation and one big yellow Talk button">
@@ -461,7 +458,7 @@
           </div>
           <div class="demo-side">
             <h3>Ask it like a person</h3>
-            <p>These are real things people ask out loud at the kitchen table. Tap one and watch Talkmy answer — in plain words, big enough to read without glasses.</p>
+            <p>These are real things people ask out loud at the kitchen table. Tap one and watch Talkmy answer, in plain words, big enough to read without glasses.</p>
             <div class="chips" id="chips">
               <button class="chip" type="button" data-q="What can I make for dinner with chicken and rice?"><span class="q">Ask:</span> “What can I make for dinner with chicken and rice?”</button>
               <button class="chip" type="button" data-q="Find me a video of cute puppies playing."><span class="q">Ask:</span> “Find me a video of cute puppies playing.”</button>
@@ -510,7 +507,7 @@
         <div class="found-grid">
           <div class="found-card gold">
             <h3>You install it. You give one sentence.</h3>
-            <p>Talkmy&rsquo;s real first user is the parent — but its customer is you. You put it on her phone, and your whole tutorial is one sentence: <em>&ldquo;You just use it like we chat, like a person, and you can send photos. I installed it for you. It looks like this.&rdquo;</em> The junk mail, the letters, the what-does-this-charge-mean — the app takes those now. What still reaches you is what deserves you: the judgement calls.</p>
+            <p>Talkmy&rsquo;s real first user is the parent, but its customer is you. You put it on her phone, and your whole tutorial is one sentence: <em>&ldquo;You just use it like we chat, like a person, and you can send photos. I installed it for you. It looks like this.&rdquo;</em> The junk mail, the letters, the what-does-this-charge-mean: the app takes those now. What still reaches you is what deserves you: the judgement calls.</p>
           </div>
           <div class="found-card">
             <h3>A named person, kept on her phone</h3>
@@ -537,181 +534,10 @@
         </div>
       </section>
 
-      <!-- ================= MADE TO BE FOUND ================= -->
-      <section class="wrap">
-        <div class="sec-head">
-          <h2>Built for a senior&rsquo;s home screen</h2>
-          <p>Talkmy&rsquo;s first user is someone&rsquo;s grandmother, standing in a bright kitchen, phone in hand. Every design choice answers to her.</p>
-        </div>
-        <div class="found-grid">
-          <div class="found-card gold">
-            <h3>Marigold is the finder</h3>
-            <p>Bank apps are blue. Mail is white. Games are green. Almost nothing on a phone is vivid marigold — so the Talkmy bubble is the first thing the eye lands on, every time. Charcoal words on marigold read at <strong>9.0 : 1</strong> contrast, more than double the accessibility standard for large text.</p>
-            <div class="homescreen" aria-hidden="true">
-              <div class="hs-app hs-bank hs-dim"></div>
-              <div class="hs-app hs-mail hs-dim"></div>
-              <div class="hs-app" style="background:#FFB81C; border:3px solid #26231F; padding:6px;"><svg viewBox="0 0 240 186" width="100%" height="100%"><use href="#talkmy-mark"/></svg></div>
-              <div class="hs-app hs-photos hs-dim"></div>
-              <div class="hs-app hs-game hs-dim"></div>
-              <div class="hs-app hs-weather hs-dim"></div>
-              <div class="hs-app hs-news hs-dim"></div>
-              <div class="hs-app hs-shop hs-dim"></div>
-            </div>
-          </div>
-          <div class="found-card">
-            <h3>Easy on the eyes, both ways</h3>
-            <p>Talkmy follows the phone, not the other way around. If the device is set to dark mode, Talkmy is dark. Set to light, Talkmy is light. Nobody has to find a settings switch in the app. This page follows your device too, and the pill at the top lets you flip it whenever you like.</p>
-            <div class="contrast-row">
-              <span class="contrast-chip">Words on paper <b>14.9 : 1</b></span>
-              <span class="contrast-chip">Words after dark <b>17.2 : 1</b></span>
-              <span class="contrast-chip">Marigold at night <b>10.7 : 1</b></span>
-            </div>
-            <p style="margin-top:16px;">Body text is set in Atkinson Hyperlegible, a typeface drawn for low-vision readers, and nothing important is ever smaller than the words you&rsquo;re reading now.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= COLORS ================= -->
-      <section id="colors" class="wrap">
-        <div class="sec-head">
-          <h2>One color system — website and apps</h2>
-          <p>The same palette, the same names, the same hex values, everywhere Talkmy appears. Marigold and charcoal never change. The paper underneath flips with the device: warm and bright by day, deep charcoal-warm at night.</p>
-        </div>
-
-        <div class="mode-switch" role="group" aria-label="Preview a mode on this page">
-          <button type="button" id="modeDevice" aria-pressed="true">Follow my device</button>
-          <button type="button" id="modeLight" aria-pressed="false">Light</button>
-          <button type="button" id="modeDark" aria-pressed="false">Dark</button>
-        </div>
-        <p class="mode-status" id="modeStatus" aria-live="polite"></p>
-
-        <div class="panels">
-          <div class="panel pin-light">
-            <div class="panel-head">
-              <svg width="44" height="34" aria-hidden="true"><use href="#talkmy-mark"/></svg>
-              <h3>Light mode</h3>
-              <span class="tag">For bright rooms &amp; daytime</span>
-            </div>
-            <div class="mini-app" aria-hidden="true">
-              <div class="ma-top">
-                <svg width="40" height="31"><use href="#talkmy-mark"/></svg>
-                <span class="ma-name">talkmy</span>
-              </div>
-              <div class="msg ai" style="max-width:92%;">Good morning! What can I do for you today?</div>
-              <div class="msg user" style="max-width:92%; margin-top:10px;">What&rsquo;s the weather like?</div>
-              <button class="mini-talk" type="button" tabindex="-1">Hold &amp; talk</button>
-            </div>
-            <div class="swatches">
-              <button class="swatch" type="button" data-hex="#FFB81C"><span class="chip-color" style="background:#FFB81C"></span><span><span class="sw-name">Marigold</span><br /><span class="sw-role">The mark, the button, the finder</span></span><span class="sw-hex">#FFB81C</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#26231F"><span class="chip-color" style="background:#26231F"></span><span><span class="sw-name">Charcoal</span><br /><span class="sw-role">Words, outlines, her voice on paper</span></span><span class="sw-hex">#26231F</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#FFF9EC"><span class="chip-color" style="background:#FFF9EC"></span><span><span class="sw-name">Paper</span><br /><span class="sw-role">Light background</span></span><span class="sw-hex">#FFF9EC</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#FFF1CF"><span class="chip-color" style="background:#FFF1CF"></span><span><span class="sw-name">Soft Marigold</span><br /><span class="sw-role">Talkmy&rsquo;s answer bubbles</span></span><span class="sw-hex">#FFF1CF</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#5A554B"><span class="chip-color" style="background:#5A554B"></span><span><span class="sw-name">Warm Gray</span><br /><span class="sw-role">Quieter words, still 7.1 : 1</span></span><span class="sw-hex">#5A554B</span><span class="copied">Copied ✓</span></button>
-            </div>
-          </div>
-
-          <div class="panel pin-dark">
-            <div class="panel-head">
-              <svg width="44" height="34" aria-hidden="true"><use href="#talkmy-mark"/></svg>
-              <h3>Dark mode</h3>
-              <span class="tag">For evenings &amp; dim rooms</span>
-            </div>
-            <div class="mini-app" aria-hidden="true">
-              <div class="ma-top">
-                <svg width="40" height="31"><use href="#talkmy-mark"/></svg>
-                <span class="ma-name">talkmy</span>
-              </div>
-              <div class="msg ai" style="max-width:92%;">Good evening! What can I do for you?</div>
-              <div class="msg user" style="max-width:92%; margin-top:10px;">Tell me a short story.</div>
-              <button class="mini-talk" type="button" tabindex="-1">Hold &amp; talk</button>
-            </div>
-            <div class="swatches">
-              <button class="swatch" type="button" data-hex="#FFB81C"><span class="chip-color" style="background:#FFB81C"></span><span><span class="sw-name">Marigold</span><br /><span class="sw-role">Unchanged — it glows at night, 10.7 : 1</span></span><span class="sw-hex">#FFB81C</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#FFF6E3"><span class="chip-color" style="background:#FFF6E3"></span><span><span class="sw-name">Cream</span><br /><span class="sw-role">Words after dark, 17.2 : 1</span></span><span class="sw-hex">#FFF6E3</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#16130E"><span class="chip-color" style="background:#16130E"></span><span><span class="sw-name">Night</span><br /><span class="sw-role">Dark background, warm not black</span></span><span class="sw-hex">#16130E</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#2E2818"><span class="chip-color" style="background:#2E2818"></span><span><span class="sw-name">Soft Night Gold</span><br /><span class="sw-role">Talkmy&rsquo;s answer bubbles</span></span><span class="sw-hex">#2E2818</span><span class="copied">Copied ✓</span></button>
-              <button class="swatch" type="button" data-hex="#CFC4AB"><span class="chip-color" style="background:#CFC4AB"></span><span><span class="sw-name">Soft Cream</span><br /><span class="sw-role">Quieter words, still 10.7 : 1</span></span><span class="sw-hex">#CFC4AB</span><span class="copied">Copied ✓</span></button>
-            </div>
-          </div>
-        </div>
-        <p style="margin-top:14px; color:var(--ink-soft); font-size:1rem;">Tap any swatch to copy its hex value.</p>
-
-        <div class="rules">
-          <div class="rule">
-            <h3>Marigold never changes</h3>
-            <p>Same #FFB81C in light, in dark, on the website, in the apps, on the icon. It is the one color a thumb learns, so it is never allowed to drift.</p>
-          </div>
-          <div class="rule">
-            <h3>Charcoal does the talking</h3>
-            <p>Words are charcoal on light paper and warm cream on night. Marigold only ever carries charcoal words — never white, never gray — so it always reads.</p>
-          </div>
-          <div class="rule">
-            <h3>The device decides</h3>
-            <p>In the app, light or dark is read from the system setting, automatically, on first open and every open after. On this page you can also flip it yourself, with the switch above or the pill at the top, and the page remembers your pick.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ================= ICON ================= -->
-      <section id="icon" class="wrap">
-        <div class="sec-head">
-          <h2>The icon, big and small</h2>
-          <p>The same mark at every size it will ever ship: the 1024-pixel App Store master down to the smallest home-screen slot. The words soften at 48 pixels; the marigold silhouette never does, and the silhouette is what does the finding.</p>
-        </div>
-        <div class="ladder-box on-light" style="margin-bottom:20px;">
-          <h3>The big end — store &amp; master sizes</h3>
-          <div class="ladder-row" style="align-items:flex-end; gap:40px;">
-            <div class="ladder-item"><svg width="230" height="179" role="img" aria-label="Talkmy icon, 1024 pixel master size"><use href="#talkmy-mark"/></svg><p class="sz">1024 px · App Store master</p></div>
-            <div class="ladder-item"><svg width="150" height="116" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">512 px</p></div>
-            <div class="ladder-item"><svg width="104" height="81" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">256 px</p></div>
-          </div>
-        </div>
-        <div class="ladder">
-          <div class="ladder-box on-light">
-            <h3>On light</h3>
-            <div class="ladder-row">
-              <div class="ladder-item"><svg width="150" height="116" role="img" aria-label="Talkmy icon at 180 pixels"><use href="#talkmy-mark"/></svg><p class="sz">180 px</p></div>
-              <div class="ladder-item"><svg width="100" height="78" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">120 px</p></div>
-              <div class="ladder-item"><svg width="72" height="56" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">87 px</p></div>
-              <div class="ladder-item"><svg width="50" height="39" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">60 px</p></div>
-              <div class="ladder-item"><svg width="40" height="31" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">48 px</p></div>
-            </div>
-          </div>
-          <div class="ladder-box on-dark">
-            <h3>On dark</h3>
-            <div class="ladder-row">
-              <div class="ladder-item"><svg width="150" height="116" role="img" aria-label="Talkmy icon at 180 pixels on a dark background"><use href="#talkmy-mark"/></svg><p class="sz">180 px</p></div>
-              <div class="ladder-item"><svg width="100" height="78" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">120 px</p></div>
-              <div class="ladder-item"><svg width="72" height="56" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">87 px</p></div>
-              <div class="ladder-item"><svg width="50" height="39" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">60 px</p></div>
-              <div class="ladder-item"><svg width="40" height="31" aria-hidden="true"><use href="#talkmy-mark"/></svg><p class="sz">48 px</p></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="siblings">
-          <div class="sib-icons" aria-hidden="true">
-            <figure>
-              <svg width="130" height="101"><use href="#talkmy-mark"/></svg>
-              <figcaption>talkmy</figcaption>
-            </figure>
-            <figure>
-              <svg width="130" height="101"><use href="#splitkitch-mark"/></svg>
-              <figcaption>splitkitch</figcaption>
-            </figure>
-          </div>
-          <div class="sib-text">
-            <h3>Siblings, never twins</h3>
-            <p>Talkmy and SplitKitch may live on the same phone, so they must never be mistaken for each other. SplitKitch keeps its pistachio and cocoa; Talkmy owns marigold and charcoal outright. A half-second glance is all it should take to tap the right one — distinguishability beats family resemblance, every time.</p>
-          </div>
-        </div>
-      </section>
-
       <footer>
         <div class="wrap foot-in">
           <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
-          <p class="f-tag">talkmy™ — The AI for everyone.</p>
-          <p class="f-sub">Vivid marigold + charcoal, one color system across website and apps. Light and dark follow the device.</p>
+          <p class="f-tag">talkmy™, The AI for everyone.</p>
           <p class="f-sub"><a href="whitepaper.html">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
         </div>
       </footer>
@@ -726,23 +552,12 @@
         var root = document.documentElement;
         var pill = document.getElementById("devicePill");
         var pillText = document.getElementById("devicePillText");
-        var status = document.getElementById("modeStatus");
-        var btnDevice = document.getElementById("modeDevice");
-        var btnLight = document.getElementById("modeLight");
-        var btnDark = document.getElementById("modeDark");
         var THEME_KEY = "talkmy-theme";
 
-        function deviceName() { return mq.matches ? "Dark" : "Light"; }
         function effectiveTheme() {
           var forced = root.getAttribute("data-theme");
           if (forced === "dark" || forced === "light") return forced;
           return mq.matches ? "dark" : "light";
-        }
-        function currentMode() {
-          var forced = root.getAttribute("data-theme");
-          if (forced === "dark") return "Dark (your pick, saved on this device)";
-          if (forced === "light") return "Light (your pick, saved on this device)";
-          return deviceName() + " (from your device)";
         }
         function setTheme(mode) {
           if (mode === "dark" || mode === "light") root.setAttribute("data-theme", mode);
@@ -758,44 +573,17 @@
           pillText.textContent = (eff === "dark" ? "Dark" : "Light") + " mode · tap for " + (eff === "dark" ? "light" : "dark");
           pill.classList.toggle("is-dark", eff === "dark");
           pill.setAttribute("aria-label", "This page is in " + eff + " mode. Switch to " + (eff === "dark" ? "light" : "dark") + " mode.");
-          status.innerHTML = "This page is showing <b>" + currentMode() + "</b>. " +
-            (root.getAttribute("data-theme")
-              ? "Tap \u201CFollow my device\u201D to hand control back to your device setting."
-              : "Change your device between light and dark and watch Talkmy follow, or tap the pill at the top of the page. The app itself has no switch to find.");
-          var mode = root.getAttribute("data-theme");
-          btnDevice.setAttribute("aria-pressed", mode ? "false" : "true");
-          btnLight.setAttribute("aria-pressed", mode === "light" ? "true" : "false");
-          btnDark.setAttribute("aria-pressed", mode === "dark" ? "true" : "false");
         }
         pill.addEventListener("click", function () { setTheme(effectiveTheme() === "dark" ? "light" : "dark"); });
-        btnDevice.addEventListener("click", function () { setTheme(null); });
-        btnLight.addEventListener("click", function () { setTheme("light"); });
-        btnDark.addEventListener("click", function () { setTheme("dark"); });
         if (mq.addEventListener) mq.addEventListener("change", renderMode);
         renderMode();
 
-        /* ---------- swatch copy ---------- */
-        var swatches = document.querySelectorAll(".swatch");
-        swatches.forEach(function (sw) {
-          sw.addEventListener("click", function () {
-            var hex = sw.getAttribute("data-hex");
-            var copied = sw.querySelector(".copied");
-            function show() {
-              copied.style.display = "inline";
-              setTimeout(function () { copied.style.display = "none"; }, 1600);
-            }
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-              navigator.clipboard.writeText(hex).then(show, show);
-            } else { show(); }
-          });
-        });
-
         /* ---------- talk demo ---------- */
         var answers = {
-          "What can I make for dinner with chicken and rice?": "A lovely one-pan dinner: cook the rice, brown the chicken with a little garlic, then stir them together with frozen peas and a squeeze of lemon. Ready in about half an hour — and I can walk you through it step by step, out loud.",
+          "What can I make for dinner with chicken and rice?": "A lovely one-pan dinner: cook the rice, brown the chicken with a little garlic, then stir them together with frozen peas and a squeeze of lemon. Ready in about half an hour, and I can walk you through it step by step, out loud.",
           "Find me a video of cute puppies playing.": "Here is what happens in the app: Talkmy shows a big card with those words on it. Tap the card, or just say yes, and YouTube opens with the search already done, so the puppies are right there.",
           "Take me to the Costco in Folsom.": "Talkmy shows a big card that reads the place back to you: the Costco in Folsom. Tap the card, or say yes, and Maps opens with the driving route ready. Your last tap there is GO, when you are ready.",
-          "Tell me a short story before bed.": "Once there was a lighthouse keeper who left the lamp on every night for a little boat that always passed at nine. One foggy evening the boat was late — but the light waited, and so did he, and at last… would you like the rest tomorrow night?"
+          "Tell me a short story before bed.": "Once there was a lighthouse keeper who left the lamp on every night for a little boat that always passed at nine. One foggy evening the boat was late, but the light waited, and so did he, and at last… would you like the rest tomorrow night?"
         };
         var chat = document.getElementById("chat");
         var wave = document.getElementById("wave");
