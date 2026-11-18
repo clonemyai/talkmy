@@ -25,7 +25,7 @@
     font-family:"Atkinson Hyperlegible", system-ui, sans-serif;
     font-size:20px; line-height:1.65;
   }
-  .wrap{max-width:44rem; margin:0 auto; padding:3rem 1.25rem 4rem}
+  .wrap{max-width:44rem; margin:0 auto; padding:3rem 1.25rem 8rem}
   .mark{display:flex; align-items:center; gap:.8rem; margin-bottom:2.5rem}
   .mark-img{width:52px; height:40px; object-fit:contain; flex:none; display:block}
   .wordmark{font-family:"Nunito",sans-serif; font-weight:900; font-size:1.9rem; letter-spacing:-.01em}
@@ -53,6 +53,35 @@
   a{color:inherit; text-decoration-color:var(--marigold); text-decoration-thickness:3px; text-underline-offset:3px}
   .back{display:inline-block; margin-top:2.5rem; font-weight:700}
   hr{border:0; border-top:1px solid var(--line); margin:2.5rem 0 0}
+  /* Floating home button: the house glass (sheen gradient over a translucent
+     surface, backdrop blur and saturate, specular inset edges, warm shadow),
+     with one slow, subtle sheen sweep. Still by default. */
+  .back-home{
+    position:fixed; z-index:10;
+    right:max(1.25rem, env(safe-area-inset-right));
+    bottom:max(1.25rem, env(safe-area-inset-bottom));
+    display:inline-block; padding:.7rem 1.3rem; border-radius:999px; overflow:hidden;
+    font-family:"Nunito",sans-serif; font-weight:800; font-size:1rem; line-height:1.2;
+    color:var(--ink); text-decoration:none;
+    background:linear-gradient(165deg, rgba(255,255,255,.55), rgba(255,255,255,.08) 55%), color-mix(in srgb, var(--surface) 52%, transparent);
+    -webkit-backdrop-filter:blur(14px) saturate(1.5); backdrop-filter:blur(14px) saturate(1.5);
+    border:1px solid color-mix(in srgb, var(--line) 85%, transparent);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.65), inset 0 -1px 0 rgba(90,62,0,.14), 0 12px 28px rgba(90,62,0,.16), 0 3px 8px rgba(90,62,0,.12);
+  }
+  .back-home::after{
+    content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+    background:linear-gradient(115deg, transparent 32%, rgba(255,255,255,.32) 50%, transparent 64%);
+    transform:translateX(-130%);
+    animation:back-sheen 9s ease-in-out infinite;
+  }
+  @keyframes back-sheen{ 0%,55%{transform:translateX(-130%)} 88%,100%{transform:translateX(130%)} }
+  @media (prefers-color-scheme: dark){
+    .back-home{
+      background:linear-gradient(165deg, rgba(255,255,255,.14), rgba(255,255,255,.02) 55%), color-mix(in srgb, var(--surface) 55%, transparent);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.3), 0 12px 28px rgba(0,0,0,.4), 0 3px 8px rgba(0,0,0,.3);
+    }
+  }
+  @media (prefers-reduced-motion: reduce){ .back-home::after{animation:none} }
 </style>
 </head>
 <body>
@@ -202,6 +231,7 @@
     <a class="back" href="index.html">&larr; Back to Talkmy</a>
     <a class="back" href="privacy.html" style="margin-left:1.5rem">Privacy Policy</a>
   </main>
+  <a class="back-home" href="/">back to talkmy</a>
   <script>
     /* Dates render in the reader's own regional format (the browser's
        locale); the ISO text in the markup is the no-JS fallback. */
