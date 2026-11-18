@@ -192,18 +192,22 @@
 
       /* ---------- demo phone ---------- */
       /* Static shape (Tony, 2026-11-18): the phone starts at the bigger,
-         longer silhouette he boxed, its bottom edge level with the bottom
-         of the right column's content, and it never changes size again.
-         The thread inside scrolls instead of the phone growing (see
-         .chat). Desktop screen height 530px: the right column stands
-         576px tall in the capped 1120px layout, minus the 26px notch and
-         the 20px frame. The complete photo exchange needs more thread
-         than that box holds, so the box wins and the internal scroll
-         absorbs the difference. On mobile the screen takes a fixed
-         height sized from the fullest demo state, the complete photo
-         exchange, plus a small breathing margin, capped so the whole
-         phone fits the screen it is viewed on (see the 900px query). */
-      .demo-grid { display: grid; grid-template-columns: 400px 1fr; gap: 48px; align-items: start; }
+         longer silhouette he boxed and never changes size again; the
+         thread inside scrolls instead of the phone growing (see .chat).
+         Its top edge aligns with the top of the section title and its
+         bottom edge with the bottom of the right column's content; the
+         header sits at the top of that column now, so the phone spans
+         header and side content both. Desktop screen height 686px: the
+         right column stands 732px tall in the capped 1120px layout
+         (header 122px + its 34px margin + side content 576px), minus
+         the 26px notch and the 20px frame. The complete photo exchange
+         needs more thread than that box holds, so the box wins and the
+         internal scroll absorbs the difference. On mobile the screen
+         takes a fixed height sized from the fullest demo state, the
+         complete photo exchange, plus a small breathing margin, capped
+         so the whole phone fits the screen it is viewed on (see the
+         900px query). */
+      .demo-grid { display: grid; grid-template-columns: 400px 1fr; column-gap: 48px; row-gap: 0; align-items: start; }
       .phone {
         background: var(--surface); border: 10px solid var(--phone-frame); border-radius: 46px;
         box-shadow: var(--shadow); overflow: hidden; max-width: 400px; margin: 0 auto; width: 100%;
@@ -226,7 +230,7 @@
       .demo-note { margin: 14px auto 0; max-width: 400px; text-align: center; color: var(--ink-soft); font-size: 1rem; }
       .phone-notch { height: 26px; display: flex; justify-content: center; align-items: center; }
       .phone-notch i { width: 90px; height: 8px; border-radius: 99px; background: var(--line); display: block; }
-      .phone-screen { padding: 8px 18px 22px; display: flex; flex-direction: column; height: 530px; }
+      .phone-screen { padding: 8px 18px 22px; display: flex; flex-direction: column; height: 686px; }
       .phone-head { display: flex; align-items: center; gap: 10px; padding: 6px 2px 14px; border-bottom: 2px solid var(--line); }
       .phone-head .ph-name { font-family: "Nunito", sans-serif; font-weight: 900; font-size: 1.2rem; }
       .phone-head .ph-sub { color: var(--ink-soft); font-size: .95rem; font-weight: 700; }
@@ -371,12 +375,25 @@
          row sits close under the line (Tony's follow-up rulings,
          2026-11-18). */
       #try { border-top: 2px solid var(--line); padding-top: 35px; margin-top: 65px; }
-      /* Try header (Tony, 2026-11-18): the title and intro lift out to a
-         full-width header above the two columns, the treatment the hero
-         headline got, instead of sitting boxed in the phone column's
-         width. The intro keeps a reading measure of its own. */
-      #try .sec-head { max-width: none; }
-      #try .sec-head p { max-width: 48rem; }
+      /* Try header (Tony, 2026-11-18, revised later the same day): the
+         title and intro sit at the top of the right column, above "Ask
+         it like a person", instead of standing full-width over both
+         columns (his word: the full-width block "takes up way too much
+         space"). The header is the demo grid's first item, placed in
+         the right column's first row; the side content takes the row
+         below it, and the phone column spans both rows, so the phone's
+         top edge aligns with the title and its bottom edge with the
+         bottom of the right column. The caption under the phone is
+         its own item in a third row of the phone's column: riding
+         inside the phone column, its height would stretch the two
+         spanned rows apart now that the phone itself fills them. On
+         mobile the placements reset and the items stack in DOM
+         reading order: header, phone, caption, side (see the 900px
+         query). */
+      #try .sec-head { grid-column: 2; grid-row: 1; }
+      #try .phone-col { grid-column: 1; grid-row: 1 / span 2; }
+      #try .demo-side { grid-column: 2; grid-row: 2; }
+      #try .demo-note { grid-column: 1; grid-row: 3; }
       .carousel { border-top: 2px solid var(--line); margin-top: 49px; }
       .carousel .car-slide { padding-top: 23px; }
       .foot-in { display: flex; gap: 20px; align-items: flex-end; justify-content: space-between; }
@@ -420,6 +437,17 @@
         .hero-grid, .demo-grid, .panels, .ladder, .found-grid { grid-template-columns: 1fr; }
         .steps, .rules { grid-template-columns: 1fr; }
         .demo-grid { gap: 30px; }
+        /* Try stack (Tony, 2026-11-18): the desktop grid placements
+           reset, so the section reads in DOM order on a phone: title
+           and intro first, then the demo phone, then the side content.
+           The header's own bottom margin stands down here; the 30px
+           grid gap carries the rhythm between the stacked items. */
+        #try .sec-head, #try .phone-col, #try .demo-note, #try .demo-side { grid-column: auto; grid-row: auto; }
+        #try .sec-head { margin-bottom: 0; }
+        /* The caption pulls back to its 14px under the phone (the 30px
+           grid gap minus 16), which also keeps its old spacing to the
+           side content below it. */
+        #try .demo-note { margin-top: -16px; }
         /* Mobile phone shape: fixed screen height, the fullest demo state
            (complete photo exchange, measured 966px of screen at 390px)
            plus a 24px breathing margin, capped at 92% of the viewport
@@ -758,11 +786,11 @@
 
       <!-- ================= TRY IT ================= -->
       <section id="try" class="wrap">
-        <div class="sec-head">
-          <h2 data-i18n="tryTitle">Try it the way she would</h2>
-          <p data-i18n="tryIntro">No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
-        </div>
         <div class="demo-grid">
+          <div class="sec-head">
+            <h2 data-i18n="tryTitle">Try it the way she would</h2>
+            <p data-i18n="tryIntro">No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
+          </div>
           <div class="phone-col">
           <div class="phone" role="img" aria-label="A phone mock-up of Talkmy: a simple conversation, a typing bar, and two big buttons, Picture and Talk" data-i18n-aria="phoneAria">
             <span class="demo-tag" data-i18n="demoTag">Demo</span>
@@ -792,8 +820,8 @@
               </div>
             </div>
           </div>
-          <p class="demo-note" data-i18n="demoNote">This phone is just a demo: in the real app, she holds Talk and speaks, and Talkmy answers for real.</p>
           </div>
+          <p class="demo-note" data-i18n="demoNote">This phone is just a demo: in the real app, she holds Talk and speaks, and Talkmy answers for real.</p>
           <div class="demo-side">
             <h3 data-i18n="askTitle">Ask it like a person</h3>
             <p data-i18n="askIntro">These are real things people ask out loud, every day. Tap one and watch Talkmy answer, in plain words, big enough to read without glasses.</p>
