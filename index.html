@@ -359,14 +359,22 @@
       .hero-fade { transition: opacity .28s ease; }
       .hero-fade.fading { opacity: 0; }
 
+      /* Pass 3: the language swap fades the header, the main column and the
+         download bar as one page, swaps every string, then fades back. */
+      .topbar, main, .dl-bar { transition: opacity .25s ease; }
+      body.lang-fading .topbar, body.lang-fading main, body.lang-fading .dl-bar { opacity: 0; }
+      /* Pre-paint hold while a saved non-English language is being applied. */
+      html.lang-pending body { opacity: 0; }
+
       /* Floating language bubbles: the clonemy glass recipe (sheen gradient over a
          translucent surface, backdrop blur and saturate, specular inset edges, soft
          drop shadow), tuned to Talkmy's warm palette. */
       .lang-band { margin-bottom: 24px; }
-      .lang-bubbles { display: flex; flex-wrap: wrap; gap: 10px; }
+      .lang-bubbles { display: flex; flex-wrap: nowrap; gap: 8px; }
       .lang-bubble {
-        border-radius: 999px; padding: 9px 18px; min-height: 2.75rem;
-        font-family: "Nunito", sans-serif; font-weight: 800; font-size: 1.02rem; color: var(--ink);
+        flex: 1 1 0; min-width: 0; text-align: center; white-space: nowrap; overflow: hidden;
+        border-radius: 999px; padding: 9px 6px; min-height: 2.75rem;
+        font-family: "Nunito", sans-serif; font-weight: 800; font-size: .95rem; color: var(--ink);
         background: linear-gradient(165deg, rgba(255,255,255,.55), rgba(255,255,255,.08) 55%), color-mix(in srgb, var(--surface) 52%, transparent);
         -webkit-backdrop-filter: blur(14px) saturate(1.5); backdrop-filter: blur(14px) saturate(1.5);
         border: 1px solid color-mix(in srgb, var(--line) 85%, transparent);
@@ -396,6 +404,10 @@
       :root[data-theme="dark"] .lang-bubble[aria-pressed="true"], :root[data-theme="light"] .lang-bubble[aria-pressed="true"] {
         background: linear-gradient(165deg, rgba(255,255,255,.5), rgba(255,255,255,.05) 55%), color-mix(in srgb, var(--marigold) 68%, transparent);
         border-color: var(--marigold-deep); color: #26231F;
+      }
+      @media (max-width: 640px) {
+        .lang-bubbles { flex-wrap: wrap; }
+        .lang-bubble { flex: 0 1 auto; padding: 6px 12px; min-height: 2.25rem; font-size: .88rem; }
       }
       @keyframes drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
@@ -493,6 +505,18 @@
       .store-btn:hover { border-color: #FFFFFF; }
       .store-btn .sb-small { display: block; font-size: .62rem; letter-spacing: .03em; opacity: .85; }
       .store-btn .sb-big { display: block; font-family: "Nunito", sans-serif; font-weight: 800; font-size: 1.02rem; }
+      /* White twins of the store buttons for the top nav: same construction and
+         wording, light fill so they read on the cream header. */
+      .topnav a.store-btn-nav {
+        background: #FFFFFF; color: #26231F; border: 1.5px solid rgba(38,35,31,.4);
+        border-radius: 10px; padding: 6px 14px 7px; box-shadow: 0 2px 8px rgba(90,62,0,.16);
+      }
+      .topnav a.store-btn-nav:hover { background: #FFFFFF; border-color: #26231F; }
+      @media (max-width: 640px) {
+        .topnav a.store-btn-nav { padding: 4px 9px 5px; min-height: 2.25rem; }
+        .topnav a.store-btn-nav .sb-small { display: none; }
+        .topnav a.store-btn-nav .sb-big { font-size: .85rem; }
+      }
       @media (max-width: 760px) {
         .dl-phrases { display: none; }
         .dl-in { justify-content: center; }
@@ -510,6 +534,13 @@
     <script>
       /* Restore a saved theme choice before first paint, so the page never flashes the wrong mode. */
       try { var savedTheme = localStorage.getItem("talkmy-theme"); if (savedTheme === "dark" || savedTheme === "light") document.documentElement.setAttribute("data-theme", savedTheme); } catch (e) {}
+    </script>
+    <script>
+      /* Restore a saved language choice before first paint: set the document
+         language and hold the page invisible until the main script applies the
+         saved language, so a returning visitor never sees an English flash.
+         The timeout is a backstop: the page reappears even if something fails. */
+      try { var savedLang = localStorage.getItem("talkmy-lang"); var langMap = { es: "es", zh: "zh-Hans", vi: "vi", ko: "ko", ja: "ja", fr: "fr", de: "de", pt: "pt", yue: "yue" }; if (savedLang && langMap[savedLang]) { document.documentElement.setAttribute("lang", langMap[savedLang]); document.documentElement.classList.add("lang-pending"); setTimeout(function () { document.documentElement.classList.remove("lang-pending"); }, 3000); } } catch (e) {}
     </script>
   </head>
   <body>
@@ -532,12 +563,24 @@
 
     <header class="topbar">
       <div class="topbar-in">
-        <a class="brand" href="#top" aria-label="Talkmy home">
+        <a class="brand" href="#top" aria-label="Talkmy home" data-i18n-aria="brandAria">
           <svg width="52" height="40" aria-hidden="true"><use href="#talkmy-mark"/></svg>
           <span class="wordmark">talkmy<span class="dot">.</span><sup class="tm">™</sup></span>
         </a>
-        <nav class="topnav" aria-label="Page sections">
-          <a href="whitepaper.html">White paper</a>
+        <nav class="topnav" aria-label="Page sections" data-i18n-aria="navAria">
+          <a href="whitepaper.html" data-i18n="navWhitepaper">White paper</a>
+          <a class="store-btn store-btn-nav" id="storeIosNav" href="https://talkmy.ai">
+            <svg width="20" height="26" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            <span><span class="sb-small" data-i18n="iosSmall">Download on the</span><span class="sb-big" data-i18n="iosBig">App Store</span></span>
+          </a>
+          <a class="store-btn store-btn-nav" id="storeAndroidNav" href="https://talkmy.ai">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00D2FF" d="M4 3.5 13 12 4 20.5Z"/><path fill="#00A651" d="M4 3.5 17.6 9.2 13 12Z"/><path fill="#FFCE00" d="M13 12l4.6-2.8 2.6 1.8v2l-2.6 1.8Z"/><path fill="#FF3A44" d="M4 20.5 13 12l4.6 2.8Z"/></svg>
+            <span><span class="sb-small" data-i18n="playSmall">Get it on</span><span class="sb-big" data-i18n="playBig">Google Play</span></span>
+          </a>
+          <a class="store-btn store-btn-nav" id="contactNav" href="mailto:vivian@clonemy.ai">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>
+            <span><span class="sb-big" data-i18n="contactMain">Contact us</span><span class="sb-small" data-i18n="contactSub">or Ask Talkmy</span></span>
+          </a>
           <button type="button" class="device-pill" id="devicePill" aria-label="Switch between light and dark mode"><span class="sunmoon" aria-hidden="true"></span><span id="devicePillText">Checking your device setting…</span></button>
         </nav>
       </div>
@@ -546,22 +589,22 @@
     <main id="top">
       <!-- ================= HERO ================= -->
       <div class="hero wrap">
+          <div class="lang-band">
+            <div class="lang-bubbles" role="group" aria-label="Choose a language for the headline" data-i18n-aria="langGroupAria">
+              <button type="button" class="lang-bubble" data-lang="en" aria-pressed="true">English</button>
+              <button type="button" class="lang-bubble" data-lang="es" aria-pressed="false" style="animation-delay:-1.2s">Español</button>
+              <button type="button" class="lang-bubble" data-lang="zh" aria-pressed="false" style="animation-delay:-2.6s">中文</button>
+              <button type="button" class="lang-bubble" data-lang="vi" aria-pressed="false" style="animation-delay:-.6s">Tiếng Việt</button>
+              <button type="button" class="lang-bubble" data-lang="ko" aria-pressed="false" style="animation-delay:-3.8s">한국어</button>
+              <button type="button" class="lang-bubble" data-lang="ja" aria-pressed="false" style="animation-delay:-1.9s">日本語</button>
+              <button type="button" class="lang-bubble" data-lang="fr" aria-pressed="false" style="animation-delay:-4.7s">Français</button>
+              <button type="button" class="lang-bubble" data-lang="de" aria-pressed="false" style="animation-delay:-.3s">Deutsch</button>
+              <button type="button" class="lang-bubble" data-lang="pt" aria-pressed="false" style="animation-delay:-3.1s">Português</button>
+              <button type="button" class="lang-bubble" data-lang="yue" aria-pressed="false" style="animation-delay:-5.4s">粵語</button>
+            </div>
+          </div>
         <div class="hero-grid">
           <div>
-            <div class="lang-band">
-              <div class="lang-bubbles" role="group" aria-label="Choose a language for the headline">
-                <button type="button" class="lang-bubble" data-lang="en" aria-pressed="true">English</button>
-                <button type="button" class="lang-bubble" data-lang="es" aria-pressed="false" style="animation-delay:-1.2s">Español</button>
-                <button type="button" class="lang-bubble" data-lang="zh" aria-pressed="false" style="animation-delay:-2.6s">中文</button>
-                <button type="button" class="lang-bubble" data-lang="vi" aria-pressed="false" style="animation-delay:-.6s">Tiếng Việt</button>
-                <button type="button" class="lang-bubble" data-lang="ko" aria-pressed="false" style="animation-delay:-3.8s">한국어</button>
-                <button type="button" class="lang-bubble" data-lang="ja" aria-pressed="false" style="animation-delay:-1.9s">日本語</button>
-                <button type="button" class="lang-bubble" data-lang="fr" aria-pressed="false" style="animation-delay:-4.7s">Français</button>
-                <button type="button" class="lang-bubble" data-lang="de" aria-pressed="false" style="animation-delay:-.3s">Deutsch</button>
-                <button type="button" class="lang-bubble" data-lang="pt" aria-pressed="false" style="animation-delay:-3.1s">Português</button>
-                <button type="button" class="lang-bubble" data-lang="yue" aria-pressed="false" style="animation-delay:-5.4s">粵語</button>
-              </div>
-            </div>
             <h1 class="hero-fade" id="heroTitle">The AI for <span class="hl">everyone.</span></h1>
             <p class="lead hero-fade" id="heroLead">Talkmy™ is the assistant you <strong>talk to</strong>, out loud, in your own words, in your own language. No typing needed. No menus to hunt through. No password gymnastics. If you can hold a conversation, you can use Talkmy.</p>
             <div class="cta-row hero-fade">
@@ -580,7 +623,7 @@
               <svg width="64" height="50" aria-hidden="true"><use href="#talkmy-mark"/></svg>
               <div>
                 <p class="hc-name">talkmy</p>
-                <p class="hc-tag">The AI for everyone.</p>
+                <p class="hc-tag" data-i18n="heroCardTag">The AI for everyone.</p>
               </div>
             </div>
           </div>
@@ -590,29 +633,29 @@
       <!-- ================= TRY IT ================= -->
       <section id="try" class="wrap">
         <div class="sec-head">
-          <h2>Try it the way she would</h2>
-          <p>No keyboard appears. No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
+          <h2 data-i18n="tryTitle">Try it the way she would</h2>
+          <p data-i18n="tryIntro">No keyboard appears. No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they&rsquo;d be asked out loud.</p>
         </div>
         <div class="demo-grid">
-          <div class="phone" role="img" aria-label="A phone mock-up of Talkmy: a simple conversation, a typing bar, and two big buttons, Picture and Talk">
+          <div class="phone" role="img" aria-label="A phone mock-up of Talkmy: a simple conversation, a typing bar, and two big buttons, Picture and Talk" data-i18n-aria="phoneAria">
             <div class="phone-notch" aria-hidden="true"><i></i></div>
             <div class="phone-screen">
               <div class="phone-head">
                 <p class="ph-word"><svg width="30" height="24" viewBox="0 0 240 186" aria-hidden="true"><path fill="#FFB81C" stroke="#26231F" stroke-width="10" stroke-linejoin="round" d="M42 10h156a32 32 0 0 1 32 32v70a32 32 0 0 1-32 32h-24l-36 30a11 11 0 0 1-18-8v-22H42a32 32 0 0 1-32-32V42a32 32 0 0 1 32-32z"/></svg> Talkmy</p>
-                <span class="share-bubble"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m8 7 4-4 4 4"/><path d="M5 13v7h14v-7"/></svg> Share Talkmy</span>
+                <span class="share-bubble" id="shareBubble"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m8 7 4-4 4 4"/><path d="M5 13v7h14v-7"/></svg> Share Talkmy</span>
               </div>
               <div class="chat" id="chat" aria-live="polite">
                 <div class="msg-row">
-                  <div class="msg ai">Hello! I&rsquo;m Talkmy. Hold the big yellow button and just say what you need, like you&rsquo;re talking to a friend.</div>
-                  <button type="button" class="replay-btn" aria-label="Hear this answer out loud"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9.5a4 4 0 0 1 0 5"/><path d="M17.5 7a7.5 7.5 0 0 1 0 10"/></svg></button>
+                  <div class="msg ai" id="helloMsg" data-i18n="hello">Hello! I&rsquo;m Talkmy. Hold the big yellow button and just say what you need, like you&rsquo;re talking to a friend.</div>
+                  <button type="button" class="replay-btn" aria-label="Hear this answer out loud" data-i18n-aria="replayAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9.5a4 4 0 0 1 0 5"/><path d="M17.5 7a7.5 7.5 0 0 1 0 10"/></svg></button>
                 </div>
               </div>
               <div class="wave" id="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="type-bar" aria-hidden="true">Type here…</div>
+              <div class="type-bar" aria-hidden="true" data-i18n="typeHere">Type here…</div>
               <div class="phone-actions">
                 <div class="act-btn act-pic" aria-hidden="true">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2.5" fill="#26231F"/><path d="M8.5 7 10.3 4.5h3.4L15.5 7z" fill="#26231F"/><circle cx="12" cy="13.5" r="3.4" fill="#FFE3A1"/></svg>
-                  <span>Picture</span>
+                  <span data-i18n="pictureBtn">Picture</span>
                 </div>
                 <button class="act-btn act-talk" id="talkBtn" type="button">
                   <svg viewBox="0 0 24 24" fill="none" stroke="#26231F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11" rx="3" fill="#26231F" stroke="none"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3.5"/></svg>
@@ -622,103 +665,102 @@
             </div>
           </div>
           <div class="demo-side">
-            <h3>Ask it like a person</h3>
-            <p>These are real things people ask out loud at the kitchen table. Tap one and watch Talkmy answer, in plain words, big enough to read without glasses.</p>
+            <h3 data-i18n="askTitle">Ask it like a person</h3>
+            <p data-i18n="askIntro">These are real things people ask out loud at the kitchen table. Tap one and watch Talkmy answer, in plain words, big enough to read without glasses.</p>
             <div class="chips" id="chips">
-              <button class="chip" type="button" data-q="What can I make for dinner with chicken and rice?"><span class="q">Ask:</span> “What can I make for dinner with chicken and rice?”</button>
-              <button class="chip" type="button" data-q="Find me a video of cute puppies playing."><span class="q">Ask:</span> “Find me a video of cute puppies playing.”</button>
-              <button class="chip" type="button" data-q="Take me to the Costco in Folsom."><span class="q">Ask:</span> “Take me to the Costco in Folsom.”</button>
-              <button class="chip" type="button" data-q="Tell me a short story before bed."><span class="q">Ask:</span> “Tell me a short story before bed.”</button>
+              <button class="chip" type="button" data-qi="0"><span class="q">Ask:</span> “What can I make for dinner with chicken and rice?”</button>
+              <button class="chip" type="button" data-qi="1"><span class="q">Ask:</span> “Find me a video of cute puppies playing.”</button>
+              <button class="chip" type="button" data-qi="2"><span class="q">Ask:</span> “Take me to the nearest grocery store.”</button>
+              <button class="chip" type="button" data-qi="3"><span class="q">Ask:</span> “Tell me a short story before bed.”</button>
             </div>
             <div class="hear-row">
               <button class="hear-btn" id="hearBtn" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z" fill="currentColor" stroke="none"/><path d="M15 9.5a4 4 0 0 1 0 5"/><path d="M17.5 7a7.5 7.5 0 0 1 0 10"/></svg> Hear the answer out loud</button>
-              <span class="hear-note">When she speaks her question, Talkmy answers out loud in the app. This button lets you hear the last answer here, too.</span>
+              <span class="hear-note" data-i18n="hearNote">When she speaks her question, Talkmy answers out loud in the app. This button lets you hear the last answer here, too.</span>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ================= STORIES CAROUSEL ================= -->
-      <div class="carousel wrap" id="stories" role="region" aria-roledescription="carousel" aria-label="How it works, for families, and from the founder" tabindex="0">
+      <div class="carousel wrap" id="stories" role="region" aria-roledescription="carousel" aria-label="How it works, for families, and from the founder" data-i18n-aria="carAria" tabindex="0">
         <div class="car-track">
       <!-- ================= HOW IT WORKS ================= -->
-      <section id="how" class="car-slide active" aria-label="How it works">
+      <section id="how" class="car-slide active" aria-label="How it works" data-i18n-aria="slide1Aria">
         <div class="sec-head">
-          <h2>Three easy steps.</h2>
-          <p>It really is that simple and it all happens in the background. Like magic.</p>
+          <h2 data-i18n="s1Title">Three easy steps.</h2>
+          <p data-i18n="s1Sub">It really is that simple and it all happens in the background. Like magic.</p>
         </div>
         <div class="steps">
           <div class="step">
             <div class="num" aria-hidden="true">1</div>
-            <h3>Find the yellow bubble</h3>
-            <p>One marigold icon on the home screen. Nothing else on a phone wears that color, so there&rsquo;s no squinting at rows of look-alike blue squares.</p>
+            <h3 data-i18n="step1H">Find the yellow bubble</h3>
+            <p data-i18n="step1P">One marigold icon on the home screen. Nothing else on a phone wears that color, so there&rsquo;s no squinting at rows of look-alike blue squares.</p>
           </div>
           <div class="step">
             <div class="num" aria-hidden="true">2</div>
-            <h3>Say it like you&rsquo;d say it</h3>
-            <p>Hold the Talk button and talk: any pace, any accent, any language. Talkmy figures out the rest. There is no wrong way to ask.</p>
+            <h3 data-i18n="step2H">Say it like you&rsquo;d say it</h3>
+            <p data-i18n="step2P">Hold the Talk button and talk: any pace, any accent, any language. Talkmy figures out the rest. There is no wrong way to ask.</p>
           </div>
           <div class="step">
             <div class="num" aria-hidden="true">3</div>
-            <h3>It answers out loud</h3>
-            <p>A clear voice, plain words, and the answer on screen in type big enough to read at arm&rsquo;s length. Ask a follow-up the same way.</p>
+            <h3 data-i18n="step3H">It answers out loud</h3>
+            <p data-i18n="step3P">A clear voice, plain words, and the answer on screen in type big enough to read at arm&rsquo;s length. Ask a follow-up the same way.</p>
           </div>
         </div>
       </section>
 
       <!-- ================= FOR FAMILIES ================= -->
-      <section id="family" class="car-slide" aria-label="For families" aria-hidden="true">
+      <section id="family" class="car-slide" aria-label="For families" aria-hidden="true" data-i18n-aria="slide2Aria">
         <div class="sec-head">
-          <h2>For the sons and daughters</h2>
-          <p>Talk about the things they&rsquo;ve done, instead of doing the things that need to be done.</p>
+          <h2 data-i18n="s2Title">For the sons and daughters</h2>
+          <p data-i18n="s2Sub">Talk about how your parents are doing, not what they need done.</p>
         </div>
         <div class="found-grid">
           <div class="found-card gold">
-            <h3>You install it. You give one sentence.</h3>
-            <p>Talkmy&rsquo;s real first user is the parent, but its customer is you. You put it on her phone, and your whole tutorial is one sentence: <em>&ldquo;You just use it like we chat, like a person, and you can send photos. I installed it for you. It looks like this.&rdquo;</em> The junk mail, the letters, the what-does-this-charge-mean: the app takes those now. Leaving the only thing left for you, the judgement calls.</p>
+            <h3 data-i18n="fam1H">You install it. You give one sentence.</h3>
+            <p data-i18n-html="fam1P">Talkmy&rsquo;s real first user is the parent, but its customer is you. You put it on her phone, and your whole tutorial is one sentence: <em>&ldquo;You just use it like we chat, like a person, and you can send photos. I installed it for you. It looks like this.&rdquo;</em> The junk mail, the letters, the what-does-this-charge-mean: the app takes those now. Leaving the only thing left for you, the judgement calls.</p>
           </div>
           <div class="found-card">
-            <h3>A named person, kept on her phone</h3>
-            <p>If she wants, Talkmy remembers one family member for assistance, picked by her from her own contacts and kept only in the capsule on her phone. When something needs a human check, Talkmy can name that person and suggest she call them. Talkmy never contacts them on its own. All they need to do is ask Talkmy.</p>
+            <h3 data-i18n="fam2H">A named person, kept on her phone</h3>
+            <p data-i18n="fam2P">If she wants, Talkmy remembers one family member for assistance, picked by her from her own contacts and kept only in the capsule on her phone. When something needs a human check, Talkmy can name that person and suggest she call them. Talkmy never contacts them on its own. All they need to do is ask Talkmy.</p>
           </div>
         </div>
       </section>
 
       <!-- ================= FROM THE FOUNDER ================= -->
-      <section class="car-slide" aria-label="From the founder" aria-hidden="true">
+      <section class="car-slide" aria-label="From the founder" aria-hidden="true" data-i18n-aria="slide3Aria">
         <div class="sec-head">
-          <h2>From the founder</h2>
-          <p>Why this app exists, in his own words.</p>
+          <h2 data-i18n="s3Title">From the founder</h2>
+          <p data-i18n="s3Sub">Why this app exists, in his own words.</p>
         </div>
         <div class="found-grid">
           <div class="found-card gold">
-            <h3>Made with love</h3>
-            <p>&ldquo;This app was made with love, the founders love for his parents.&rdquo;</p>
-            <p>Every decision was carefully thought out, and every one survived real testing.</p>
+            <h3 data-i18n="fnd1H">Made with love</h3>
+            <p data-i18n="fnd1Quote">&ldquo;This app was made with love, the founders love for his parents. Every decision was carefully thought out, and every one survived real testing.&rdquo;</p>
           </div>
           <div class="found-card">
-            <h3>The shape he knew</h3>
-            <p>&ldquo;I carved it in the only shape I knew, strong intelligent immigrant parents that were gated from the best of what their environment had to offer.&rdquo;</p>
+            <h3 data-i18n="fnd2H">The shape he knew</h3>
+            <p data-i18n="fnd2Quote">&ldquo;I carved it in the only shape I knew, strong intelligent immigrant parents that were gated from the best of what their environment had to offer.&rdquo;</p>
           </div>
         </div>
       </section>
         </div>
         <div class="car-controls">
-          <button type="button" class="car-btn" id="carPrev" aria-label="Previous slide"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7"/></svg></button>
+          <button type="button" class="car-btn" id="carPrev" aria-label="Previous slide" data-i18n-aria="prevAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5 7.5 12l7 7"/></svg></button>
           <div class="car-dots">
-            <button type="button" class="car-dot" data-slide="0" aria-current="true" aria-label="Slide 1 of 3: How it works"><i></i></button>
-            <button type="button" class="car-dot" data-slide="1" aria-current="false" aria-label="Slide 2 of 3: For families"><i></i></button>
-            <button type="button" class="car-dot" data-slide="2" aria-current="false" aria-label="Slide 3 of 3: From the founder"><i></i></button>
+            <button type="button" class="car-dot" data-slide="0" aria-current="true" aria-label="Slide 1 of 3: How it works" data-i18n-aria="dot1Aria"><i></i></button>
+            <button type="button" class="car-dot" data-slide="1" aria-current="false" aria-label="Slide 2 of 3: For families" data-i18n-aria="dot2Aria"><i></i></button>
+            <button type="button" class="car-dot" data-slide="2" aria-current="false" aria-label="Slide 3 of 3: From the founder" data-i18n-aria="dot3Aria"><i></i></button>
           </div>
-          <button type="button" class="car-btn" id="carNext" aria-label="Next slide"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg></button>
+          <button type="button" class="car-btn" id="carNext" aria-label="Next slide" data-i18n-aria="nextAria"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg></button>
         </div>
       </div>
 
       <footer>
         <div class="wrap foot-in">
           <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
-          <p class="f-tag">talkmy™, The AI for everyone.</p>
-          <p class="f-sub"><a href="whitepaper.html">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html">Privacy Policy</a></p>
+          <p class="f-tag" data-i18n="footerTag">talkmy™, The AI for everyone.</p>
+          <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></p>
         </div>
       </footer>
     </main>
@@ -727,21 +769,20 @@
          screen. The store buttons are wired to STORE_LINKS in the script below. -->
     <div class="dl-bar">
       <div class="dl-in">
-        <div class="dl-phrases" aria-label="What Talkmy removes">
-          <span><b>No</b> typing needed</span>
-          <span><b>No</b> tiny menus</span>
-          <span><b>No</b> language settings</span>
-          <span><b>No</b> hunting for the app</span>
-          <span>Just <b>talk</b></span>
+        <div class="dl-phrases" aria-label="What Talkmy removes" data-i18n-aria="barAria">
+          <span data-i18n-html="bar1"><b>No</b> typing needed</span>
+          <span data-i18n-html="bar2"><b>No</b> tiny menus</span>
+          <span data-i18n-html="bar3"><b>No</b> language settings</span>
+          <span data-i18n-html="bar4"><b>No</b> hunting for the app</span>
         </div>
         <div class="dl-btns">
           <a class="store-btn" id="storeIos" href="https://talkmy.ai">
             <svg width="20" height="26" viewBox="0 0 384 512" fill="currentColor" aria-hidden="true"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
-            <span><span class="sb-small">Download on the</span><span class="sb-big">App Store</span></span>
+            <span><span class="sb-small" data-i18n="iosSmall">Download on the</span><span class="sb-big" data-i18n="iosBig">App Store</span></span>
           </a>
           <a class="store-btn" id="storeAndroid" href="https://talkmy.ai">
             <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#00D2FF" d="M4 3.5 13 12 4 20.5Z"/><path fill="#00A651" d="M4 3.5 17.6 9.2 13 12Z"/><path fill="#FFCE00" d="M13 12l4.6-2.8 2.6 1.8v2l-2.6 1.8Z"/><path fill="#FF3A44" d="M4 20.5 13 12l4.6 2.8Z"/></svg>
-            <span><span class="sb-small">Get it on</span><span class="sb-big">Google Play</span></span>
+            <span><span class="sb-small" data-i18n="playSmall">Get it on</span><span class="sb-big" data-i18n="playBig">Google Play</span></span>
           </a>
         </div>
       </div>
@@ -750,6 +791,937 @@
     <script>
       (function () {
         "use strict";
+
+        /* ---------- whole-page language dictionary ----------
+           Best-effort translations, written for this page. They owe native review
+           before being treated as final, the same caveat as the app's own strings.
+           One tap on a language bubble swaps every string on the page, the demo
+           included, and the choice is remembered across visits. The English entry
+           mirrors the published page word for word, apart from the changes Tony
+           approved on 2026-11-18 (pass 3): the demo's third question and answer
+           (the nearest grocery store, no town, no brand), the founder card's two
+           sentences merged into one quote, the families slide subtitle, and the
+           download bar losing its fifth phrase. Speech uses zh-CN for the
+           Mandarin bubble and zh-HK for the Cantonese bubble, the tags speech
+           engines actually carry voices for. */
+        var I18N = {
+  "en": {
+    "lang": "en",
+    "say": "en",
+    "title": "The AI for <span class=\"hl\">everyone.</span>",
+    "lead": "Talkmy™ is the assistant you <strong>talk to</strong>, out loud, in your own words, in your own language. No typing needed. No menus to hunt through. No password gymnastics. If you can hold a conversation, you can use Talkmy.",
+    "b1": "Hold the big Talk button. A Picture button sits beside it.",
+    "b2": "Answers spoken out loud, in big clear words.",
+    "b3": "Made first for seniors, so it works for everyone.",
+    "cta": "Try talking to it",
+    "bubble": "How do I send this photo to my son?",
+    "brandAria": "Talkmy home",
+    "navAria": "Page sections",
+    "navWhitepaper": "White paper",
+    "langGroupAria": "Choose a language for the headline",
+    "heroCardTag": "The AI for everyone.",
+    "tryTitle": "Try it the way she would",
+    "tryIntro": "No keyboard appears. No settings open. She holds one big yellow button and says what she needs: try the sample questions, exactly as they’d be asked out loud.",
+    "phoneAria": "A phone mock-up of Talkmy: a simple conversation, a typing bar, and two big buttons, Picture and Talk",
+    "shareBubble": "Share Talkmy",
+    "hello": "Hello! I’m Talkmy. Hold the big yellow button and just say what you need, like you’re talking to a friend.",
+    "replayAria": "Hear this answer out loud",
+    "typeHere": "Type here…",
+    "pictureBtn": "Picture",
+    "talkBtn": "Talk",
+    "listening": "Listening…",
+    "askTitle": "Ask it like a person",
+    "askIntro": "These are real things people ask out loud at the kitchen table. Tap one and watch Talkmy answer, in plain words, big enough to read without glasses.",
+    "askLabel": "Ask:",
+    "qd1": "“What can I make for dinner with chicken and rice?”",
+    "qd2": "“Find me a video of cute puppies playing.”",
+    "qd3": "“Take me to the nearest grocery store.”",
+    "qd4": "“Tell me a short story before bed.”",
+    "q1": "What can I make for dinner with chicken and rice?",
+    "q2": "Find me a video of cute puppies playing.",
+    "q3": "Take me to the nearest grocery store.",
+    "q4": "Tell me a short story before bed.",
+    "a1": "A lovely one-pan dinner: cook the rice, brown the chicken with a little garlic, then stir them together with frozen peas and a squeeze of lemon. Ready in about half an hour, and I can walk you through it step by step, out loud.",
+    "a2": "Here is what happens in the app: Talkmy shows a big card with those words on it. Tap the card, or just say yes, and YouTube opens with the search already done, so the puppies are right there.",
+    "a3": "Talkmy shows a big card that reads the place back to you: the grocery store near you. Tap the card, or say yes, and Maps opens with the driving route ready. Your last tap there is GO, when you are ready.",
+    "a4": "Once there was a lighthouse keeper who left the lamp on every night for a little boat that always passed at nine. One foggy evening the boat was late, but the light waited, and so did he, and at last… would you like the rest tomorrow night?",
+    "hearBtn": "Hear the answer out loud",
+    "hearNote": "When she speaks her question, Talkmy answers out loud in the app. This button lets you hear the last answer here, too.",
+    "hearHello": "Hello! I’m Talkmy. Hold the big yellow button and just say what you need.",
+    "carAria": "How it works, for families, and from the founder",
+    "slide1Aria": "How it works",
+    "slide2Aria": "For families",
+    "slide3Aria": "From the founder",
+    "s1Title": "Three easy steps.",
+    "s1Sub": "It really is that simple and it all happens in the background. Like magic.",
+    "step1H": "Find the yellow bubble",
+    "step1P": "One marigold icon on the home screen. Nothing else on a phone wears that color, so there’s no squinting at rows of look-alike blue squares.",
+    "step2H": "Say it like you’d say it",
+    "step2P": "Hold the Talk button and talk: any pace, any accent, any language. Talkmy figures out the rest. There is no wrong way to ask.",
+    "step3H": "It answers out loud",
+    "step3P": "A clear voice, plain words, and the answer on screen in type big enough to read at arm’s length. Ask a follow-up the same way.",
+    "s2Title": "For the sons and daughters",
+    "s2Sub": "Talk about how your parents are doing, not what they need done.",
+    "fam1H": "You install it. You give one sentence.",
+    "fam1P": "Talkmy’s real first user is the parent, but its customer is you. You put it on her phone, and your whole tutorial is one sentence: <em>“You just use it like we chat, like a person, and you can send photos. I installed it for you. It looks like this.”</em> The junk mail, the letters, the what-does-this-charge-mean: the app takes those now. Leaving the only thing left for you, the judgement calls.",
+    "fam2H": "A named person, kept on her phone",
+    "fam2P": "If she wants, Talkmy remembers one family member for assistance, picked by her from her own contacts and kept only in the capsule on her phone. When something needs a human check, Talkmy can name that person and suggest she call them. Talkmy never contacts them on its own. All they need to do is ask Talkmy.",
+    "s3Title": "From the founder",
+    "s3Sub": "Why this app exists, in his own words.",
+    "fnd1H": "Made with love",
+    "fnd1Quote": "“This app was made with love, the founders love for his parents. Every decision was carefully thought out, and every one survived real testing.”",
+    "fnd2H": "The shape he knew",
+    "fnd2Quote": "“I carved it in the only shape I knew, strong intelligent immigrant parents that were gated from the best of what their environment had to offer.”",
+    "prevAria": "Previous slide",
+    "nextAria": "Next slide",
+    "dot1Aria": "Slide 1 of 3: How it works",
+    "dot2Aria": "Slide 2 of 3: For families",
+    "dot3Aria": "Slide 3 of 3: From the founder",
+    "footerTag": "talkmy™, The AI for everyone.",
+    "footerWhitepaper": "White Paper",
+    "footerPrivacy": "Privacy Policy",
+    "barAria": "What Talkmy removes",
+    "bar1": "<b>No</b> typing needed",
+    "bar2": "<b>No</b> tiny menus",
+    "bar3": "<b>No</b> language settings",
+    "bar4": "<b>No</b> hunting for the app",
+    "iosSmall": "Download on the",
+    "iosBig": "App Store",
+    "playSmall": "Get it on",
+    "playBig": "Google Play",
+    "pillLight": "Light mode · tap for dark",
+    "pillDark": "Dark mode · tap for light",
+    "pillAriaToLight": "This page is in dark mode. Switch to light mode.",
+    "pillAriaToDark": "This page is in light mode. Switch to dark mode.",
+    "contactMain": "Contact us",
+    "contactSub": "or Ask Talkmy"
+  },
+  "es": {
+    "lang": "es",
+    "title": "La IA para <span class=\"hl\">todos.</span>",
+    "lead": "Talkmy™ es el asistente con el que <strong>hablas</strong>, en voz alta, con tus propias palabras, en tu propio idioma. No hace falta escribir. No hay menús que buscar. No hay contraseñas complicadas. Si puedes mantener una conversación, puedes usar Talkmy.",
+    "b1": "Mantén pulsado el botón grande Hablar. A su lado hay un botón de Foto.",
+    "b2": "Respuestas en voz alta, con palabras grandes y claras.",
+    "b3": "Hecho primero para las personas mayores, para que funcione para todos.",
+    "cta": "Prueba a hablarle",
+    "bubble": "¿Cómo le envío esta foto a mi hijo?",
+    "a1": "Una cena riquísima en una sola sartén: cocina el arroz, dora el pollo con un poco de ajo y luego mézclalos con guisantes congelados y un chorrito de limón. Lista en media hora, más o menos, y te puedo guiar paso a paso, en voz alta.",
+    "a2": "Esto es lo que pasa en la aplicación: Talkmy muestra una tarjeta grande con esas palabras. Toca la tarjeta, o solo di que sí, y se abre YouTube con la búsqueda ya hecha, así que los cachorritos están ahí mismo.",
+    "a3": "Talkmy muestra una tarjeta grande que te repite el lugar: el supermercado cerca de ti. Toca la tarjeta, o di que sí, y se abre Maps con la ruta en coche ya lista. Tu último toque allí es IR, cuando estés lista.",
+    "a4": "Había una vez un farero que dejaba la lámpara encendida cada noche para un barquito que siempre pasaba a las nueve. Una noche de niebla el barco se retrasó, pero la luz esperó, y él también, y por fin… ¿quieres que te cuente el resto mañana por la noche?",
+    "askIntro": "Son cosas reales que la gente pregunta en voz alta en la mesa de la cocina. Toca una y mira cómo responde Talkmy, con palabras sencillas y en letra lo bastante grande para leer sin gafas.",
+    "askLabel": "Pregunta:",
+    "askTitle": "Pregunta como una persona",
+    "bar1": "<b>Sin</b> escribir",
+    "bar2": "<b>Sin</b> menús diminutos",
+    "bar3": "<b>Sin</b> ajustes de idioma",
+    "bar4": "<b>Sin</b> buscar la aplicación",
+    "barAria": "Lo que Talkmy elimina",
+    "brandAria": "Inicio de Talkmy",
+    "carAria": "Cómo funciona, para las familias, y del fundador",
+    "dot1Aria": "Diapositiva 1 de 3: Cómo funciona",
+    "dot2Aria": "Diapositiva 2 de 3: Para las familias",
+    "dot3Aria": "Diapositiva 3 de 3: Del fundador",
+    "fam1H": "Tú lo instalas. Tú dices una frase.",
+    "fam1P": "La primera usuaria real de Talkmy es tu mamá, pero su cliente eres tú. Lo pones en su teléfono y todo tu tutorial es una frase: <em>«Se usa como hablamos nosotros, como con una persona, y puedes mandar fotos. Te lo instalé yo. Se ve así.»</em> El correo basura, las cartas, el qué-significa-este-cargo: la aplicación se encarga de eso ahora. Y a ti solo te quedan las decisiones importantes.",
+    "fam2H": "Una persona con nombre, guardada en su teléfono",
+    "fam2P": "Si ella quiere, Talkmy recuerda a un familiar para ayudarla, elegido por ella de sus propios contactos y guardado solo en la cápsula de su teléfono. Cuando algo necesita que lo revise una persona, Talkmy puede nombrar a esa persona y sugerirle que la llame. Talkmy nunca se pone en contacto con ellos por su cuenta. Solo tiene que preguntarle a Talkmy.",
+    "fnd1H": "Hecho con amor",
+    "fnd1Quote": "«Esta aplicación fue hecha con amor, el amor del fundador por sus padres. Cada decisión fue pensada con cuidado, y cada una pasó pruebas reales.»",
+    "fnd2H": "La forma que conocía",
+    "fnd2Quote": "«La tallé en la única forma que conocía, unos padres inmigrantes fuertes e inteligentes a quienes se les negó lo mejor que su entorno tenía para ofrecer.»",
+    "footerPrivacy": "Política de privacidad",
+    "footerTag": "talkmy™, La IA para todos.",
+    "footerWhitepaper": "Libro blanco",
+    "hearBtn": "Escuchar la respuesta en voz alta",
+    "hearHello": "¡Hola! Soy Talkmy. Mantén pulsado el botón amarillo grande y dime lo que necesitas.",
+    "hearNote": "Cuando ella hace su pregunta en voz alta, Talkmy responde en voz alta en la aplicación. Este botón también te deja escuchar aquí la última respuesta.",
+    "hello": "¡Hola! Soy Talkmy. Mantén pulsado el botón amarillo grande y dime lo que necesitas, como si hablaras con un amigo.",
+    "heroCardTag": "La IA para todos.",
+    "iosBig": "App Store",
+    "iosSmall": "Descargar en el",
+    "langGroupAria": "Elige un idioma",
+    "listening": "Escuchando…",
+    "navAria": "Secciones de la página",
+    "navWhitepaper": "Libro blanco",
+    "nextAria": "Diapositiva siguiente",
+    "phoneAria": "Un modelo de teléfono con Talkmy: una conversación sencilla, una barra para escribir y dos botones grandes, Foto y Hablar",
+    "pictureBtn": "Foto",
+    "pillAriaToDark": "Esta página está en modo claro. Cambia a modo oscuro.",
+    "pillAriaToLight": "Esta página está en modo oscuro. Cambia a modo claro.",
+    "pillDark": "Modo oscuro · toca para cambiar a claro",
+    "pillLight": "Modo claro · toca para cambiar a oscuro",
+    "playBig": "Google Play",
+    "playSmall": "Disponible en",
+    "prevAria": "Diapositiva anterior",
+    "q1": "¿Qué puedo preparar para cenar con pollo y arroz?",
+    "q2": "Búscame un video de cachorritos jugando.",
+    "q3": "Llévame al supermercado más cercano.",
+    "q4": "Cuéntame un cuento corto antes de dormir.",
+    "qd1": "«¿Qué puedo preparar para cenar con pollo y arroz?»",
+    "qd2": "«Búscame un video de cachorritos jugando.»",
+    "qd3": "«Llévame al supermercado más cercano.»",
+    "qd4": "«Cuéntame un cuento corto antes de dormir.»",
+    "replayAria": "Escuchar esta respuesta en voz alta",
+    "s1Sub": "De verdad es así de simple y todo pasa en segundo plano. Como por arte de magia.",
+    "s1Title": "Tres pasos fáciles.",
+    "s2Sub": "Habla de cómo están tus padres, no de lo que necesitan que se haga.",
+    "s2Title": "Para los hijos y las hijas",
+    "s3Sub": "Por qué existe esta aplicación, en sus propias palabras.",
+    "s3Title": "Del fundador",
+    "shareBubble": "Compartir Talkmy",
+    "slide1Aria": "Cómo funciona",
+    "slide2Aria": "Para las familias",
+    "slide3Aria": "Del fundador",
+    "step1H": "Busca la burbuja amarilla",
+    "step1P": "Un solo icono color caléndula en la pantalla principal. Nada más en el teléfono tiene ese color, así que no hay que entrecerrar los ojos entre filas de cuadrados azules iguales.",
+    "step2H": "Dilo como lo dirías tú",
+    "step2P": "Mantén pulsado el botón Hablar y habla: a cualquier ritmo, con cualquier acento, en cualquier idioma. Talkmy se encarga del resto. No hay una forma incorrecta de preguntar.",
+    "step3H": "Responde en voz alta",
+    "step3P": "Una voz clara, palabras sencillas y la respuesta en pantalla con letra lo bastante grande para leerla con el brazo extendido. Haz otra pregunta de la misma forma.",
+    "talkBtn": "Hablar",
+    "tryIntro": "No aparece ningún teclado. No se abre ningún ajuste. Ella mantiene pulsado un botón amarillo grande y dice lo que necesita: prueba las preguntas de ejemplo, tal como se harían en voz alta.",
+    "tryTitle": "Pruébalo como lo haría ella",
+    "typeHere": "Escribe aquí…",
+    "contactMain": "Contáctanos",
+    "contactSub": "o Pregúntale a Talkmy",
+    "say": "es"
+  },
+  "zh": {
+    "lang": "zh-Hans",
+    "title": "为<span class=\"hl\">每个人</span>而设的人工智能。",
+    "lead": "Talkmy™ 是您<strong>说话</strong>就能用的助手，出声说，用您自己的话，用您自己的语言。不用打字。不用翻找菜单。不用折腾密码。只要您能聊天，就能用 Talkmy。",
+    "b1": "按住大大的“说话”按钮。旁边是“照片”按钮。",
+    "b2": "答案会读出声来，字又大又清楚。",
+    "b3": "先为老年人而造，所以人人都能用。",
+    "cta": "试着跟它说话",
+    "bubble": "这张照片怎么发给我儿子？",
+    "a1": "一道很棒的一锅晚饭：先把米饭煮好，再用一点蒜把鸡肉煎香，然后和冷冻豌豆、一点柠檬汁一起拌匀。大约半小时就能做好，我可以一步一步大声带您做。",
+    "a2": "在应用里会是这样：Talkmy 会显示一张写着这句话的大卡片。点一下卡片，或者直接说一声好，YouTube 就会打开，而且搜索已经帮您做好了，小狗就在眼前。",
+    "a3": "Talkmy 会显示一张大卡片，把地点念给您听：您附近的超市。点一下卡片，或者说一声好，Maps 就会打开，开车路线已经准备好了。您在那里最后点一下 GO，就可以出发了。",
+    "a4": "从前有一位灯塔看守人，每晚都会为一艘总在九点经过的小船亮着灯。一个雾夜，小船晚点了，但灯光一直在等，他也在等，终于……您想明天晚上再听剩下的部分吗？",
+    "askIntro": "这些都是人们坐在餐桌旁会开口问的真实问题。点一下，看 Talkmy 用简单的话回答，字够大，不用戴眼镜也能看清。",
+    "askLabel": "问：",
+    "askTitle": "像对人说话一样问它",
+    "bar1": "<b>不用</b>打字",
+    "bar2": "<b>不用</b>小菜单",
+    "bar3": "<b>不用</b>语言设置",
+    "bar4": "<b>不用</b>到处找应用",
+    "barAria": "Talkmy 帮您去掉的东西",
+    "brandAria": "Talkmy 首页",
+    "carAria": "使用方法、给家人的说明，以及创始人的话",
+    "dot1Aria": "第 1 张，共 3 张：使用方法",
+    "dot2Aria": "第 2 张，共 3 张：给家人",
+    "dot3Aria": "第 3 张，共 3 张：创始人的话",
+    "fam1H": "由您安装。您只需说一句话。",
+    "fam1P": "Talkmy 真正的第一位用户是父母，但它的顾客是您。您把它装在她的手机上，您的整个教程只有一句话：<em>“您就当作和我们聊天一样用，像和人说话一样，还可以发照片。我已经帮您装好了，就是这个样子。”</em>垃圾邮件、信件、这笔收费是什么意思：这些现在都由应用来处理。留给您的，只剩下需要判断的事。",
+    "fam2H": "一位记在她手机里的家人",
+    "fam2P": "如果她愿意，Talkmy 可以记住一位家人，需要帮忙时联系，由她从自己的通讯录里挑选，只保存在她手机里的胶囊中。当有事需要人确认时，Talkmy 可以说出这个人的名字，并建议她打电话给他。Talkmy 绝不会自己去联系他们。他们只需要问 Talkmy 就好。",
+    "fnd1H": "用爱做成",
+    "fnd1Quote": "“这个应用是用爱做成的，是创始人对父母的爱。每一个决定都经过了认真的思考，每一个决定都通过了真实的测试。”",
+    "fnd2H": "他熟悉的形状",
+    "fnd2Quote": "“我把它做成了我唯一熟悉的形状，坚强聪明的移民父母，他们被挡在了身边环境所能提供的最好的东西之外。”",
+    "footerPrivacy": "隐私政策",
+    "footerTag": "talkmy™，人人都能用的 AI。",
+    "footerWhitepaper": "白皮书",
+    "hearBtn": "大声听回答",
+    "hearHello": "您好！我是 Talkmy。请按住那个大大的黄色按钮，直接说出您的需要。",
+    "hearNote": "当她开口提问时，Talkmy 会在应用里大声回答。这个按钮也可以让您在这里听到上一个回答。",
+    "hello": "您好！我是 Talkmy。请按住那个大大的黄色按钮，像和朋友聊天一样，直接说出您的需要。",
+    "heroCardTag": "人人都能用的 AI。",
+    "iosBig": "下载",
+    "iosSmall": "在 App Store",
+    "langGroupAria": "选择标题语言",
+    "listening": "正在聆听…",
+    "navAria": "页面栏目",
+    "navWhitepaper": "白皮书",
+    "nextAria": "下一张",
+    "phoneAria": "Talkmy 手机示意图：一段简单的对话、一个输入栏，以及图片和说话两个大按钮",
+    "pictureBtn": "图片",
+    "pillAriaToDark": "当前为浅色模式。切换到深色模式。",
+    "pillAriaToLight": "当前为深色模式。切换到浅色模式。",
+    "pillDark": "深色模式，点击切换浅色",
+    "pillLight": "浅色模式，点击切换深色",
+    "playBig": "获取",
+    "playSmall": "在 Google Play",
+    "prevAria": "上一张",
+    "q1": "晚饭用鸡肉和米饭能做什么？",
+    "q2": "帮我找可爱小狗玩耍的视频。",
+    "q3": "带我去最近的超市。",
+    "q4": "睡前给我讲一个短故事。",
+    "qd1": "“晚饭用鸡肉和米饭能做什么？”",
+    "qd2": "“帮我找可爱小狗玩耍的视频。”",
+    "qd3": "“带我去最近的超市。”",
+    "qd4": "“睡前给我讲一个短故事。”",
+    "replayAria": "大声听这个回答",
+    "s1Sub": "真的就这么简单，而且一切都在后台完成。就像变魔术一样。",
+    "s1Title": "三个简单步骤。",
+    "s2Sub": "聊聊您的父母最近过得怎么样，而不是他们有什么事情需要做。",
+    "s2Title": "写给儿女们",
+    "s3Sub": "这个应用为什么存在，用他自己的话来说。",
+    "s3Title": "创始人的话",
+    "shareBubble": "分享 Talkmy",
+    "slide1Aria": "使用方法",
+    "slide2Aria": "给家人",
+    "slide3Aria": "创始人的话",
+    "step1H": "找到黄色气泡",
+    "step1P": "主屏幕上只有一个万寿菊黄色的图标。手机上没有别的东西是这个颜色，所以不用眯着眼在一排排相似的蓝色方块里找。",
+    "step2H": "像平时说话一样说出来",
+    "step2P": "按住说话按钮，说出来就行：任何语速、任何口音、任何语言。剩下的交给 Talkmy。问法没有对错。",
+    "step3H": "它会大声回答您",
+    "step3P": "声音清晰，用词简单，屏幕上的字也够大，伸直手臂也能看清。用同样的方式接着问就行。",
+    "talkBtn": "说话",
+    "tryIntro": "不会弹出键盘，也不会打开设置。她只需按住一个大大的黄色按钮，说出自己的需要：试试这些示例问题，就像平时开口问出来一样。",
+    "tryTitle": "像她那样试一试",
+    "typeHere": "在这里输入…",
+    "contactMain": "联系我们",
+    "contactSub": "或问问 Talkmy",
+    "say": "zh-CN"
+  },
+  "vi": {
+    "lang": "vi",
+    "title": "AI dành cho <span class=\"hl\">mọi người.</span>",
+    "lead": "Talkmy™ là trợ lý mà bạn <strong>nói chuyện</strong> cùng, nói thành tiếng, bằng lời của bạn, bằng ngôn ngữ của bạn. Không cần gõ chữ. Không cần tìm trong menu. Không cần loay hoay với mật khẩu. Nếu bạn trò chuyện được, bạn dùng được Talkmy.",
+    "b1": "Giữ nút Nói lớn. Bên cạnh là nút Ảnh.",
+    "b2": "Câu trả lời được đọc thành tiếng, chữ to và rõ.",
+    "b3": "Làm cho người lớn tuổi trước, nên ai cũng dùng được.",
+    "cta": "Thử nói với nó",
+    "bubble": "Làm sao gửi tấm ảnh này cho con trai tôi?",
+    "a1": "Một bữa tối ngon trong một chảo: nấu cơm, áp chảo thịt gà với một chút tỏi, rồi trộn chung với đậu Hà Lan đông lạnh và vắt thêm một ít chanh. Khoảng nửa tiếng là xong, và tôi có thể hướng dẫn bạn từng bước, thành tiếng.",
+    "a2": "Đây là điều sẽ xảy ra trong ứng dụng: Talkmy hiện một thẻ lớn có ghi những lời đó. Bạn chạm vào thẻ, hoặc chỉ cần nói đồng ý, và YouTube sẽ mở ra với phần tìm kiếm đã làm sẵn, nên những chú cún ở ngay đó.",
+    "a3": "Talkmy hiện một thẻ lớn và đọc lại địa điểm cho bạn nghe: cửa hàng tạp hóa gần bạn. Bạn chạm vào thẻ, hoặc nói đồng ý, và Maps sẽ mở ra với tuyến đường lái xe đã sẵn sàng. Lần chạm cuối cùng của bạn ở đó là nút GO, khi bạn đã sẵn sàng.",
+    "a4": "Ngày xưa có một người giữ ngọn hải đăng, đêm nào ông cũng thắp đèn cho một chiếc thuyền nhỏ luôn đi qua lúc chín giờ. Một buổi tối đầy sương mù, chiếc thuyền đến muộn, nhưng ánh đèn vẫn chờ, và ông cũng chờ, và cuối cùng… bạn có muốn nghe phần còn lại vào tối mai không?",
+    "askIntro": "Đây là những điều thật mà mọi người vẫn hỏi thành tiếng bên bàn bếp. Chạm vào một câu và xem Talkmy trả lời, bằng lời dễ hiểu, chữ lớn đủ để đọc mà không cần kính.",
+    "askLabel": "Hỏi:",
+    "askTitle": "Cứ hỏi như nói với một người",
+    "bar1": "<b>Không</b> cần gõ chữ",
+    "bar2": "<b>Không</b> có menu nhỏ xíu",
+    "bar3": "<b>Không</b> cần cài đặt ngôn ngữ",
+    "bar4": "<b>Không</b> phải tìm kiếm ứng dụng",
+    "barAria": "Những điều Talkmy loại bỏ",
+    "brandAria": "Trang chủ Talkmy",
+    "carAria": "Cách hoạt động, dành cho gia đình, và lời từ người sáng lập",
+    "dot1Aria": "Trang chiếu 1 trong 3: Cách hoạt động",
+    "dot2Aria": "Trang chiếu 2 trong 3: Dành cho gia đình",
+    "dot3Aria": "Trang chiếu 3 trong 3: Lời từ người sáng lập",
+    "fam1H": "Bạn cài đặt. Bạn chỉ nói một câu.",
+    "fam1P": "Người dùng thật đầu tiên của Talkmy là người cha hay người mẹ, nhưng khách hàng của nó là bạn. Bạn cài nó vào điện thoại của mẹ, và toàn bộ phần hướng dẫn của bạn chỉ gồm một câu: <em>“Mẹ cứ dùng như cách hai mẹ con mình trò chuyện, như với một người, và mẹ có thể gửi ảnh. Con đã cài sẵn cho mẹ rồi. Nó trông như thế này.”</em> Thư rác, những lá thư, những câu hỏi khoản phí này nghĩa là gì: giờ ứng dụng nhận lo những việc đó. Điều duy nhất còn lại cho bạn là những quyết định cần đến phán đoán của bạn.",
+    "fam2H": "Một người được nêu tên, lưu trên điện thoại của bà",
+    "fam2P": "Nếu bà muốn, Talkmy sẽ nhớ một người thân trong gia đình để hỗ trợ, do chính bà chọn từ danh bạ của mình và chỉ lưu trong capsule trên điện thoại của bà. Khi có việc cần một người thật kiểm tra, Talkmy có thể nêu tên người đó và gợi ý bà gọi cho họ. Talkmy không bao giờ tự liên lạc với họ. Họ chỉ cần hỏi Talkmy là được.",
+    "fnd1H": "Được làm bằng tình yêu thương",
+    "fnd1Quote": "“Ứng dụng này được làm bằng tình yêu thương, tình yêu của người sáng lập dành cho cha mẹ của anh ấy. Mọi quyết định đều được suy nghĩ cẩn thận, và mọi quyết định đều đã vượt qua thử nghiệm thực tế.”",
+    "fnd2H": "Hình dáng mà anh ấy biết rõ",
+    "fnd2Quote": "“Tôi đã khắc nó theo hình dáng duy nhất mà tôi biết, những bậc cha mẹ nhập cư mạnh mẽ và thông minh, những người bị rào cản ngăn cách khỏi những điều tốt đẹp nhất mà nơi họ sống có thể mang lại.”",
+    "footerPrivacy": "Chính sách bảo mật",
+    "footerTag": "talkmy™, AI cho mọi người.",
+    "footerWhitepaper": "Sách trắng",
+    "hearBtn": "Nghe câu trả lời thành tiếng",
+    "hearHello": "Xin chào! Tôi là Talkmy. Bạn hãy giữ nút vàng lớn và cứ nói điều bạn cần.",
+    "hearNote": "Khi bà nói câu hỏi thành tiếng, Talkmy sẽ trả lời thành tiếng trong ứng dụng. Nút này cũng cho bạn nghe câu trả lời gần nhất ngay tại đây.",
+    "hello": "Xin chào! Tôi là Talkmy. Bạn hãy giữ nút vàng lớn và cứ nói điều bạn cần, như đang nói chuyện với một người bạn.",
+    "heroCardTag": "AI cho mọi người.",
+    "iosBig": "App Store",
+    "iosSmall": "Tải xuống trên",
+    "langGroupAria": "Chọn ngôn ngữ",
+    "listening": "Đang lắng nghe…",
+    "navAria": "Các phần của trang",
+    "navWhitepaper": "Sách trắng",
+    "nextAria": "Trang chiếu tiếp theo",
+    "phoneAria": "Hình mẫu điện thoại của Talkmy: một cuộc trò chuyện đơn giản, một thanh gõ chữ, và hai nút lớn, Ảnh và Nói",
+    "pictureBtn": "Ảnh",
+    "pillAriaToDark": "Trang này đang ở chế độ sáng. Chuyển sang chế độ tối.",
+    "pillAriaToLight": "Trang này đang ở chế độ tối. Chuyển sang chế độ sáng.",
+    "pillDark": "Chế độ tối · chạm để chuyển sang sáng",
+    "pillLight": "Chế độ sáng · chạm để chuyển sang tối",
+    "playBig": "Google Play",
+    "playSmall": "Tải trên",
+    "prevAria": "Trang chiếu trước",
+    "q1": "Tôi có thể nấu món gì cho bữa tối với thịt gà và cơm?",
+    "q2": "Tìm cho tôi một video về những chú cún con dễ thương đang chơi đùa.",
+    "q3": "Đưa tôi đến cửa hàng tạp hóa gần nhất.",
+    "q4": "Kể cho tôi một câu chuyện ngắn trước khi đi ngủ.",
+    "qd1": "“Tôi có thể nấu món gì cho bữa tối với thịt gà và cơm?”",
+    "qd2": "“Tìm cho tôi một video về những chú cún con dễ thương đang chơi đùa.”",
+    "qd3": "“Đưa tôi đến cửa hàng tạp hóa gần nhất.”",
+    "qd4": "“Kể cho tôi một câu chuyện ngắn trước khi đi ngủ.”",
+    "replayAria": "Nghe câu trả lời này thành tiếng",
+    "s1Sub": "Thật sự đơn giản như vậy, và mọi thứ đều diễn ra ở phía sau. Như phép màu.",
+    "s1Title": "Ba bước dễ dàng.",
+    "s2Sub": "Hãy trò chuyện về ba mẹ dạo này thế nào, thay vì chỉ nói về những việc cần làm.",
+    "s2Title": "Dành cho những người con",
+    "s3Sub": "Vì sao ứng dụng này ra đời, qua lời của chính anh ấy.",
+    "s3Title": "Lời từ người sáng lập",
+    "shareBubble": "Chia sẻ Talkmy",
+    "slide1Aria": "Cách hoạt động",
+    "slide2Aria": "Dành cho gia đình",
+    "slide3Aria": "Lời từ người sáng lập",
+    "step1H": "Tìm bong bóng vàng",
+    "step1P": "Một biểu tượng màu vàng cúc vạn thọ trên màn hình chính. Không có thứ gì khác trên điện thoại mang màu đó, nên không cần nheo mắt nhìn những hàng ô vuông xanh giống hệt nhau.",
+    "step2H": "Cứ nói như cách bạn vẫn nói",
+    "step2P": "Giữ nút Nói và cứ nói: bất kỳ tốc độ nào, bất kỳ giọng nào, bất kỳ ngôn ngữ nào. Talkmy sẽ lo phần còn lại. Không có cách hỏi nào là sai cả.",
+    "step3H": "Talkmy trả lời thành tiếng",
+    "step3P": "Một giọng nói rõ ràng, lời lẽ dễ hiểu, và câu trả lời trên màn hình với chữ lớn đủ để đọc khi cầm điện thoại cách một cánh tay. Bạn cứ hỏi tiếp theo cùng một cách.",
+    "talkBtn": "Nói",
+    "tryIntro": "Không có bàn phím hiện ra. Không cần mở phần cài đặt. Bà chỉ giữ một nút vàng lớn và nói điều bà cần: hãy thử các câu hỏi mẫu, đúng như cách người ta hỏi thành tiếng.",
+    "tryTitle": "Thử theo cách bà sẽ dùng",
+    "typeHere": "Gõ vào đây…",
+    "contactMain": "Liên hệ với chúng tôi",
+    "contactSub": "hoặc Hỏi Talkmy",
+    "say": "vi"
+  },
+  "ko": {
+    "lang": "ko",
+    "title": "모두를 위한 <span class=\"hl\">AI.</span>",
+    "lead": "Talkmy™는 큰 소리로, 내 말로, 내 언어로 <strong>말하는</strong> 비서입니다. 글자를 칠 필요가 없습니다. 메뉴를 찾을 필요도 없습니다. 비밀번호로 애먹을 일도 없습니다. 대화를 나눌 수 있으면 Talkmy를 쓸 수 있습니다.",
+    "b1": "큰 말하기 버튼을 누르고 계세요. 옆에는 사진 버튼이 있습니다.",
+    "b2": "답은 큰 소리로, 크고 또렷한 글자로 나옵니다.",
+    "b3": "어르신을 먼저 생각해 만들었기에 누구나 쓸 수 있습니다.",
+    "cta": "말을 걸어 보세요",
+    "bubble": "이 사진을 아들에게 어떻게 보내나요?",
+    "a1": "프라이팬 하나로 완성하는 멋진 저녁이에요. 밥을 짓고, 닭고기를 마늘과 함께 살짝 구운 뒤, 냉동 완두콩과 레몬즙을 넣고 함께 볶으면 돼요. 30분 정도면 완성되고, 단계마다 소리 내어 차근차근 알려 드릴게요.",
+    "a2": "앱에서는 이렇게 돼요. Talkmy가 그 문구가 적힌 큰 카드를 보여 줘요. 카드를 누르거나, 그냥 “응”이라고 말하면, 검색이 이미 끝난 YouTube가 열려서 강아지들이 바로 보여요.",
+    "a3": "Talkmy가 장소를 다시 읽어 주는 큰 카드를 보여 줘요. 가까운 식료품점이에요. 카드를 누르거나 “응”이라고 말하면, 운전 경로가 준비된 Maps가 열려요. 준비되시면 마지막으로 GO를 누르시면 돼요.",
+    "a4": "옛날에 등대지기가 있었어요. 아홉 시마다 지나가는 작은 배를 위해 매일 밤 등불을 켜 두었죠. 어느 안개 낀 저녁, 배가 늦었지만 불빛은 기다렸고, 그도 기다렸어요. 마침내… 나머지는 내일 밤에 들려 드릴까요?",
+    "askIntro": "부엌 식탁에서 소리 내어 묻는, 실제 질문들이에요. 하나를 누르면 Talkmy가 안경 없이도 읽을 수 있을 만큼 크고 쉬운 말로 답하는 모습을 보실 수 있어요.",
+    "askLabel": "질문:",
+    "askTitle": "사람에게 묻듯이 물어보세요",
+    "bar1": "<b>타이핑</b>이 필요 없어요",
+    "bar2": "<b>작은 메뉴</b>가 없어요",
+    "bar3": "<b>언어 설정</b>이 필요 없어요",
+    "bar4": "<b>앱 찾기</b>가 필요 없어요",
+    "barAria": "Talkmy가 없애 주는 것들",
+    "brandAria": "Talkmy 홈",
+    "carAria": "사용 방법, 가족을 위한 안내, 그리고 창업자의 이야기",
+    "dot1Aria": "슬라이드 1/3: 사용 방법",
+    "dot2Aria": "슬라이드 2/3: 가족을 위한 안내",
+    "dot3Aria": "슬라이드 3/3: 창업자의 이야기",
+    "fam1H": "설치는 당신이, 설명은 한 문장이면 돼요.",
+    "fam1P": "Talkmy의 진짜 첫 사용자는 부모님이지만, 고객은 바로 당신이에요. 어머니 휴대폰에 설치하고, 설명은 한 문장이면 충분해요. <em>“우리가 대화하듯, 사람에게 말하듯 그냥 쓰면 돼. 사진도 보낼 수 있어. 내가 설치해 줬어. 이렇게 생겼어.”</em> 정크 메일, 편지, 이 요금은 뭐지 하는 것들, 이제는 앱이 맡아요. 당신에게 남는 것은 판단해야 할 일뿐이에요.",
+    "fam2H": "이름이 있는 한 사람, 어머니 휴대폰에 저장돼요",
+    "fam2P": "어머니가 원하시면, Talkmy는 도움을 위해 가족 한 사람을 기억해요. 어머니가 직접 연락처에서 고르고, 어머니 휴대폰 속 캡슐에만 저장돼요. 사람의 확인이 필요할 때, Talkmy는 그분의 이름을 말하고 어머니께 전화해 보시라고 권할 수 있어요. Talkmy가 직접 연락하지는 않아요. 그분들은 Talkmy에게 물어보기만 하면 돼요.",
+    "fnd1H": "사랑으로 만들었어요",
+    "fnd1Quote": "“이 앱은 사랑으로 만들었어요. 부모님을 향한 창업자의 사랑으로요. 모든 결정은 신중하게 생각했고, 하나하나 실제 테스트를 거쳤어요.”",
+    "fnd2H": "그가 알던 모습 그대로",
+    "fnd2Quote": "“제가 알던 유일한 모습으로 빚어 만들었어요. 강하고 지혜로운 이민자 부모님, 그분들이 살아가는 환경이 줄 수 있는 가장 좋은 것들에서 멀어져 있던 부모님을 위한 모습으로요.”",
+    "footerPrivacy": "개인정보처리방침",
+    "footerTag": "talkmy™, 모두를 위한 AI입니다.",
+    "footerWhitepaper": "백서",
+    "hearBtn": "답변을 소리 내어 듣기",
+    "hearHello": "안녕하세요! 저는 Talkmy예요. 커다란 노란 버튼을 누르고 필요한 것을 그냥 말씀해 보세요.",
+    "hearNote": "어머니가 질문을 말씀하시면, Talkmy가 앱 안에서 소리 내어 답해요. 이 버튼을 누르면 여기 있는 마지막 답변도 들으실 수 있어요.",
+    "hello": "안녕하세요! 저는 Talkmy예요. 커다란 노란 버튼을 누르고 친구에게 말하듯 필요한 것을 그냥 말씀해 보세요.",
+    "heroCardTag": "모두를 위한 AI입니다.",
+    "iosBig": "다운로드",
+    "iosSmall": "App Store에서",
+    "langGroupAria": "언어 선택",
+    "listening": "듣고 있어요…",
+    "navAria": "페이지 섹션",
+    "navWhitepaper": "백서",
+    "nextAria": "다음 슬라이드",
+    "phoneAria": "Talkmy 휴대폰 화면이에요. 간단한 대화, 입력창, 그리고 사진과 말하기, 두 개의 큰 버튼이 있어요.",
+    "pictureBtn": "사진",
+    "pillAriaToDark": "지금 라이트 모드입니다. 다크 모드로 전환하세요.",
+    "pillAriaToLight": "지금 다크 모드입니다. 라이트 모드로 전환하세요.",
+    "pillDark": "다크 모드 · 라이트 모드로 전환하려면 누르세요",
+    "pillLight": "라이트 모드 · 다크 모드로 전환하려면 누르세요",
+    "playBig": "다운로드",
+    "playSmall": "Google Play에서",
+    "prevAria": "이전 슬라이드",
+    "q1": "닭고기와 쌀로 저녁에 뭘 만들 수 있을까요?",
+    "q2": "귀여운 강아지들이 노는 영상을 찾아 줘.",
+    "q3": "가장 가까운 식료품점으로 데려다 줘.",
+    "q4": "자기 전에 짧은 이야기를 들려 줘.",
+    "qd1": "“닭고기와 쌀로 저녁에 뭘 만들 수 있을까요?”",
+    "qd2": "“귀여운 강아지들이 노는 영상을 찾아 줘.”",
+    "qd3": "“가장 가까운 식료품점으로 데려다 줘.”",
+    "qd4": "“자기 전에 짧은 이야기를 들려 줘.”",
+    "replayAria": "이 답변을 소리 내어 듣기",
+    "s1Sub": "정말 이만큼 간단하고, 모든 것은 뒤에서 저절로 이뤄져요. 마치 마법 같아요.",
+    "s1Title": "세 가지 쉬운 단계예요.",
+    "s2Sub": "부모님이 요즘 어떻게 지내시는지 이야기해 보세요. 무엇을 해드려야 하는지가 아니라요.",
+    "s2Title": "아들과 딸들을 위해",
+    "s3Sub": "이 앱이 왜 생겼는지, 창업자의 말로 들어 보세요.",
+    "s3Title": "창업자의 이야기",
+    "shareBubble": "Talkmy 공유하기",
+    "slide1Aria": "사용 방법",
+    "slide2Aria": "가족을 위한 안내",
+    "slide3Aria": "창업자의 이야기",
+    "step1H": "노란 말풍선을 찾으세요",
+    "step1P": "홈 화면에 있는 메리골드색 아이콘 하나예요. 휴대폰에서 그 색을 쓰는 것은 이것뿐이라, 비슷하게 생긴 파란 네모들을 눈을 찡그리며 찾을 필요가 없어요.",
+    "step2H": "평소에 말하듯이 말하세요",
+    "step2P": "말하기 버튼을 누르고 말씀하세요. 어떤 속도든, 어떤 억양이든, 어떤 언어든 괜찮아요. 나머지는 Talkmy가 알아서 해요. 잘못된 물음은 없어요.",
+    "step3H": "소리 내어 답해요",
+    "step3P": "또렷한 목소리, 쉬운 말, 그리고 팔 길이만큼 떨어져서도 읽을 수 있을 만큼 큰 글자로 화면에 답이 나와요. 이어서 묻는 질문도 같은 방법으로 하시면 돼요.",
+    "talkBtn": "말하기",
+    "tryIntro": "키보드가 나타나지 않고, 설정이 열리지도 않아요. 어머니는 커다란 노란 버튼 하나를 누르고 필요한 것을 말씀하시면 돼요. 소리 내어 묻는 그대로, 샘플 질문을 해 보세요.",
+    "tryTitle": "어머니가 쓰시는 그대로 해 보세요",
+    "typeHere": "여기에 입력하세요…",
+    "contactMain": "문의해 주세요",
+    "contactSub": "또는 Talkmy에 물어보세요",
+    "say": "ko"
+  },
+  "ja": {
+    "lang": "ja",
+    "title": "<span class=\"hl\">みんな</span>のためのAI。",
+    "lead": "Talkmy™は、声に出して、自分の言葉で、自分の言語で<strong>話しかける</strong>アシスタントです。文字入力はいりません。メニューを探す必要もありません。パスワードに悩むこともありません。会話ができる人なら、誰でも使えます。",
+    "b1": "大きな「話す」ボタンを押し続けてください。隣には「写真」ボタンがあります。",
+    "b2": "答えは音声で読み上げられ、大きなはっきりした文字でも表示されます。",
+    "b3": "まず高齢の方のために作ったので、誰にでも使えます。",
+    "cta": "話しかけてみる",
+    "bubble": "この写真を息子に送るにはどうすればいい？",
+    "a1": "フライパンひとつで作れる、すてきな夕ごはんです。ごはんを炊いて、鶏肉をにんにくで少し焼き色がつくまで焼き、冷凍のグリーンピースとレモンをひとしぼり加えて一緒に混ぜます。30分ほどでできあがります。声に出して、ひとつずつていねいにお手伝いします。",
+    "a2": "アプリではこうなります。Talkmyが、その言葉が書かれた大きなカードを表示します。カードをタップするか、「はい」と言うだけで、検索がすんだYouTubeが開き、子犬たちがすぐに見られます。",
+    "a3": "Talkmyが、その場所を読み返す大きなカードを表示します。近くの食料品店です。カードをタップするか、「はい」と言えば、運転ルートが用意されたMapsが開きます。準備ができたら、最後にGOをタップしてください。",
+    "a4": "むかし、灯台守がいました。九時にいつも通る小さな船のために、毎晩ランプをつけて待っていました。ある霧の夜、船は遅れましたが、明かりは待ち続け、彼も待ち続けました。そしてとうとう…続きは、明日の夜に聞きたいですか？",
+    "askIntro": "キッチンのテーブルで声に出してたずねる、本当の質問です。ひとつタップすると、Talkmyがメガネなしでも読める大きさの、やさしい言葉で答えるのが見られます。",
+    "askLabel": "質問：",
+    "askTitle": "人にたずねるように、たずねてみましょう",
+    "bar1": "<b>入力</b>は不要です",
+    "bar2": "<b>小さなメニュー</b>はありません",
+    "bar3": "<b>言語設定</b>は不要です",
+    "bar4": "<b>アプリ探し</b>は不要です",
+    "barAria": "Talkmyがなくすもの",
+    "brandAria": "Talkmyホーム",
+    "carAria": "使い方と、ご家族へのご案内と、創業者から",
+    "dot1Aria": "スライド1/3：使い方",
+    "dot2Aria": "スライド2/3：ご家族へ",
+    "dot3Aria": "スライド3/3：創業者から",
+    "fam1H": "あなたが入れて、あとはひと言だけ",
+    "fam1P": "Talkmyの本当の最初の利用者はお母さんですが、お客様はあなたです。お母さんのスマートフォンに入れて、説明はひと言だけです。<em>「私たちがおしゃべりするみたいに、人に話しかけるように使うだけよ。写真も送れるの。入れておいたから。こんな感じよ。」</em>迷惑メールも、手紙も、この請求は何だろうということも、今はアプリが引き受けます。あなたに残るのは、判断が必要なことだけです。",
+    "fam2H": "名前のあるひとりが、お母さんのスマートフォンに",
+    "fam2P": "お母さんが望めば、Talkmyは助けのために家族ひとりを覚えます。お母さん自身が連絡先から選び、お母さんのスマートフォンの中のカプセルにだけ保存します。人の確認が必要なとき、Talkmyはその人の名前を言い、お母さんに電話してみてはどうかとすすめることができます。Talkmyが自分から連絡することは決してありません。必要なのは、Talkmyにたずねることだけです。",
+    "fnd1H": "愛をこめて作りました",
+    "fnd1Quote": "「このアプリは愛をこめて作られました。創業者の、両親への愛です。すべての決断はていねいに考えられ、ひとつひとつ実際のテストを乗り越えてきました。」",
+    "fnd2H": "彼が知っていたかたち",
+    "fnd2Quote": "「私が知っていた唯一のかたちに、彫りました。強くて賢い移民の両親、その環境が与えてくれるいちばんよいものから遠ざけられていた両親のかたちです。」",
+    "footerPrivacy": "プライバシーポリシー",
+    "footerTag": "talkmy™、みんなのためのAIです。",
+    "footerWhitepaper": "ホワイトペーパー",
+    "hearBtn": "答えを声で聞く",
+    "hearHello": "こんにちは！私はTalkmyです。大きな黄色いボタンを押して、必要なことをそのまま話してください。",
+    "hearNote": "お母さんが質問を話すと、Talkmyはアプリの中で声に出して答えます。このボタンを押すと、ここでの最後の答えも聞くことができます。",
+    "hello": "こんにちは！私はTalkmyです。大きな黄色いボタンを押して、友だちに話しかけるように、必要なことをそのまま話してください。",
+    "heroCardTag": "みんなのためのAIです。",
+    "iosBig": "ダウンロード",
+    "iosSmall": "App Storeで",
+    "langGroupAria": "言語を選ぶ",
+    "listening": "聞いています…",
+    "navAria": "ページのセクション",
+    "navWhitepaper": "ホワイトペーパー",
+    "nextAria": "次のスライド",
+    "phoneAria": "Talkmyのスマートフォンの画面です。シンプルな会話と入力欄、そして写真と話すという二つの大きなボタンがあります。",
+    "pictureBtn": "写真",
+    "pillAriaToDark": "現在はライトモードです。ダークモードに切り替えます。",
+    "pillAriaToLight": "現在はダークモードです。ライトモードに切り替えます。",
+    "pillDark": "ダークモード · ライトモードに切り替えるにはタップ",
+    "pillLight": "ライトモード · ダークモードに切り替えるにはタップ",
+    "playBig": "手に入れよう",
+    "playSmall": "Google Playで",
+    "prevAria": "前のスライド",
+    "q1": "鶏肉とごはんで、夕ごはんに何が作れるかしら？",
+    "q2": "かわいい子犬が遊んでいる動画を探して。",
+    "q3": "いちばん近い食料品店に連れて行って。",
+    "q4": "寝る前に短いお話を聞かせて。",
+    "qd1": "「鶏肉とごはんで、夕ごはんに何が作れるかしら？」",
+    "qd2": "「かわいい子犬が遊んでいる動画を探して。」",
+    "qd3": "「いちばん近い食料品店に連れて行って。」",
+    "qd4": "「寝る前に短いお話を聞かせて。」",
+    "replayAria": "この答えを声で聞く",
+    "s1Sub": "本当にこれだけシンプルで、すべて裏側で進みます。まるで魔法のようです。",
+    "s1Title": "三つの簡単なステップです。",
+    "s2Sub": "ご両親が最近どう過ごしているかお話しください。何をしてあげなければならないかではなく。",
+    "s2Title": "息子さん、娘さんのために",
+    "s3Sub": "このアプリがなぜあるのか、創業者自身の言葉で。",
+    "s3Title": "創業者から",
+    "shareBubble": "Talkmyを共有する",
+    "slide1Aria": "使い方",
+    "slide2Aria": "ご家族へ",
+    "slide3Aria": "創業者から",
+    "step1H": "黄色いふきだしを探してください",
+    "step1P": "ホーム画面にある、マリーゴールド色のアイコンひとつです。スマートフォンでこの色を使っているのはこれだけですから、似たような青い四角が並ぶ中を目を細めて探す必要はありません。",
+    "step2H": "いつものように話してください",
+    "step2P": "話すボタンを押して話してください。どんな速さでも、どんななまりでも、どんな言語でもかまいません。あとはTalkmyが考えます。まちがったたずね方はありません。",
+    "step3H": "声に出して答えます",
+    "step3P": "はっきりした声と、やさしい言葉で答えます。画面の文字も、腕を伸ばした距離から読める大きさです。続きの質問も同じようにできます。",
+    "talkBtn": "話す",
+    "tryIntro": "キーボードは出ません。設定も開きません。お母さんは大きな黄色いボタンをひとつ押して、必要なことを話すだけです。声に出してたずねるのと同じように、サンプルの質問を試してみてください。",
+    "tryTitle": "お母さんが使うように、試してみましょう",
+    "typeHere": "ここに入力…",
+    "contactMain": "お問い合わせ",
+    "contactSub": "または Talkmy に聞いてみて",
+    "say": "ja"
+  },
+  "fr": {
+    "lang": "fr",
+    "title": "L'IA pour <span class=\"hl\">tout le monde.</span>",
+    "lead": "Talkmy™ est l'assistant à qui vous <strong>parlez</strong>, à voix haute, avec vos mots, dans votre langue. Pas besoin de taper. Pas de menus à chercher. Pas de mots de passe compliqués. Si vous pouvez tenir une conversation, vous pouvez utiliser Talkmy.",
+    "b1": "Maintenez le grand bouton Parler. Un bouton Photo se trouve juste à côté.",
+    "b2": "Des réponses lues à voix haute, en gros caractères bien lisibles.",
+    "b3": "Conçu d'abord pour les aînés, il convient donc à tout le monde.",
+    "cta": "Essayez de lui parler",
+    "bubble": "Comment envoyer cette photo à mon fils ?",
+    "a1": "Un bon dîner tout en une poêle : faites cuire le riz, faites dorer le poulet avec un peu d'ail, puis mélangez le tout avec des petits pois surgelés et un filet de citron. Prêt en environ une demi-heure, et je peux vous guider étape par étape, à voix haute.",
+    "a2": "Voici ce qui se passe dans l'application : Talkmy montre une grande carte avec ces mots dessus. Touchez la carte, ou dites simplement oui, et YouTube s'ouvre avec la recherche déjà faite, alors les chiots sont juste là.",
+    "a3": "Talkmy montre une grande carte qui vous répète le lieu : le supermarché près de chez vous. Touchez la carte, ou dites oui, et Maps s'ouvre avec l'itinéraire en voiture déjà prêt. Votre dernier geste là-bas, c'est GO, quand vous êtes prête.",
+    "a4": "Il était une fois un gardien de phare qui laissait la lampe allumée chaque soir pour un petit bateau qui passait toujours à neuf heures. Un soir de brouillard, le bateau était en retard, mais la lumière a attendu, et lui aussi, et enfin… voudriez-vous connaître la suite demain soir ?",
+    "askIntro": "Ce sont de vraies choses que les gens demandent à voix haute autour de la table de la cuisine. Touchez-en une et regardez Talkmy répondre, avec des mots simples, assez grands pour être lus sans lunettes.",
+    "askLabel": "Demander :",
+    "askTitle": "Demandez comme à une personne",
+    "bar1": "<b>Pas</b> besoin de taper",
+    "bar2": "<b>Pas</b> de petits menus",
+    "bar3": "<b>Pas</b> de réglages de langue",
+    "bar4": "<b>Pas</b> besoin de chercher l'application",
+    "barAria": "Ce que Talkmy enlève",
+    "brandAria": "Accueil Talkmy",
+    "carAria": "Comment ça marche, pour les familles, et du fondateur",
+    "dot1Aria": "Diapositive 1 sur 3 : Comment ça marche",
+    "dot2Aria": "Diapositive 2 sur 3 : Pour les familles",
+    "dot3Aria": "Diapositive 3 sur 3 : Du fondateur",
+    "fam1H": "Vous l'installez. Vous dites une phrase.",
+    "fam1P": "La vraie première utilisatrice de Talkmy, c'est la parente, mais sa cliente, c'est vous. Vous l'installez sur son téléphone, et tout votre tutoriel tient en une phrase : <em>« Tu l'utilises comme on discute, comme une personne, et tu peux envoyer des photos. Je l'ai installé pour toi. Ça ressemble à ça. »</em> Le courrier indésirable, les lettres, le qu'est-ce-que-ce-prélèvement-veut-dire : l'application s'en occupe maintenant. Il ne vous reste que les décisions.",
+    "fam2H": "Une personne nommée, gardée sur son téléphone",
+    "fam2P": "Si elle le souhaite, Talkmy se souvient d'un membre de la famille pour l'aide, choisi par elle dans ses propres contacts et gardé uniquement dans la capsule sur son téléphone. Quand quelque chose a besoin d'une vérification humaine, Talkmy peut nommer cette personne et lui suggérer de l'appeler. Talkmy ne les contacte jamais de lui-même. Tout ce qu'ils ont à faire, c'est demander à Talkmy.",
+    "fnd1H": "Fait avec amour",
+    "fnd1Quote": "« Cette application a été faite avec amour, l'amour du fondateur pour ses parents. Chaque décision a été soigneusement réfléchie, et chacune a survécu à de vrais tests. »",
+    "fnd2H": "La forme qu'il connaissait",
+    "fnd2Quote": "« Je l'ai taillée dans la seule forme que je connaissais, celle de parents immigrés forts et intelligents, tenus à l'écart du meilleur de ce que leur environnement avait à offrir. »",
+    "footerPrivacy": "Politique de confidentialité",
+    "footerTag": "talkmy™, L'IA pour tout le monde.",
+    "footerWhitepaper": "Livre blanc",
+    "hearBtn": "Écouter la réponse à voix haute",
+    "hearHello": "Bonjour ! Je suis Talkmy. Tenez le gros bouton jaune et dites simplement ce dont vous avez besoin.",
+    "hearNote": "Quand elle pose sa question à voix haute, Talkmy répond à voix haute dans l'application. Ce bouton vous permet aussi d'écouter ici la dernière réponse.",
+    "hello": "Bonjour ! Je suis Talkmy. Tenez le gros bouton jaune et dites simplement ce dont vous avez besoin, comme si vous parliez à un ami.",
+    "heroCardTag": "L'IA pour tout le monde.",
+    "iosBig": "App Store",
+    "iosSmall": "Télécharger dans l'",
+    "langGroupAria": "Choisir une langue",
+    "listening": "J'écoute…",
+    "navAria": "Sections de la page",
+    "navWhitepaper": "Livre blanc",
+    "nextAria": "Diapositive suivante",
+    "phoneAria": "Une maquette de téléphone de Talkmy : une conversation simple, une barre de saisie, et deux gros boutons, Photo et Parler",
+    "pictureBtn": "Photo",
+    "pillAriaToDark": "Cette page est en mode clair. Passer en mode sombre.",
+    "pillAriaToLight": "Cette page est en mode sombre. Passer en mode clair.",
+    "pillDark": "Mode sombre · touchez pour le mode clair",
+    "pillLight": "Mode clair · touchez pour le mode sombre",
+    "playBig": "Google Play",
+    "playSmall": "Disponible sur",
+    "prevAria": "Diapositive précédente",
+    "q1": "Que puis-je préparer pour le dîner avec du poulet et du riz ?",
+    "q2": "Trouvez-moi une vidéo de chiots trop mignons qui jouent.",
+    "q3": "Emmenez-moi au supermarché le plus proche.",
+    "q4": "Racontez-moi une petite histoire avant de dormir.",
+    "qd1": "« Que puis-je préparer pour le dîner avec du poulet et du riz ? »",
+    "qd2": "« Trouvez-moi une vidéo de chiots trop mignons qui jouent. »",
+    "qd3": "« Emmenez-moi au supermarché le plus proche. »",
+    "qd4": "« Racontez-moi une petite histoire avant de dormir. »",
+    "replayAria": "Écouter cette réponse à voix haute",
+    "s1Sub": "C'est vraiment aussi simple que ça, et tout se passe en arrière-plan. Comme par magie.",
+    "s1Title": "Trois étapes faciles.",
+    "s2Sub": "Parlez de comment vont vos parents, pas de ce qu'il faut faire pour eux.",
+    "s2Title": "Pour les fils et les filles",
+    "s3Sub": "Pourquoi cette application existe, dans ses propres mots.",
+    "s3Title": "Du fondateur",
+    "shareBubble": "Partager Talkmy",
+    "slide1Aria": "Comment ça marche",
+    "slide2Aria": "Pour les familles",
+    "slide3Aria": "Du fondateur",
+    "step1H": "Trouvez la bulle jaune",
+    "step1P": "Une icône souci sur l'écran d'accueil. Rien d'autre sur un téléphone n'a cette couleur, alors pas besoin de plisser les yeux devant des rangées de petits carrés bleus qui se ressemblent.",
+    "step2H": "Dites-le comme vous le diriez",
+    "step2P": "Tenez le bouton Parler et parlez : à n'importe quel rythme, avec n'importe quel accent, dans n'importe quelle langue. Talkmy s'occupe du reste. Il n'y a pas de mauvaise façon de demander.",
+    "step3H": "Il répond à voix haute",
+    "step3P": "Une voix claire, des mots simples, et la réponse à l'écran en caractères assez grands pour être lus à bout de bras. Posez une question de suivi de la même façon.",
+    "talkBtn": "Parler",
+    "tryIntro": "Aucun clavier n'apparaît. Aucun réglage ne s'ouvre. Elle tient un gros bouton jaune et dit ce dont elle a besoin : essayez les exemples de questions, exactement comme on les poserait à voix haute.",
+    "tryTitle": "Essayez comme elle le ferait",
+    "typeHere": "Écrivez ici…",
+    "contactMain": "Contactez-nous",
+    "contactSub": "ou demandez à Talkmy",
+    "say": "fr"
+  },
+  "de": {
+    "lang": "de",
+    "title": "Die KI für <span class=\"hl\">alle.</span>",
+    "lead": "Talkmy™ ist der Assistent, mit dem Sie <strong>sprechen</strong>, laut, in Ihren eigenen Worten, in Ihrer eigenen Sprache. Kein Tippen nötig. Keine Menüs zum Suchen. Keine Passwort-Turnerei. Wenn Sie sich unterhalten können, können Sie Talkmy nutzen.",
+    "b1": "Halten Sie die große Sprechen-Taste. Daneben sitzt eine Foto-Taste.",
+    "b2": "Antworten werden laut vorgelesen, in großen, klaren Worten.",
+    "b3": "Zuerst für Senioren gebaut, darum funktioniert es für alle.",
+    "cta": "Sprechen Sie einfach los",
+    "bubble": "Wie schicke ich dieses Foto an meinen Sohn?",
+    "a1": "Ein schönes Essen aus einer Pfanne: Kochen Sie den Reis, braten Sie das Hähnchen mit etwas Knoblauch an, und rühren Sie dann alles mit tiefgefrorenen Erbsen und einem Spritzer Zitrone zusammen. In etwa einer halben Stunde fertig, und ich kann Sie Schritt für Schritt laut dadurch führen.",
+    "a2": "So läuft es in der App: Talkmy zeigt eine große Karte mit diesen Worten darauf. Tippen Sie auf die Karte, oder sagen Sie einfach ja, und YouTube öffnet sich mit der Suche schon erledigt, da sind die Welpen also direkt da.",
+    "a3": "Talkmy zeigt eine große Karte, die Ihnen den Ort zurückliest: das Lebensmittelgeschäft in Ihrer Nähe. Tippen Sie auf die Karte, oder sagen Sie ja, und Maps öffnet sich mit der Fahrroute schon bereit. Ihr letzter Tipp dort ist GO, wenn Sie bereit sind.",
+    "a4": "Es war einmal ein Leuchtturmwärter, der jede Nacht die Lampe für ein kleines Boot angelassen hat, das immer um neun vorbeikam. An einem nebligen Abend war das Boot spät dran, aber das Licht hat gewartet, und er auch, und endlich… möchten Sie morgen Abend den Rest hören?",
+    "askIntro": "Das sind echte Dinge, die Menschen laut am Küchentisch fragen. Tippen Sie auf eine Frage und sehen Sie, wie Talkmy antwortet, in einfachen Worten, groß genug, um sie ohne Brille zu lesen.",
+    "askLabel": "Fragen:",
+    "askTitle": "Fragen Sie wie einen Menschen",
+    "bar1": "<b>Kein</b> Tippen nötig",
+    "bar2": "<b>Keine</b> winzigen Menüs",
+    "bar3": "<b>Keine</b> Spracheinstellungen",
+    "bar4": "<b>Kein</b> Suchen nach der App",
+    "barAria": "Was Talkmy wegnimmt",
+    "brandAria": "Talkmy Startseite",
+    "carAria": "So funktioniert es, für Familien, und vom Gründer",
+    "dot1Aria": "Folie 1 von 3: So funktioniert es",
+    "dot2Aria": "Folie 2 von 3: Für Familien",
+    "dot3Aria": "Folie 3 von 3: Vom Gründer",
+    "fam1H": "Sie installieren es. Sie sagen einen Satz.",
+    "fam1P": "Die echte erste Nutzerin von Talkmy ist die Mutter, aber die Kundin sind Sie. Sie installieren es auf ihrem Handy, und Ihr ganzes Tutorial ist ein Satz: <em>„Du benutzt es einfach so, wie wir miteinander reden, wie einen Menschen, und du kannst Fotos schicken. Ich habe es für dich installiert. Es sieht so aus.“</em> Die Werbepost, die Briefe, das was-bedeutet-diese-Abbuchung: Die App übernimmt das jetzt. Ihnen bleiben nur die Entscheidungen, die wirklich Ihr Urteil brauchen.",
+    "fam2H": "Eine benannte Person, auf ihrem Handy gespeichert",
+    "fam2P": "Wenn sie möchte, merkt sich Talkmy ein Familienmitglied für Hilfe, von ihr aus ihren eigenen Kontakten ausgewählt und nur in der Kapsel auf ihrem Handy gespeichert. Wenn etwas eine menschliche Prüfung braucht, kann Talkmy diese Person nennen und vorschlagen, dass sie sie anruft. Talkmy kontaktiert sie nie von selbst. Sie müssen nur Talkmy fragen.",
+    "fnd1H": "Mit Liebe gemacht",
+    "fnd1Quote": "„Diese App wurde mit Liebe gemacht, mit der Liebe des Gründers zu seinen Eltern. Jede Entscheidung wurde sorgfältig durchdacht, und jede hat echte Tests überstanden.“",
+    "fnd2H": "Die Form, die er kannte",
+    "fnd2Quote": "„Ich habe sie in die einzige Form geschnitzt, die ich kannte, starke, intelligente Einwanderereltern, die vom Besten dessen, was ihre Umgebung zu bieten hatte, ausgeschlossen waren.“",
+    "footerPrivacy": "Datenschutzerklärung",
+    "footerTag": "talkmy™, Die KI für alle.",
+    "footerWhitepaper": "Whitepaper",
+    "hearBtn": "Die Antwort laut anhören",
+    "hearHello": "Hallo! Ich bin Talkmy. Halten Sie den großen gelben Knopf gedrückt und sagen Sie einfach, was Sie brauchen.",
+    "hearNote": "Wenn sie ihre Frage laut stellt, antwortet Talkmy laut in der App. Mit diesem Knopf können Sie hier auch die letzte Antwort hören.",
+    "hello": "Hallo! Ich bin Talkmy. Halten Sie den großen gelben Knopf gedrückt und sagen Sie einfach, was Sie brauchen, als würden Sie mit einem Freund sprechen.",
+    "heroCardTag": "Die KI für alle.",
+    "iosBig": "App Store",
+    "iosSmall": "Laden im",
+    "langGroupAria": "Sprache wählen",
+    "listening": "Ich höre zu…",
+    "navAria": "Abschnitte der Seite",
+    "navWhitepaper": "Whitepaper",
+    "nextAria": "Nächste Folie",
+    "phoneAria": "Ein Handy-Modell von Talkmy: ein einfaches Gespräch, eine Eingabeleiste und zwei große Knöpfe, Bild und Sprechen",
+    "pictureBtn": "Bild",
+    "pillAriaToDark": "Diese Seite ist im hellen Modus. Zum dunklen Modus wechseln.",
+    "pillAriaToLight": "Diese Seite ist im dunklen Modus. Zum hellen Modus wechseln.",
+    "pillDark": "Dunkler Modus · tippen für hell",
+    "pillLight": "Heller Modus · tippen für dunkel",
+    "playBig": "Google Play",
+    "playSmall": "Jetzt bei",
+    "prevAria": "Vorherige Folie",
+    "q1": "Was kann ich heute Abend mit Hähnchen und Reis kochen?",
+    "q2": "Such mir ein Video von niedlichen Welpen beim Spielen.",
+    "q3": "Bring mich zum nächsten Lebensmittelgeschäft.",
+    "q4": "Erzähl mir eine kurze Geschichte vor dem Schlafengehen.",
+    "qd1": "„Was kann ich heute Abend mit Hähnchen und Reis kochen?“",
+    "qd2": "„Such mir ein Video von niedlichen Welpen beim Spielen.“",
+    "qd3": "„Bring mich zum nächsten Lebensmittelgeschäft.“",
+    "qd4": "„Erzähl mir eine kurze Geschichte vor dem Schlafengehen.“",
+    "replayAria": "Diese Antwort laut anhören",
+    "s1Sub": "Es ist wirklich so einfach, und alles passiert im Hintergrund. Wie Zauberei.",
+    "s1Title": "Drei einfache Schritte.",
+    "s2Sub": "Sprechen Sie darüber, wie es Ihren Eltern geht, nicht darüber, was erledigt werden muss.",
+    "s2Title": "Für die Söhne und Töchter",
+    "s3Sub": "Warum diese App existiert, in seinen eigenen Worten.",
+    "s3Title": "Vom Gründer",
+    "shareBubble": "Talkmy teilen",
+    "slide1Aria": "So funktioniert es",
+    "slide2Aria": "Für Familien",
+    "slide3Aria": "Vom Gründer",
+    "step1H": "Finden Sie die gelbe Blase",
+    "step1P": "Ein ringelblumenfarbenes Symbol auf dem Startbildschirm. Nichts sonst auf einem Handy hat diese Farbe, also kein Suchen mit zusammengekniffenen Augen in Reihen von gleich aussehenden blauen Quadraten.",
+    "step2H": "Sagen Sie es, wie Sie es sagen würden",
+    "step2P": "Halten Sie den Sprechen-Knopf gedrückt und sprechen Sie: in jedem Tempo, mit jedem Akzent, in jeder Sprache. Talkmy kümmert sich um den Rest. Es gibt keine falsche Art zu fragen.",
+    "step3H": "Es antwortet laut",
+    "step3P": "Eine klare Stimme, einfache Worte, und die Antwort auf dem Bildschirm in einer Schrift, die groß genug ist, um sie auf Armlänge zu lesen. Stellen Sie eine Folgefrage auf die gleiche Weise.",
+    "talkBtn": "Sprechen",
+    "tryIntro": "Es erscheint keine Tastatur. Es öffnen sich keine Einstellungen. Sie hält einen großen gelben Knopf und sagt, was sie braucht: Probieren Sie die Beispielfragen aus, genau so, wie man sie laut stellen würde.",
+    "tryTitle": "Probieren Sie es so, wie sie es tun würde",
+    "typeHere": "Hier tippen…",
+    "contactMain": "Kontaktieren Sie uns",
+    "contactSub": "oder fragen Sie Talkmy",
+    "say": "de"
+  },
+  "pt": {
+    "lang": "pt",
+    "title": "A IA para <span class=\"hl\">todo mundo.</span>",
+    "lead": "Talkmy™ é o assistente com quem você <strong>fala</strong>, em voz alta, com as suas palavras, no seu idioma. Não precisa digitar. Nada de menus para procurar. Nada de senhas complicadas. Se você consegue conversar, consegue usar o Talkmy.",
+    "b1": "Segure o botão grande Falar. Ao lado fica o botão Foto.",
+    "b2": "Respostas faladas em voz alta, com palavras grandes e claras.",
+    "b3": "Feito primeiro para os mais velhos, por isso funciona para todo mundo.",
+    "cta": "Experimente falar com ele",
+    "bubble": "Como envio esta foto para o meu filho?",
+    "a1": "Um jantar delicioso em uma panela só: cozinhe o arroz, doure o frango com um pouco de alho, depois misture tudo com ervilhas congeladas e um pouco de limão. Fica pronto em cerca de meia hora, e eu posso guiar você passo a passo, em voz alta.",
+    "a2": "É assim que acontece no aplicativo: o Talkmy mostra um cartão grande com essas palavras. Toque no cartão, ou apenas diga sim, e o YouTube abre com a busca já feita, então os filhotinhos já estão ali.",
+    "a3": "O Talkmy mostra um cartão grande que repete o lugar para você: o supermercado perto de você. Toque no cartão, ou diga sim, e o Maps abre com a rota de carro já pronta. Seu último toque ali é GO, quando você estiver pronta.",
+    "a4": "Era uma vez um faroleiro que deixava a lâmpada acesa todas as noites para um barquinho que sempre passava às nove. Numa noite de neblina, o barco se atrasou, mas a luz esperou, e ele também, e enfim… você quer ouvir o resto amanhã à noite?",
+    "askIntro": "Estas são coisas de verdade que as pessoas perguntam em voz alta na mesa da cozinha. Toque em uma e veja o Talkmy responder, com palavras simples, grandes o bastante para ler sem óculos.",
+    "askLabel": "Perguntar:",
+    "askTitle": "Pergunte como a uma pessoa",
+    "bar1": "<b>Sem</b> precisar digitar",
+    "bar2": "<b>Sem</b> menuzinhos",
+    "bar3": "<b>Sem</b> configurações de idioma",
+    "bar4": "<b>Sem</b> procurar o aplicativo",
+    "barAria": "O que o Talkmy tira do caminho",
+    "brandAria": "Página inicial do Talkmy",
+    "carAria": "Como funciona, para as famílias, e do fundador",
+    "dot1Aria": "Slide 1 de 3: Como funciona",
+    "dot2Aria": "Slide 2 de 3: Para as famílias",
+    "dot3Aria": "Slide 3 de 3: Do fundador",
+    "fam1H": "Você instala. Você diz uma frase.",
+    "fam1P": "A primeira usuária de verdade do Talkmy é a mãe, mas quem compra é você. Você instala no celular dela, e todo o seu tutorial é uma frase: <em>“Você só usa como a gente conversa, como uma pessoa, e pode mandar fotos. Eu instalei para você. É assim.”</em> As propagandas, as cartas, o o-que-significa-esta-cobrança: o aplicativo cuida disso agora. Só sobram para você as decisões que precisam do seu julgamento.",
+    "fam2H": "Uma pessoa nomeada, guardada no celular dela",
+    "fam2P": "Se ela quiser, o Talkmy lembra de um familiar para ajudar, escolhido por ela nos próprios contatos e guardado só na cápsula do celular dela. Quando algo precisa de uma conferência humana, o Talkmy pode nomear essa pessoa e sugerir que ela ligue para ela. O Talkmy nunca entra em contato com eles por conta própria. Tudo o que eles precisam fazer é perguntar ao Talkmy.",
+    "fnd1H": "Feito com amor",
+    "fnd1Quote": "“Este aplicativo foi feito com amor, o amor do fundador pelos pais dele. Cada decisão foi pensada com cuidado, e todas passaram por testes de verdade.”",
+    "fnd2H": "A forma que ele conhecia",
+    "fnd2Quote": "“Eu esculpi na única forma que conhecia, pais imigrantes fortes e inteligentes que ficaram de fora do melhor que o ambiente deles tinha a oferecer.”",
+    "footerPrivacy": "Política de Privacidade",
+    "footerTag": "talkmy™, A IA para todos.",
+    "footerWhitepaper": "Livro branco",
+    "hearBtn": "Ouvir a resposta em voz alta",
+    "hearHello": "Olá! Eu sou o Talkmy. Segure o botão amarelo bem grande e diga o que você precisa.",
+    "hearNote": "Quando ela faz a pergunta em voz alta, o Talkmy responde em voz alta no aplicativo. Este botão também permite ouvir a última resposta aqui.",
+    "hello": "Olá! Eu sou o Talkmy. Segure o botão amarelo bem grande e diga o que você precisa, como se estivesse falando com um amigo.",
+    "heroCardTag": "A IA para todos.",
+    "iosBig": "App Store",
+    "iosSmall": "Baixar na",
+    "langGroupAria": "Escolher um idioma",
+    "listening": "Ouvindo…",
+    "navAria": "Seções da página",
+    "navWhitepaper": "Livro branco",
+    "nextAria": "Próximo slide",
+    "phoneAria": "Uma maquete de celular do Talkmy: uma conversa simples, uma barra de digitação e dois botões grandes, Foto e Falar",
+    "pictureBtn": "Foto",
+    "pillAriaToDark": "Esta página está no modo claro. Mudar para o modo escuro.",
+    "pillAriaToLight": "Esta página está no modo escuro. Mudar para o modo claro.",
+    "pillDark": "Modo escuro · toque para o claro",
+    "pillLight": "Modo claro · toque para o escuro",
+    "playBig": "Google Play",
+    "playSmall": "Disponível no",
+    "prevAria": "Slide anterior",
+    "q1": "O que posso fazer para o jantar com frango e arroz?",
+    "q2": "Encontre um vídeo de filhotinhos fofos brincando.",
+    "q3": "Leve-me ao supermercado mais próximo.",
+    "q4": "Conte-me uma historinha antes de dormir.",
+    "qd1": "\"O que posso fazer para o jantar com frango e arroz?\"",
+    "qd2": "\"Encontre um vídeo de filhotinhos fofos brincando.\"",
+    "qd3": "\"Leve-me ao supermercado mais próximo.\"",
+    "qd4": "\"Conte-me uma historinha antes de dormir.\"",
+    "replayAria": "Ouvir esta resposta em voz alta",
+    "s1Sub": "É realmente tão simples assim, e tudo acontece em segundo plano. Como mágica.",
+    "s1Title": "Três passos fáceis.",
+    "s2Sub": "Fale sobre como os seus pais estão, não sobre o que precisa de ser feito.",
+    "s2Title": "Para os filhos e as filhas",
+    "s3Sub": "Por que este aplicativo existe, nas palavras dele.",
+    "s3Title": "Do fundador",
+    "shareBubble": "Compartilhar o Talkmy",
+    "slide1Aria": "Como funciona",
+    "slide2Aria": "Para as famílias",
+    "slide3Aria": "Do fundador",
+    "step1H": "Encontre a bolha amarela",
+    "step1P": "Um ícone cor de calêndula na tela inicial. Nada mais no celular tem essa cor, então não precisa apertar os olhos diante de fileiras de quadradinhos azuis parecidos.",
+    "step2H": "Diga do jeito que você diria",
+    "step2P": "Segure o botão Falar e fale: em qualquer ritmo, com qualquer sotaque, em qualquer idioma. O Talkmy resolve o resto. Não existe jeito errado de perguntar.",
+    "step3H": "Ele responde em voz alta",
+    "step3P": "Uma voz clara, palavras simples, e a resposta na tela em letras grandes o bastante para ler a distância de um braço. Faça uma pergunta seguinte do mesmo jeito.",
+    "talkBtn": "Falar",
+    "tryIntro": "Nenhum teclado aparece. Nenhuma configuração se abre. Ela segura um botão amarelo bem grande e diz o que precisa: experimente as perguntas de exemplo, exatamente como seriam feitas em voz alta.",
+    "tryTitle": "Experimente do jeito que ela faria",
+    "typeHere": "Digite aqui…",
+    "contactMain": "Fale conosco",
+    "contactSub": "ou pergunte ao Talkmy",
+    "say": "pt"
+  },
+  "yue": {
+    "lang": "yue",
+    "title": "為<span class=\"hl\">每一個人</span>而設嘅AI。",
+    "lead": "Talkmy™ 係一個你可以用把口<strong>傾</strong>嘅助手，出聲講，用你自己嘅說話，用你自己嘅語言。唔使打字。唔使周圍揾選單。唔使記密碼。只要你識傾偈，就用得 Talkmy。",
+    "b1": "㩒住個大「講嘢」掣。隔籬有個「相片」掣。",
+    "b2": "答案會讀出嚟，字又大又清楚。",
+    "b3": "首先為長者而做，所以個個都用得。",
+    "cta": "試下同佢傾偈",
+    "bubble": "呢張相點樣傳畀我個仔？",
+    "a1": "一道好正嘅一鑊晚飯：煮好啲飯，用少少蒜將雞肉煎香，再加急凍青豆同少少檸檬汁撈埋一齊。大約半個鐘就搞掂，我可以一步一步大聲帶住你煮。",
+    "a2": "喺個 app 入面會係咁：Talkmy 會顯示一張寫住呢句說話嘅大卡。㩒下張卡，或者講聲好，YouTube 就會打開，搜尋已經幫你做好咗，啲狗狗就喺眼前。",
+    "a3": "Talkmy 會顯示一張大卡，將個地方讀返畀你聽：你附近嗰間超市。㩒下張卡，或者講聲好，Maps 就會打開，揸車路線已經準備好。你喺嗰度最後㩒一下 GO，準備好就可以出發。",
+    "a4": "從前有一個燈塔看守人，每晚都會為一隻成日九點經過嘅細船留返盞燈。有一個大霧嘅夜晚，隻船遲咗，但盞燈一直等緊，佢都一直等緊，終於……你想唔想聽晚再聽埋剩低嗰 part？",
+    "askIntro": "呢啲都係人哋坐喺飯枱邊會開口問嘅真實問題。㩒一下，睇下 Talkmy 用簡單嘅說話答你，啲字夠大，唔使戴眼鏡都睇得清楚。",
+    "askLabel": "問：",
+    "askTitle": "好似同人講嘢咁問佢",
+    "bar1": "<b>唔使</b>打字",
+    "bar2": "<b>唔使</b>細選單",
+    "bar3": "<b>唔使</b>語言設定",
+    "bar4": "<b>唔使</b>周圍搵個 app",
+    "barAria": "Talkmy 幫你攞走嘅嘢",
+    "brandAria": "Talkmy 首頁",
+    "carAria": "點用、畀屋企人睇，同埋創辦人嘅說話",
+    "dot1Aria": "第 1 張，共 3 張：點用",
+    "dot2Aria": "第 2 張，共 3 張：畀屋企人",
+    "dot3Aria": "第 3 張，共 3 張：創辦人嘅說話",
+    "fam1H": "你裝好佢。你講一句就得。",
+    "fam1P": "Talkmy 真正第一個用家係阿爸阿媽，但佢嘅顧客係你。你將佢裝喺佢部電話上面，你成個教學得一句：<em>「你就當同我哋傾偈咁用，好似同人講嘢咁，仲可以 send 相。我已經幫你裝好，就係咁嘅樣。」</em>垃圾郵件、信件、呢筆收費係乜嘢意思：呢啲而家由個 app 處理。留返畀你嘅，得返啲要你判斷嘅事。",
+    "fam2H": "一個記喺佢部電話上面嘅屋企人",
+    "fam2P": "如果佢想，Talkmy 可以記住一位屋企人，幫手嗰陣用，由佢自己喺通訊錄入面揀，只係保存喺佢部電話上面嗰個膠囊入面。當有啲嘢要人確認嗰陣，Talkmy 可以講出呢個人嘅名，提議佢打電話畀佢。Talkmy 絕對唔會自己去聯絡佢哋。佢哋淨係要問 Talkmy 就得。",
+    "fnd1H": "用愛做出嚟",
+    "fnd1Quote": "「呢個 app 係用愛做出嚟嘅，係創辦人對佢父母嘅愛。每一個決定都經過認真諗過，每一個都通過真實測試。」",
+    "fnd2H": "佢識嘅形狀",
+    "fnd2Quote": "「我將佢雕成我唯一識嘅形狀，堅強聰明嘅移民父母，佢哋被隔開，攞唔到身邊環境最好嘅嘢。」",
+    "footerPrivacy": "私隱政策",
+    "footerTag": "talkmy™，人人都用得嘅 AI。",
+    "footerWhitepaper": "白皮書",
+    "hearBtn": "大聲聽答案",
+    "hearHello": "你好！我係 Talkmy。㩒住個大大個黃色掣，直接講出你想要乜。",
+    "hearNote": "當佢開口問問題嗰陣，Talkmy 會喺個 app 入面大聲答佢。呢個掣都可以等你喺呢度聽到上一個答案。",
+    "hello": "你好！我係 Talkmy。㩒住個大大個黃色掣，好似同朋友傾偈咁，直接講出你想要乜。",
+    "heroCardTag": "人人都用得嘅 AI。",
+    "iosBig": "下載",
+    "iosSmall": "在 App Store",
+    "langGroupAria": "揀標題語言",
+    "listening": "聽緊…",
+    "navAria": "頁面欄目",
+    "navWhitepaper": "白皮書",
+    "nextAria": "下一張",
+    "phoneAria": "Talkmy 手機示意圖：一段簡單對話、一個打字欄，同埋圖片同傾偈兩個大掣",
+    "pictureBtn": "圖片",
+    "pillAriaToDark": "而家係淺色模式。轉去深色模式。",
+    "pillAriaToLight": "而家係深色模式。轉去淺色模式。",
+    "pillDark": "深色模式，㩒一下轉淺色",
+    "pillLight": "淺色模式，㩒一下轉深色",
+    "playBig": "獲取",
+    "playSmall": "在 Google Play",
+    "prevAria": "上一張",
+    "q1": "晚飯用雞肉同飯可以煮乜嘢？",
+    "q2": "幫我搵啲得意狗狗玩緊嘅片。",
+    "q3": "帶我去最近嗰間超市。",
+    "q4": "瞓覺之前講個短故事畀我聽。",
+    "qd1": "「晚飯用雞肉同飯可以煮乜嘢？」",
+    "qd2": "「幫我搵啲得意狗狗玩緊嘅片。」",
+    "qd3": "「帶我去最近嗰間超市。」",
+    "qd4": "「瞓覺之前講個短故事畀我聽。」",
+    "replayAria": "大聲聽呢個答案",
+    "s1Sub": "真係就係咁簡單，而且全部都喺背後搞掂。就好似變魔術咁。",
+    "s1Title": "三個簡單步驟。",
+    "s2Sub": "傾下你父母最近點呀，唔好淨係講佢哋有咩事要做。",
+    "s2Title": "寫畀啲仔女",
+    "s3Sub": "呢個 app 點解會存在，用佢自己嘅說話講。",
+    "s3Title": "創辦人嘅說話",
+    "shareBubble": "分享 Talkmy",
+    "slide1Aria": "點用",
+    "slide2Aria": "畀屋企人",
+    "slide3Aria": "創辦人嘅說話",
+    "step1H": "搵到個黃色氣泡",
+    "step1P": "主畫面上面得一個萬壽菊黃色圖示。部電話上面冇其他嘢係呢隻色，所以唔使瞇埋眼喺一排排差唔多嘅藍色格仔入面搵。",
+    "step2H": "好似平時講嘢咁講出嚟",
+    "step2P": "㩒住傾偈掣講嘢就得：任何速度、任何口音、任何語言。剩低嘅交畀 Talkmy。問法冇啱錯之分。",
+    "step3H": "佢會大聲答你",
+    "step3P": "把聲好清楚，用詞好簡單，熒幕上面啲字都夠大，伸直隻手都睇得清楚。用同一個方法再問都得。",
+    "talkBtn": "傾偈",
+    "tryIntro": "唔會彈出鍵盤，唔會打開設定。佢㩒住一個大大個黃色掣，講出自己想要乜：試下呢啲示範問題，就好似平時開口問咁。",
+    "tryTitle": "試下好似佢咁用",
+    "typeHere": "喺呢度打字…",
+    "contactMain": "聯絡我哋",
+    "contactSub": "或者問吓 Talkmy",
+    "say": "zh-HK"
+  }
+};
+
+        var LANG_KEY = "talkmy-lang";
+        var cur = "en";
+        try { var savedLang = localStorage.getItem(LANG_KEY); if (savedLang && I18N[savedLang]) cur = savedLang; } catch (e) {}
+        function T() { return I18N[cur]; }
+        function sayCode() { return T().say || cur; }
 
         /* ---------- theme: device by default, the top pill is a real switch ---------- */
         var mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -774,36 +1746,40 @@
         }
         function renderMode() {
           var eff = effectiveTheme();
-          pillText.textContent = (eff === "dark" ? "Dark" : "Light") + " mode · tap for " + (eff === "dark" ? "light" : "dark");
+          var t = T();
+          pillText.textContent = eff === "dark" ? t.pillDark : t.pillLight;
           pill.classList.toggle("is-dark", eff === "dark");
-          pill.setAttribute("aria-label", "This page is in " + eff + " mode. Switch to " + (eff === "dark" ? "light" : "dark") + " mode.");
+          pill.setAttribute("aria-label", eff === "dark" ? t.pillAriaToLight : t.pillAriaToDark);
         }
         pill.addEventListener("click", function () { setTheme(effectiveTheme() === "dark" ? "light" : "dark"); });
         if (mq.addEventListener) mq.addEventListener("change", renderMode);
-        renderMode();
+
+        /* ---------- speech: answers are spoken in the selected language ---------- */
+        function speak(text, lang) {
+          if (!text || !("speechSynthesis" in window)) return;
+          window.speechSynthesis.cancel();
+          var u = new SpeechSynthesisUtterance(text);
+          u.rate = 0.98;
+          u.lang = lang || sayCode();
+          window.speechSynthesis.speak(u);
+        }
 
         /* ---------- talk demo ---------- */
-        var answers = {
-          "What can I make for dinner with chicken and rice?": "A lovely one-pan dinner: cook the rice, brown the chicken with a little garlic, then stir them together with frozen peas and a squeeze of lemon. Ready in about half an hour, and I can walk you through it step by step, out loud.",
-          "Find me a video of cute puppies playing.": "Here is what happens in the app: Talkmy shows a big card with those words on it. Tap the card, or just say yes, and YouTube opens with the search already done, so the puppies are right there.",
-          "Take me to the Costco in Folsom.": "Talkmy shows a big card that reads the place back to you: the Costco in Folsom. Tap the card, or say yes, and Maps opens with the driving route ready. Your last tap there is GO, when you are ready.",
-          "Tell me a short story before bed.": "Once there was a lighthouse keeper who left the lamp on every night for a little boat that always passed at nine. One foggy evening the boat was late, but the light waited, and so did he, and at last… would you like the rest tomorrow night?"
-        };
         var chat = document.getElementById("chat");
         var wave = document.getElementById("wave");
         var talkBtn = document.getElementById("talkBtn");
         var talkLabel = document.getElementById("talkBtnLabel");
         var busy = false;
-        var lastAnswer = "";
+        var lastQi = -1;
 
-        var SPEAKER_SVG = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6.5 9H3v6h3.5L11 19V5z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M15 9.5a4 4 0 0 1 0 5\"/><path d=\"M17.5 7a7.5 7.5 0 0 1 0 10\"/></svg>";
-        function speak(text) {
-          if (!text || !("speechSynthesis" in window)) return;
-          window.speechSynthesis.cancel();
-          var u = new SpeechSynthesisUtterance(text);
-          u.rate = 0.98;
-          window.speechSynthesis.speak(u);
+        function qa() {
+          var t = T();
+          return [
+            { q: t.q1, a: t.a1 }, { q: t.q2, a: t.a2 },
+            { q: t.q3, a: t.a3 }, { q: t.q4, a: t.a4 }
+          ];
         }
+        var SPEAKER_SVG = "<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11 5 6.5 9H3v6h3.5L11 19V5z\" fill=\"currentColor\" stroke=\"none\"/><path d=\"M15 9.5a4 4 0 0 1 0 5\"/><path d=\"M17.5 7a7.5 7.5 0 0 1 0 10\"/></svg>";
         function addMsg(text, who) {
           var d = document.createElement("div");
           d.className = "msg " + who;
@@ -811,10 +1787,11 @@
           if (who === "ai") {
             var row = document.createElement("div");
             row.className = "msg-row";
+            row.setAttribute("data-say", sayCode());
             var b = document.createElement("button");
             b.type = "button";
             b.className = "replay-btn";
-            b.setAttribute("aria-label", "Hear this answer out loud");
+            b.setAttribute("aria-label", T().replayAria);
             b.innerHTML = SPEAKER_SVG;
             row.appendChild(d);
             row.appendChild(b);
@@ -830,7 +1807,7 @@
           if (!b) return;
           var row = b.closest(".msg-row");
           var m = row ? row.querySelector(".msg") : null;
-          if (m) speak(m.textContent);
+          if (m) speak(m.textContent, row.getAttribute("data-say") || sayCode());
         });
         function typeAnswer(text) {
           var d = addMsg("", "ai");
@@ -842,161 +1819,125 @@
             if (i >= text.length) { clearInterval(timer); busy = false; }
           }, 18);
         }
-        function ask(q) {
-          if (busy || !answers[q]) return;
+        function ask(qi) {
+          if (busy) return;
+          var pair = qa()[qi];
+          if (!pair) return;
           busy = true;
+          lastQi = qi;
           talkBtn.classList.add("listening");
-          talkLabel.textContent = "Listening…";
+          talkLabel.textContent = T().listening;
           wave.classList.add("on");
           setTimeout(function () {
             wave.classList.remove("on");
             talkBtn.classList.remove("listening");
-            talkLabel.textContent = "Talk";
-            addMsg(q, "user");
-            lastAnswer = answers[q];
-            setTimeout(function () { typeAnswer(lastAnswer); }, 450);
+            talkLabel.textContent = T().talkBtn;
+            addMsg(pair.q, "user");
+            setTimeout(function () { typeAnswer(pair.a); }, 450);
           }, 1100);
         }
+        var chipEls = Array.prototype.slice.call(document.querySelectorAll(".chip"));
         document.getElementById("chips").addEventListener("click", function (e) {
           var chip = e.target.closest(".chip");
-          if (chip) ask(chip.getAttribute("data-q"));
+          if (chip) ask(parseInt(chip.getAttribute("data-qi"), 10));
         });
         talkBtn.addEventListener("click", function () {
-          var keys = Object.keys(answers);
-          ask(keys[Math.floor(Math.random() * keys.length)]);
+          ask(Math.floor(Math.random() * qa().length));
         });
 
         /* ---------- hear it out loud ---------- */
-        document.getElementById("hearBtn").addEventListener("click", function () {
-          speak(lastAnswer || "Hello! I\u2019m Talkmy. Hold the big yellow button and just say what you need.");
+        var hearBtn = document.getElementById("hearBtn");
+        hearBtn.addEventListener("click", function () {
+          if (lastQi >= 0) speak(qa()[lastQi].a);
+          else speak(T().hearHello);
         });
 
-        /* ---------- floating download bar: store links ----------
-           Both buttons point at https://talkmy.ai today, the same holding target the
-           app's own share link uses. Swap these two values to the real App Store and
-           Google Play URLs the day the listings go live. Nothing else needs to change. */
+        /* ---------- store links ----------
+           All four store buttons (white twins in the nav, black pair in the
+           download bar) point at https://talkmy.ai today, the same holding
+           target the app's own share link uses. Swap these two values to the
+           real App Store and Google Play URLs the day the listings go live.
+           Nothing else needs to change. */
         var STORE_LINKS = { ios: "https://talkmy.ai", android: "https://talkmy.ai" };
         document.getElementById("storeIos").href = STORE_LINKS.ios;
         document.getElementById("storeAndroid").href = STORE_LINKS.android;
+        document.getElementById("storeIosNav").href = STORE_LINKS.ios;
+        document.getElementById("storeAndroidNav").href = STORE_LINKS.android;
 
-        /* ---------- hero language bubbles ----------
-           Best-effort translations, written for this page. They owe native review
-           before being treated as final, the same caveat as the app's own strings.
-           The English entry mirrors the published hero word for word. */
-        var I18N = {
-          en: { lang: "en",
-            title: "The AI for <span class=\"hl\">everyone.</span>",
-            lead: "Talkmy™ is the assistant you <strong>talk to</strong>, out loud, in your own words, in your own language. No typing needed. No menus to hunt through. No password gymnastics. If you can hold a conversation, you can use Talkmy.",
-            b1: "Hold the big Talk button. A Picture button sits beside it.",
-            b2: "Answers spoken out loud, in big clear words.",
-            b3: "Made first for seniors, so it works for everyone.",
-            cta: "Try talking to it",
-            bubble: "How do I send this photo to my son?" },
-          es: { lang: "es",
-            title: "La IA para <span class=\"hl\">todos.</span>",
-            lead: "Talkmy™ es el asistente con el que <strong>hablas</strong>, en voz alta, con tus propias palabras, en tu propio idioma. No hace falta escribir. No hay menús que buscar. No hay contraseñas complicadas. Si puedes mantener una conversación, puedes usar Talkmy.",
-            b1: "Mantén pulsado el botón grande Hablar. A su lado hay un botón de Foto.",
-            b2: "Respuestas en voz alta, con palabras grandes y claras.",
-            b3: "Hecho primero para las personas mayores, para que funcione para todos.",
-            cta: "Prueba a hablarle",
-            bubble: "¿Cómo le envío esta foto a mi hijo?" },
-          zh: { lang: "zh-Hans",
-            title: "为<span class=\"hl\">每个人</span>而设的人工智能。",
-            lead: "Talkmy™ 是您<strong>说话</strong>就能用的助手，出声说，用您自己的话，用您自己的语言。不用打字。不用翻找菜单。不用折腾密码。只要您能聊天，就能用 Talkmy。",
-            b1: "按住大大的“说话”按钮。旁边是“照片”按钮。",
-            b2: "答案会读出声来，字又大又清楚。",
-            b3: "先为老年人而造，所以人人都能用。",
-            cta: "试着跟它说话",
-            bubble: "这张照片怎么发给我儿子？" },
-          vi: { lang: "vi",
-            title: "AI dành cho <span class=\"hl\">mọi người.</span>",
-            lead: "Talkmy™ là trợ lý mà bạn <strong>nói chuyện</strong> cùng, nói thành tiếng, bằng lời của bạn, bằng ngôn ngữ của bạn. Không cần gõ chữ. Không cần tìm trong menu. Không cần loay hoay với mật khẩu. Nếu bạn trò chuyện được, bạn dùng được Talkmy.",
-            b1: "Giữ nút Nói lớn. Bên cạnh là nút Ảnh.",
-            b2: "Câu trả lời được đọc thành tiếng, chữ to và rõ.",
-            b3: "Làm cho người lớn tuổi trước, nên ai cũng dùng được.",
-            cta: "Thử nói với nó",
-            bubble: "Làm sao gửi tấm ảnh này cho con trai tôi?" },
-          ko: { lang: "ko",
-            title: "모두를 위한 <span class=\"hl\">AI.</span>",
-            lead: "Talkmy™는 큰 소리로, 내 말로, 내 언어로 <strong>말하는</strong> 비서입니다. 글자를 칠 필요가 없습니다. 메뉴를 찾을 필요도 없습니다. 비밀번호로 애먹을 일도 없습니다. 대화를 나눌 수 있으면 Talkmy를 쓸 수 있습니다.",
-            b1: "큰 말하기 버튼을 누르고 계세요. 옆에는 사진 버튼이 있습니다.",
-            b2: "답은 큰 소리로, 크고 또렷한 글자로 나옵니다.",
-            b3: "어르신을 먼저 생각해 만들었기에 누구나 쓸 수 있습니다.",
-            cta: "말을 걸어 보세요",
-            bubble: "이 사진을 아들에게 어떻게 보내나요?" },
-          ja: { lang: "ja",
-            title: "<span class=\"hl\">みんな</span>のためのAI。",
-            lead: "Talkmy™は、声に出して、自分の言葉で、自分の言語で<strong>話しかける</strong>アシスタントです。文字入力はいりません。メニューを探す必要もありません。パスワードに悩むこともありません。会話ができる人なら、誰でも使えます。",
-            b1: "大きな「話す」ボタンを押し続けてください。隣には「写真」ボタンがあります。",
-            b2: "答えは音声で読み上げられ、大きなはっきりした文字でも表示されます。",
-            b3: "まず高齢の方のために作ったので、誰にでも使えます。",
-            cta: "話しかけてみる",
-            bubble: "この写真を息子に送るにはどうすればいい？" },
-          fr: { lang: "fr",
-            title: "L'IA pour <span class=\"hl\">tout le monde.</span>",
-            lead: "Talkmy™ est l'assistant à qui vous <strong>parlez</strong>, à voix haute, avec vos mots, dans votre langue. Pas besoin de taper. Pas de menus à chercher. Pas de mots de passe compliqués. Si vous pouvez tenir une conversation, vous pouvez utiliser Talkmy.",
-            b1: "Maintenez le grand bouton Parler. Un bouton Photo se trouve juste à côté.",
-            b2: "Des réponses lues à voix haute, en gros caractères bien lisibles.",
-            b3: "Conçu d'abord pour les aînés, il convient donc à tout le monde.",
-            cta: "Essayez de lui parler",
-            bubble: "Comment envoyer cette photo à mon fils ?" },
-          de: { lang: "de",
-            title: "Die KI für <span class=\"hl\">alle.</span>",
-            lead: "Talkmy™ ist der Assistent, mit dem Sie <strong>sprechen</strong>, laut, in Ihren eigenen Worten, in Ihrer eigenen Sprache. Kein Tippen nötig. Keine Menüs zum Suchen. Keine Passwort-Turnerei. Wenn Sie sich unterhalten können, können Sie Talkmy nutzen.",
-            b1: "Halten Sie die große Sprechen-Taste. Daneben sitzt eine Foto-Taste.",
-            b2: "Antworten werden laut vorgelesen, in großen, klaren Worten.",
-            b3: "Zuerst für Senioren gebaut, darum funktioniert es für alle.",
-            cta: "Sprechen Sie einfach los",
-            bubble: "Wie schicke ich dieses Foto an meinen Sohn?" },
-          pt: { lang: "pt",
-            title: "A IA para <span class=\"hl\">todo mundo.</span>",
-            lead: "Talkmy™ é o assistente com quem você <strong>fala</strong>, em voz alta, com as suas palavras, no seu idioma. Não precisa digitar. Nada de menus para procurar. Nada de senhas complicadas. Se você consegue conversar, consegue usar o Talkmy.",
-            b1: "Segure o botão grande Falar. Ao lado fica o botão Foto.",
-            b2: "Respostas faladas em voz alta, com palavras grandes e claras.",
-            b3: "Feito primeiro para os mais velhos, por isso funciona para todo mundo.",
-            cta: "Experimente falar com ele",
-            bubble: "Como envio esta foto para o meu filho?" },
-          yue: { lang: "yue",
-            title: "為<span class=\"hl\">每一個人</span>而設嘅AI。",
-            lead: "Talkmy™ 係一個你可以用把口<strong>傾</strong>嘅助手，出聲講，用你自己嘅說話，用你自己嘅語言。唔使打字。唔使周圍揾選單。唔使記密碼。只要你識傾偈，就用得 Talkmy。",
-            b1: "㩒住個大「講嘢」掣。隔籬有個「相片」掣。",
-            b2: "答案會讀出嚟，字又大又清楚。",
-            b3: "首先為長者而做，所以個個都用得。",
-            cta: "試下同佢傾偈",
-            bubble: "呢張相點樣傳畀我個仔？" }
-        };
+        /* ---------- language wiring: one bubble tap swaps the whole page ---------- */
         var heroTitle = document.getElementById("heroTitle");
         var heroLead = document.getElementById("heroLead");
         var heroCta = document.getElementById("heroCta");
         var heroBubble = document.getElementById("heroBubble");
         var heroPointEls = document.getElementById("heroPoints").children;
+        var shareBubble = document.getElementById("shareBubble");
+        var helloMsg = document.getElementById("helloMsg");
         var langBtns = Array.prototype.slice.call(document.querySelectorAll(".lang-bubble"));
-        var fadeTimer = null;
-        function applyLang(code) {
-          var t = I18N[code];
-          if (!t) return;
-          langBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lang") === code ? "true" : "false"); });
-          var targets = document.querySelectorAll(".hero-fade");
-          var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-          function swap() {
-            heroTitle.innerHTML = t.title;
-            heroLead.innerHTML = t.lead;
-            heroPointEls[0].textContent = t.b1;
-            heroPointEls[1].textContent = t.b2;
-            heroPointEls[2].textContent = t.b3;
-            heroCta.textContent = t.cta;
-            heroBubble.textContent = t.bubble;
-            document.documentElement.setAttribute("lang", t.lang);
-            targets.forEach(function (el) { el.classList.remove("fading"); });
+
+        function setIconText(el, text) {
+          if (!el) return;
+          for (var i = el.childNodes.length - 1; i >= 0; i--) {
+            var n = el.childNodes[i];
+            if (n.nodeType === 3) { n.nodeValue = " " + text; return; }
           }
-          if (reduce) { swap(); return; }
-          targets.forEach(function (el) { el.classList.add("fading"); });
+          el.appendChild(document.createTextNode(" " + text));
+        }
+        function applyStrings() {
+          var t = T();
+          document.querySelectorAll("[data-i18n]").forEach(function (el) {
+            var v = t[el.getAttribute("data-i18n")];
+            if (v != null) el.textContent = v;
+          });
+          document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+            var v = t[el.getAttribute("data-i18n-html")];
+            if (v != null) el.innerHTML = v;
+          });
+          document.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
+            var v = t[el.getAttribute("data-i18n-aria")];
+            if (v != null) el.setAttribute("aria-label", v);
+          });
+          heroTitle.innerHTML = t.title;
+          heroLead.innerHTML = t.lead;
+          heroPointEls[0].textContent = t.b1;
+          heroPointEls[1].textContent = t.b2;
+          heroPointEls[2].textContent = t.b3;
+          heroCta.textContent = t.cta;
+          heroBubble.textContent = t.bubble;
+          setIconText(shareBubble, t.shareBubble);
+          setIconText(hearBtn, t.hearBtn);
+          if (!busy) talkLabel.textContent = t.talkBtn;
+          var qds = [t.qd1, t.qd2, t.qd3, t.qd4];
+          chipEls.forEach(function (chip, i) {
+            chip.innerHTML = "<span class=\"q\">" + t.askLabel + "</span> " + qds[i];
+          });
+          if (helloMsg) {
+            var row = helloMsg.closest(".msg-row");
+            if (row) row.setAttribute("data-say", sayCode());
+          }
+          document.documentElement.setAttribute("lang", t.lang);
+          renderMode();
+        }
+        var fadeTimer = null;
+        function applyLang(code, instant) {
+          if (!I18N[code]) return;
+          cur = code;
+          try { localStorage.setItem(LANG_KEY, code); } catch (e) { /* storage unavailable */ }
+          langBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.getAttribute("data-lang") === code ? "true" : "false"); });
+          var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          if (instant || reduce) { applyStrings(); return; }
+          document.body.classList.add("lang-fading");
           if (fadeTimer) clearTimeout(fadeTimer);
-          fadeTimer = setTimeout(swap, 300);
+          fadeTimer = setTimeout(function () {
+            applyStrings();
+            document.body.classList.remove("lang-fading");
+          }, 260);
         }
         langBtns.forEach(function (b) {
           b.addEventListener("click", function () { applyLang(b.getAttribute("data-lang")); });
         });
+        applyLang(cur, true);
+        document.documentElement.classList.remove("lang-pending");
+        renderMode();
 
         /* ---------- stories carousel ---------- */
         var carRoot = document.getElementById("stories");
