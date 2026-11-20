@@ -578,15 +578,16 @@
         font-family: "Nunito", sans-serif; font-weight: 900; font-size: 1.5rem;
         display: flex; align-items: center; gap: 9px; color: var(--ink);
       }
+      .phone-head .ph-icon { display: block; border-radius: 7px; }
       .share-bubble {
-        position: absolute; left: 2px; top: calc(100% + 4px); z-index: 3;
+        position: static; margin-left: auto; flex: none;
         background: var(--marigold); color: #26231F; border: 2px solid #26231F; border-radius: 999px;
         font-family: "Nunito", sans-serif; font-weight: 800; font-size: .92rem; padding: 5px 13px;
         display: inline-flex; gap: 6px; align-items: center; white-space: nowrap;
         box-shadow: 0 4px 10px rgba(90,62,0,.25); animation: sharePulse 1.7s ease-in-out infinite;
       }
       @keyframes sharePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.055); } }
-      .chat { padding-top: 38px; }
+      .chat { padding-top: 16px; }
       .msg-row { display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 97%; width: 100%; }
       .msg-row .msg.ai { flex: 1 1 auto; min-width: 0; }
       /* Demo extras (2026-11-18): tap an answer bubble to magnify it, the way
@@ -599,6 +600,58 @@
       .msg-photo img { display: block; width: 100%; height: auto; border-radius: 15px 15px 4px 15px; }
       .phone-head .ph-word { cursor: pointer; }
       .share-bubble.shared { animation: none; }
+      /* The share card (2026-11-19, website share parity with the app's
+         build 28 card): tapping the pill or the wordmark pops the card
+         inside the phone, the QR large on white, the copy-link row under
+         it, and one marigold button that sends the link onward. The QR
+         encodes the door with the website square's own source tag, s=web,
+         the third tag in the door's counting design beside the app
+         square's and the printed card's. A tap on the dimmed backdrop or
+         the close button puts the card away. */
+      .phone-screen { position: relative; }
+      .share-card-backdrop {
+        position: absolute; inset: 0; z-index: 6; display: none;
+        background: rgba(38, 35, 31, .45); padding: 20px 16px;
+        align-items: flex-start; justify-content: center; overflow: hidden auto;
+      }
+      .share-card-backdrop.open { display: flex; }
+      .share-card {
+        position: relative; width: 100%; max-width: 302px;
+        background: var(--surface); border: 2px solid var(--line); border-radius: 24px;
+        box-shadow: var(--shadow); padding: 24px 18px 18px;
+        display: flex; flex-direction: column; gap: 14px;
+      }
+      .share-card .qr-box { background: #FFFFFF; border-radius: 18px; padding: 14px; }
+      .share-card .qr-box svg { display: block; width: 100%; height: auto; }
+      .share-copy-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        background: var(--surface-2); color: var(--ink); border: none; cursor: pointer;
+        border-radius: 16px; padding: 14px 16px; width: 100%;
+        font-family: "Nunito", sans-serif; font-size: 1.02rem; text-align: left;
+      }
+      .share-copy-row .share-link-text { font-weight: 600; }
+      .share-copy-row .share-copy-label { font-weight: 800; white-space: nowrap; }
+      .share-send-btn {
+        background: var(--marigold); color: #26231F; border: none; cursor: pointer;
+        border-radius: 16px; padding: 16px; width: 100%;
+        font-family: "Nunito", sans-serif; font-weight: 800; font-size: 1.08rem;
+      }
+      .share-close {
+        position: absolute; top: 4px; right: 8px; z-index: 1;
+        background: none; border: none; cursor: pointer; padding: 6px;
+        color: var(--ink-soft); font-size: 1.35rem; line-height: 1;
+        font-family: "Nunito", sans-serif;
+      }
+      @media (max-width: 640px) {
+        /* The header row on a narrow phone: the wordmark and the pill
+           shrink one step together, so the longest pill labels
+           (Portuguese, Spanish) still end at the row's right edge,
+           level with the wordmark, instead of clipping at the frame. */
+        .phone-head .ph-word { font-size: 1.1rem; gap: 6px; }
+        .phone-head .ph-icon { width: 24px; height: 24px; }
+        .share-bubble { font-size: .76rem; padding: 6px 10px; gap: 5px; }
+        .share-bubble svg { width: 12px; height: 12px; }
+      }
       .replay-btn {
         flex: none; width: 44px; height: 44px; min-height: 44px; border-radius: 50%; margin-top: 4px;
         background: var(--marigold); border: 2.5px solid #26231F; color: #26231F; padding: 0;
@@ -806,7 +859,7 @@
             <div class="phone-notch" aria-hidden="true"><i></i></div>
             <div class="phone-screen">
               <div class="phone-head">
-                <p class="ph-word" id="phWord"><svg width="30" height="24" viewBox="0 0 240 186" aria-hidden="true"><path fill="#FFB81C" stroke="#26231F" stroke-width="10" stroke-linejoin="round" d="M42 10h156a32 32 0 0 1 32 32v70a32 32 0 0 1-32 32h-24l-36 30a11 11 0 0 1-18-8v-22H42a32 32 0 0 1-32-32V42a32 32 0 0 1 32-32z"/></svg> Talkmy</p>
+                <p class="ph-word" id="phWord"><img class="ph-icon" src="data:image/webp;base64,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" alt="" width="30" height="30" /> Talkmy</p>
                 <button type="button" class="share-bubble" id="shareBubble"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m8 7 4-4 4 4"/><path d="M5 13v7h14v-7"/></svg> Share Talkmy</button>
               </div>
               <div class="chat" id="chat" aria-live="polite">
@@ -826,6 +879,14 @@
                   <svg viewBox="0 0 24 24" fill="none" stroke="#26231F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11" rx="3" fill="#26231F" stroke="none"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/><path d="M12 18v3.5"/></svg>
                   <span id="talkBtnLabel">Talk</span>
                 </button>
+              </div>
+              <div class="share-card-backdrop" id="shareCardBackdrop">
+                <div class="share-card" role="dialog" aria-label="Share Talkmy" data-i18n-aria="shareBubble" id="shareCard">
+                  <button type="button" class="share-close" id="shareCardClose" aria-label="Close" data-i18n-aria="shareClose">&times;</button>
+                  <div class="qr-box"><svg class="qr" role="img" aria-label="talkmy.ai/get" viewBox="0 0 29 29" xmlns="http://www.w3.org/2000/svg"><path d="M0,0H1V1H0zM1,0H2V1H1zM2,0H3V1H2zM3,0H4V1H3zM4,0H5V1H4zM5,0H6V1H5zM6,0H7V1H6zM10,0H11V1H10zM11,0H12V1H11zM15,0H16V1H15zM16,0H17V1H16zM19,0H20V1H19zM20,0H21V1H20zM22,0H23V1H22zM23,0H24V1H23zM24,0H25V1H24zM25,0H26V1H25zM26,0H27V1H26zM27,0H28V1H27zM28,0H29V1H28zM0,1H1V2H0zM6,1H7V2H6zM10,1H11V2H10zM11,1H12V2H11zM12,1H13V2H12zM17,1H18V2H17zM18,1H19V2H18zM20,1H21V2H20zM22,1H23V2H22zM28,1H29V2H28zM0,2H1V3H0zM2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM6,2H7V3H6zM8,2H9V3H8zM9,2H10V3H9zM12,2H13V3H12zM14,2H15V3H14zM16,2H17V3H16zM19,2H20V3H19zM20,2H21V3H20zM22,2H23V3H22zM24,2H25V3H24zM25,2H26V3H25zM26,2H27V3H26zM28,2H29V3H28zM0,3H1V4H0zM2,3H3V4H2zM3,3H4V4H3zM4,3H5V4H4zM6,3H7V4H6zM8,3H9V4H8zM10,3H11V4H10zM11,3H12V4H11zM12,3H13V4H12zM16,3H17V4H16zM17,3H18V4H17zM18,3H19V4H18zM19,3H20V4H19zM20,3H21V4H20zM22,3H23V4H22zM24,3H25V4H24zM25,3H26V4H25zM26,3H27V4H26zM28,3H29V4H28zM0,4H1V5H0zM2,4H3V5H2zM3,4H4V5H3zM4,4H5V5H4zM6,4H7V5H6zM8,4H9V5H8zM9,4H10V5H9zM11,4H12V5H11zM12,4H13V5H12zM13,4H14V5H13zM14,4H15V5H14zM15,4H16V5H15zM17,4H18V5H17zM19,4H20V5H19zM22,4H23V5H22zM24,4H25V5H24zM25,4H26V5H25zM26,4H27V5H26zM28,4H29V5H28zM0,5H1V6H0zM6,5H7V6H6zM8,5H9V6H8zM10,5H11V6H10zM11,5H12V6H11zM12,5H13V6H12zM13,5H14V6H13zM14,5H15V6H14zM15,5H16V6H15zM16,5H17V6H16zM22,5H23V6H22zM28,5H29V6H28zM0,6H1V7H0zM1,6H2V7H1zM2,6H3V7H2zM3,6H4V7H3zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM10,6H11V7H10zM12,6H13V7H12zM14,6H15V7H14zM16,6H17V7H16zM18,6H19V7H18zM20,6H21V7H20zM22,6H23V7H22zM23,6H24V7H23zM24,6H25V7H24zM25,6H26V7H25zM26,6H27V7H26zM27,6H28V7H27zM28,6H29V7H28zM8,7H9V8H8zM10,7H11V8H10zM12,7H13V8H12zM13,7H14V8H13zM15,7H16V8H15zM20,7H21V8H20zM0,8H1V9H0zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM9,8H10V9H9zM12,8H13V9H12zM14,8H15V9H14zM15,8H16V9H15zM17,8H18V9H17zM20,8H21V9H20zM22,8H23V9H22zM23,8H24V9H23zM24,8H25V9H24zM25,8H26V9H25zM26,8H27V9H26zM0,9H1V10H0zM2,9H3V10H2zM3,9H4V10H3zM5,9H6V10H5zM7,9H8V10H7zM11,9H12V10H11zM12,9H13V10H12zM15,9H16V10H15zM16,9H17V10H16zM19,9H20V10H19zM20,9H21V10H20zM21,9H22V10H21zM22,9H23V10H22zM23,9H24V10H23zM24,9H25V10H24zM28,9H29V10H28zM1,10H2V11H1zM3,10H4V11H3zM6,10H7V11H6zM7,10H8V11H7zM8,10H9V11H8zM9,10H10V11H9zM10,10H11V11H10zM12,10H13V11H12zM17,10H18V11H17zM20,10H21V11H20zM22,10H23V11H22zM23,10H24V11H23zM0,11H1V12H0zM7,11H8V12H7zM12,11H13V12H12zM14,11H15V12H14zM16,11H17V12H16zM20,11H21V12H20zM25,11H26V12H25zM27,11H28V12H27zM0,12H1V13H0zM1,12H2V13H1zM2,12H3V13H2zM4,12H5V13H4zM6,12H7V13H6zM7,12H8V13H7zM12,12H13V13H12zM16,12H17V13H16zM17,12H18V13H17zM25,12H26V13H25zM26,12H27V13H26zM1,13H2V14H1zM2,13H3V14H2zM5,13H6V14H5zM11,13H12V14H11zM13,13H14V14H13zM14,13H15V14H14zM15,13H16V14H15zM18,13H19V14H18zM19,13H20V14H19zM20,13H21V14H20zM22,13H23V14H22zM23,13H24V14H23zM24,13H25V14H24zM28,13H29V14H28zM0,14H1V15H0zM1,14H2V15H1zM2,14H3V15H2zM3,14H4V15H3zM5,14H6V15H5zM6,14H7V15H6zM9,14H10V15H9zM13,14H14V15H13zM14,14H15V15H14zM15,14H16V15H15zM16,14H17V15H16zM20,14H21V15H20zM21,14H22V15H21zM22,14H23V15H22zM24,14H25V15H24zM25,14H26V15H25zM26,14H27V15H26zM2,15H3V16H2zM3,15H4V16H3zM4,15H5V16H4zM7,15H8V16H7zM13,15H14V16H13zM15,15H16V16H15zM19,15H20V16H19zM20,15H21V16H20zM23,15H24V16H23zM27,15H28V16H27zM0,16H1V17H0zM1,16H2V17H1zM3,16H4V17H3zM6,16H7V17H6zM7,16H8V17H7zM9,16H10V17H9zM11,16H12V17H11zM14,16H15V17H14zM15,16H16V17H15zM17,16H18V17H17zM21,16H22V17H21zM25,16H26V17H25zM26,16H27V17H26zM0,17H1V18H0zM1,17H2V18H1zM2,17H3V18H2zM3,17H4V18H3zM5,17H6V18H5zM7,17H8V18H7zM9,17H10V18H9zM10,17H11V18H10zM11,17H12V18H11zM12,17H13V18H12zM15,17H16V18H15zM16,17H17V18H16zM18,17H19V18H18zM19,17H20V18H19zM20,17H21V18H20zM21,17H22V18H21zM22,17H23V18H22zM23,17H24V18H23zM24,17H25V18H24zM26,17H27V18H26zM28,17H29V18H28zM0,18H1V19H0zM4,18H5V19H4zM6,18H7V19H6zM8,18H9V19H8zM9,18H10V19H9zM10,18H11V19H10zM11,18H12V19H11zM12,18H13V19H12zM17,18H18V19H17zM18,18H19V19H18zM20,18H21V19H20zM22,18H23V19H22zM23,18H24V19H23zM24,18H25V19H24zM26,18H27V19H26zM0,19H1V20H0zM2,19H3V20H2zM3,19H4V20H3zM5,19H6V20H5zM7,19H8V20H7zM11,19H12V20H11zM12,19H13V20H12zM14,19H15V20H14zM16,19H17V20H16zM18,19H19V20H18zM19,19H20V20H19zM20,19H21V20H20zM21,19H22V20H21zM22,19H23V20H22zM24,19H25V20H24zM27,19H28V20H27zM0,20H1V21H0zM4,20H5V21H4zM5,20H6V21H5zM6,20H7V21H6zM10,20H11V21H10zM12,20H13V21H12zM16,20H17V21H16zM18,20H19V21H18zM19,20H20V21H19zM20,20H21V21H20zM21,20H22V21H21zM22,20H23V21H22zM23,20H24V21H23zM24,20H25V21H24zM26,20H27V21H26zM27,20H28V21H27zM28,20H29V21H28zM8,21H9V22H8zM13,21H14V22H13zM14,21H15V22H14zM15,21H16V22H15zM17,21H18V22H17zM18,21H19V22H18zM20,21H21V22H20zM24,21H25V22H24zM25,21H26V22H25zM26,21H27V22H26zM27,21H28V22H27zM28,21H29V22H28zM0,22H1V23H0zM1,22H2V23H1zM2,22H3V23H2zM3,22H4V23H3zM4,22H5V23H4zM5,22H6V23H5zM6,22H7V23H6zM10,22H11V23H10zM11,22H12V23H11zM13,22H14V23H13zM14,22H15V23H14zM15,22H16V23H15zM16,22H17V23H16zM17,22H18V23H17zM19,22H20V23H19zM20,22H21V23H20zM22,22H23V23H22zM24,22H25V23H24zM25,22H26V23H25zM26,22H27V23H26zM0,23H1V24H0zM6,23H7V24H6zM8,23H9V24H8zM12,23H13V24H12zM13,23H14V24H13zM15,23H16V24H15zM17,23H18V24H17zM18,23H19V24H18zM20,23H21V24H20zM24,23H25V24H24zM28,23H29V24H28zM0,24H1V25H0zM2,24H3V25H2zM3,24H4V25H3zM4,24H5V25H4zM6,24H7V25H6zM8,24H9V25H8zM9,24H10V25H9zM10,24H11V25H10zM11,24H12V25H11zM12,24H13V25H12zM14,24H15V25H14zM15,24H16V25H15zM20,24H21V25H20zM21,24H22V25H21zM22,24H23V25H22zM23,24H24V25H23zM24,24H25V25H24zM26,24H27V25H26zM27,24H28V25H27zM28,24H29V25H28zM0,25H1V26H0zM2,25H3V26H2zM3,25H4V26H3zM4,25H5V26H4zM6,25H7V26H6zM8,25H9V26H8zM11,25H12V26H11zM13,25H14V26H13zM15,25H16V26H15zM16,25H17V26H16zM18,25H19V26H18zM19,25H20V26H19zM25,25H26V26H25zM26,25H27V26H26zM0,26H1V27H0zM2,26H3V27H2zM3,26H4V27H3zM4,26H5V27H4zM6,26H7V27H6zM8,26H9V27H8zM13,26H14V27H13zM14,26H15V27H14zM18,26H19V27H18zM20,26H21V27H20zM21,26H22V27H21zM22,26H23V27H22zM23,26H24V27H23zM24,26H25V27H24zM25,26H26V27H25zM26,26H27V27H26zM27,26H28V27H27zM0,27H1V28H0zM6,27H7V28H6zM9,27H10V28H9zM12,27H13V28H12zM13,27H14V28H13zM14,27H15V28H14zM16,27H17V28H16zM20,27H21V28H20zM21,27H22V28H21zM24,27H25V28H24zM25,27H26V28H25zM27,27H28V28H27zM0,28H1V29H0zM1,28H2V29H1zM2,28H3V29H2zM3,28H4V29H3zM4,28H5V29H4zM5,28H6V29H5zM6,28H7V29H6zM8,28H9V29H8zM11,28H12V29H11zM12,28H13V29H12zM14,28H15V29H14zM16,28H17V29H16zM18,28H19V29H18zM19,28H20V29H19zM23,28H24V29H23zM24,28H25V29H24zM25,28H26V29H25zM26,28H27V29H26z" fill="#26231F" fill-rule="nonzero"/></svg></div>
+                  <button type="button" class="share-copy-row" id="shareCopyRow"><span class="share-link-text">talkmy.ai/get</span><span class="share-copy-label" id="shareCopyLabel" data-i18n="shareCopyLink">Copy link</span></button>
+                  <button type="button" class="share-send-btn" id="shareSendBtn" data-i18n="shareSendLink">Send the link</button>
+                </div>
               </div>
             </div>
           </div>
@@ -1034,6 +1095,10 @@
     "photoAlt": "Her photo of a pink hydrangea in full bloom",
     "shareText": "I've been using Talkmy. You just hold a button, talk in your own language, and it answers out loud. I think you might like it too.",
     "linkCopied": "Link copied",
+    "shareCopyLink": "Copy link",
+    "shareCopiedLink": "Link copied",
+    "shareSendLink": "Send the link",
+    "shareClose": "Close",
     "hearBtn": "Hear the answer out loud",
     "hearNote": "When she speaks her question, Talkmy answers out loud in the app. This button lets you hear the last answer here, too.",
     "hearHello": "Hello! I’m Talkmy. Hold the big yellow button and just say what you need.",
@@ -1110,6 +1175,10 @@
     "photoAlt": "Su foto de una hortensia rosa en plena floración",
     "shareText": "Estoy usando Talkmy. Solo mantienes pulsado un botón, hablas en tu propio idioma y te responde en voz alta. Creo que a ti también te puede gustar.",
     "linkCopied": "Enlace copiado",
+    "shareCopyLink": "Copiar enlace",
+    "shareCopiedLink": "Enlace copiado",
+    "shareSendLink": "Enviar el enlace",
+    "shareClose": "Cerrar",
     "askIntro": "Son cosas reales que la gente pregunta en voz alta, todos los días. Toca una y mira cómo responde Talkmy, con palabras sencillas y en letra lo bastante grande para leer sin gafas.",
     "askLabel": "Pregunta:",
     "askTitle": "Pregunta como una persona",
@@ -1213,6 +1282,10 @@
     "photoAlt": "她拍的一张粉色绣球花盛开的照片",
     "shareText": "我在用 Talkmy。只要按住一个按钮，用自己的语言说话，它就会大声回答你。我觉得你也会喜欢的。",
     "linkCopied": "链接已复制",
+    "shareCopyLink": "复制链接",
+    "shareCopiedLink": "链接已复制",
+    "shareSendLink": "发送链接",
+    "shareClose": "关闭",
     "askIntro": "这些都是人们每天会开口问的真实问题。点一下，看 Talkmy 用简单的话回答，字够大，不用戴眼镜也能看清。",
     "askLabel": "问：",
     "askTitle": "像对人说话一样问它",
@@ -1316,6 +1389,10 @@
     "photoAlt": "Ảnh bà chụp một bông cẩm tú cầu hồng đang nở rộ",
     "shareText": "Tôi đang dùng Talkmy. Bạn chỉ cần giữ một nút, nói bằng ngôn ngữ của mình, và nó sẽ trả lời thành tiếng. Tôi nghĩ bạn cũng sẽ thích.",
     "linkCopied": "Đã sao chép liên kết",
+    "shareCopyLink": "Sao chép liên kết",
+    "shareCopiedLink": "Đã sao chép liên kết",
+    "shareSendLink": "Gửi liên kết",
+    "shareClose": "Đóng",
     "askIntro": "Đây là những điều thật mà mọi người vẫn hỏi thành tiếng mỗi ngày. Chạm vào một câu và xem Talkmy trả lời, bằng lời dễ hiểu, chữ lớn đủ để đọc mà không cần kính.",
     "askLabel": "Hỏi:",
     "askTitle": "Cứ hỏi như nói với một người",
@@ -1419,6 +1496,10 @@
     "photoAlt": "활짝 핀 분홍 수국을 찍은 그녀의 사진",
     "shareText": "저는 Talkmy를 쓰고 있어요. 버튼 하나를 누르고 자기 언어로 말하면, 소리 내어 대답해 줘요. 당신도 마음에 드실 것 같아요.",
     "linkCopied": "링크가 복사되었어요",
+    "shareCopyLink": "링크 복사",
+    "shareCopiedLink": "링크가 복사되었습니다",
+    "shareSendLink": "링크 보내기",
+    "shareClose": "닫기",
     "askIntro": "매일 소리 내어 묻는, 실제 질문들이에요. 하나를 누르면 Talkmy가 안경 없이도 읽을 수 있을 만큼 크고 쉬운 말로 답하는 모습을 보실 수 있어요.",
     "askLabel": "질문:",
     "askTitle": "사람에게 묻듯이 물어보세요",
@@ -1522,6 +1603,10 @@
     "photoAlt": "彼女が撮った、満開のピンクのアジサイの写真",
     "shareText": "Talkmyを使っています。ボタンを押して自分の言葉で話すだけで、声で答えてくれます。あなたも気に入ると思います。",
     "linkCopied": "リンクをコピーしました",
+    "shareCopyLink": "リンクをコピー",
+    "shareCopiedLink": "リンクをコピーしました",
+    "shareSendLink": "リンクを送る",
+    "shareClose": "閉じる",
     "askIntro": "毎日声に出してたずねる、本当の質問です。ひとつタップすると、Talkmyがメガネなしでも読める大きさの、やさしい言葉で答えるのが見られます。",
     "askLabel": "質問：",
     "askTitle": "人にたずねるように、たずねてみましょう",
@@ -1625,6 +1710,10 @@
     "photoAlt": "Sa photo d'un hortensia rose en pleine floraison",
     "shareText": "J'utilise Talkmy. On tient un bouton, on parle dans sa propre langue, et il répond à voix haute. Je pense que cela pourrait vous plaire aussi.",
     "linkCopied": "Lien copié",
+    "shareCopyLink": "Copier le lien",
+    "shareCopiedLink": "Lien copié",
+    "shareSendLink": "Envoyer le lien",
+    "shareClose": "Fermer",
     "askIntro": "Ce sont de vraies choses que les gens demandent à voix haute, tous les jours. Touchez-en une et regardez Talkmy répondre, avec des mots simples, assez grands pour être lus sans lunettes.",
     "askLabel": "Demander :",
     "askTitle": "Demandez comme à une personne",
@@ -1728,6 +1817,10 @@
     "photoAlt": "Ihr Foto einer rosa Hortensie in voller Blüte",
     "shareText": "Ich benutze Talkmy. Man hält einfach einen Knopf gedrückt, spricht in seiner eigenen Sprache, und es antwortet laut. Ich glaube, das könnte dir auch gefallen.",
     "linkCopied": "Link kopiert",
+    "shareCopyLink": "Link kopieren",
+    "shareCopiedLink": "Link kopiert",
+    "shareSendLink": "Link senden",
+    "shareClose": "Schließen",
     "askIntro": "Das sind echte Dinge, die Menschen jeden Tag laut fragen. Tippen Sie auf eine Frage und sehen Sie, wie Talkmy antwortet, in einfachen Worten, groß genug, um sie ohne Brille zu lesen.",
     "askLabel": "Fragen:",
     "askTitle": "Fragen Sie wie einen Menschen",
@@ -1831,6 +1924,10 @@
     "photoAlt": "A foto dela de uma hortênsia rosa em plena flor",
     "shareText": "Estou usando o Talkmy. É só segurar um botão, falar no seu próprio idioma, e ele responde em voz alta. Acho que você também vai gostar.",
     "linkCopied": "Link copiado",
+    "shareCopyLink": "Copiar link",
+    "shareCopiedLink": "Link copiado",
+    "shareSendLink": "Enviar o link",
+    "shareClose": "Fechar",
     "askIntro": "Estas são coisas de verdade que as pessoas perguntam em voz alta, todos os dias. Toque em uma e veja o Talkmy responder, com palavras simples, grandes o bastante para ler sem óculos.",
     "askLabel": "Perguntar:",
     "askTitle": "Pergunte como a uma pessoa",
@@ -1934,6 +2031,10 @@
     "photoAlt": "佢影嘅一張粉紅色繡球花盛開嘅相",
     "shareText": "我用緊 Talkmy。㩒住一個掣，用自己嘅語言講嘢，佢就會出聲答你。我諗你都會鍾意㗎。",
     "linkCopied": "連結已複製",
+    "shareCopyLink": "複製連結",
+    "shareCopiedLink": "連結已複製",
+    "shareSendLink": "傳送連結",
+    "shareClose": "關閉",
     "askIntro": "呢啲都係人哋每日會開口問嘅真實問題。㩒一下，睇下 Talkmy 用簡單嘅說話答你，啲字夠大，唔使戴眼鏡都睇得清楚。",
     "askLabel": "問：",
     "askTitle": "好似同人講嘢咁問佢",
@@ -2345,28 +2446,49 @@
         document.documentElement.classList.remove("lang-pending");
         renderMode();
 
-        /* ---------- share: the demo's corner is a real share ----------
-           Tapping the wordmark or the Share Talkmy pill opens the visitor's
-           own share sheet (Web Share API) with the share text in the page's
-           current language. Where no share sheet exists (most desktops),
-           the link is copied instead and the pill says so for a moment.
-           The pill pulses until the first share tap, a cancel included,
-           then goes still forever; the choice persists in localStorage
-           next to the language pick, the app's own teaching-cue rule. */
+        /* ---------- share: the demo's corner pops the share card ----------
+           Website share parity with the app's build 28 card (2026-11-19):
+           tapping the wordmark or the Share Talkmy pill pops the card
+           inside the phone, the QR large (encoding the door with the
+           website square's own source tag, s=web), the address under it
+           with a copy tap, and one button onward to the visitor's share
+           sheet carrying the share text in the page's current language
+           and the plain site address, the same items the app's sheet
+           carries. Where no share sheet exists (most desktops), the
+           send button copies the door link instead and the copy row
+           says so for a moment. The pill pulses until the first tap
+           opens the card, the app's own teaching-cue rule (the opening
+           is the demonstrated understanding), then goes still forever;
+           the choice persists in localStorage next to the language pick. */
         var SHARE_KEY = "talkmy-shared";
         var shareDone = false;
         try { shareDone = localStorage.getItem(SHARE_KEY) === "1"; } catch (e) { /* storage unavailable */ }
         if (shareDone) shareBubble.classList.add("shared");
+        var shareBackdrop = document.getElementById("shareCardBackdrop");
+        var shareCopyLabel = document.getElementById("shareCopyLabel");
+        function markShared() {
+          if (shareDone) return;
+          shareDone = true;
+          shareBubble.classList.add("shared");
+          try { localStorage.setItem(SHARE_KEY, "1"); } catch (e) { /* storage unavailable */ }
+        }
+        function openShareCard() {
+          markShared();
+          shareBackdrop.classList.add("open");
+        }
+        function closeShareCard() {
+          shareBackdrop.classList.remove("open");
+        }
         var copiedTimer = null;
         function showCopied() {
-          setIconText(shareBubble, T().linkCopied);
+          shareCopyLabel.textContent = T().shareCopiedLink;
           if (copiedTimer) clearTimeout(copiedTimer);
-          copiedTimer = setTimeout(function () { setIconText(shareBubble, T().shareBubble); }, 2200);
+          copiedTimer = setTimeout(function () { shareCopyLabel.textContent = T().shareCopyLink; }, 2000);
         }
-        function copyShareLink() {
+        function copyDoorLink() {
           function legacyCopy() {
             var ta = document.createElement("textarea");
-            ta.value = "https://talkmy.ai";
+            ta.value = "https://talkmy.ai/get";
             ta.setAttribute("readonly", "");
             ta.style.position = "fixed";
             ta.style.opacity = "0";
@@ -2376,28 +2498,29 @@
             document.body.removeChild(ta);
           }
           if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText("https://talkmy.ai").then(showCopied, function () { legacyCopy(); showCopied(); });
+            navigator.clipboard.writeText("https://talkmy.ai/get").then(showCopied, function () { legacyCopy(); showCopied(); });
           } else {
             legacyCopy();
             showCopied();
           }
         }
-        function doShare() {
-          if (!shareDone) {
-            shareDone = true;
-            shareBubble.classList.add("shared");
-            try { localStorage.setItem(SHARE_KEY, "1"); } catch (e) { /* storage unavailable */ }
-          }
+        function sendShareLink() {
           if (navigator.share) {
+            closeShareCard();
             var p = null;
             try { p = navigator.share({ title: "Talkmy", text: T().shareText, url: "https://talkmy.ai" }); } catch (e) { /* sheet refused */ }
-            if (p && p.catch) p.catch(function () { /* a cancelled sheet still counts as the first tap */ });
+            if (p && p.catch) p.catch(function () { /* a cancelled sheet still counts as the tap */ });
           } else {
-            copyShareLink();
+            copyDoorLink();
           }
         }
-        shareBubble.addEventListener("click", doShare);
-        document.getElementById("phWord").addEventListener("click", doShare);
+        shareBubble.addEventListener("click", openShareCard);
+        document.getElementById("phWord").addEventListener("click", openShareCard);
+        document.getElementById("shareCopyRow").addEventListener("click", copyDoorLink);
+        document.getElementById("shareSendBtn").addEventListener("click", sendShareLink);
+        document.getElementById("shareCardClose").addEventListener("click", closeShareCard);
+        shareBackdrop.addEventListener("click", function (ev) { if (ev.target === shareBackdrop) closeShareCard(); });
+        document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") closeShareCard(); });
 
         /* ---------- stories carousel ---------- */
         var carRoot = document.getElementById("stories");

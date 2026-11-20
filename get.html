@@ -124,9 +124,10 @@
     }
     /* The source tag names the kind of square that brought the
        visitor: "app" for the in-app share card's QR, "card" for
-       the printed fridge card. Plain shared links carry none.
-       A tag never names a person or a device. */
-    var srcMatch = /[?&]s=(app|card)(&|$)/.exec(location.search || "");
+       the printed fridge card, "web" for the website share
+       card's QR. Plain shared links carry none. A tag never
+       names a person or a device. */
+    var srcMatch = /[?&]s=(app|card|web)(&|$)/.exec(location.search || "");
     var doorSource = srcMatch ? srcMatch[1] : "";
 
     var ua = navigator.userAgent || "";
