@@ -1,1 +1,1 @@
-{"hearClip":"hearClip","lookupAsk":"lookupAsk","synthesizeSpeech":"synthesizeSpeech","tallyEvent":"tallyEvent","typedModel":"gemini-3.8-flash"}
+{"hearClip":"hearClip","lookupAsk":"lookupAsk","synthesizeSpeech":"synthesizeSpeech","tallyEvent":"tallyEvent","typedModel":"gemini-3.8-flash","voiceEndpoint":"https://tonys-mac-studio.tail7e334c.ts.net","voiceRollout":"tony","voiceLangs":["en","yue","zh"]}
