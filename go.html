@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Talkmy</title>
+<meta name="description" content="Get Talkmy, the AI for everyone. iPhone: on the App Store. Android: join the testers.">
+<script>
+/* Talkmy smart link (added 2026-11-26 for the in-app share QR code).
+   One address, talkmy.ai/go, sends each visitor to the right door:
+   - iPhone and iPad go straight to the App Store page.
+   - Android goes to the tester instructions on the get page
+     (Talkmy on Android is in closed testing for now). When the
+     Android app ships on Google Play, change ONLY the Android
+     line below and every QR code already shared starts landing
+     on Google Play.
+   - Everything else (desktop, in-app browsers like WeChat) goes
+     to the get page, which sorts the visitor out there. */
+(function () {
+  var APP_STORE = "https://apps.apple.com/app/id6835621732";
+  var ANDROID_DOOR = "https://talkmy.ai/get#android";
+  var FALLBACK = "https://talkmy.ai/get";
+  var ua = navigator.userAgent || "";
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) ||
+    (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(ua);
+  if (isIOS) { location.replace(APP_STORE); return; }
+  if (isAndroid) { location.replace(ANDROID_DOOR); return; }
+  location.replace(FALLBACK);
+})();
+</script>
+</head>
+<body>
+<p>Getting Talkmy for you. If nothing happens, <a href="https://talkmy.ai/get">tap here</a>.</p>
+</body>
+</html>
