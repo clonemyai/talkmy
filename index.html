@@ -791,6 +791,51 @@
          The timeout is a backstop: the page reappears even if something fails. */
       try { var savedLang = localStorage.getItem("talkmy-lang"); var langMap = { es: "es", zh: "zh-Hans", vi: "vi", ko: "ko", ja: "ja", fr: "fr", de: "de", pt: "pt", yue: "yue" }; if (savedLang && langMap[savedLang]) { document.documentElement.setAttribute("lang", langMap[savedLang]); document.documentElement.classList.add("lang-pending"); setTimeout(function () { document.documentElement.classList.remove("lang-pending"); }, 3000); } } catch (e) {}
     </script>
+    <link rel="canonical" href="https://talkmy.ai/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Talkmy">
+    <meta property="og:title" content="Talkmy™, The AI for everyone">
+    <meta property="og:description" content="Talkmy is the AI for everyone. Hold one button and talk in your own language. No typing, no passwords, and nothing is stored.">
+    <meta property="og:url" content="https://talkmy.ai/">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://talkmy.ai/#org",
+          "name": "Talkmy",
+          "url": "https://talkmy.ai/",
+          "sameAs": [
+            "https://apps.apple.com/app/id6835621732"
+          ]
+        },
+        {
+          "@type": "MobileApplication",
+          "@id": "https://talkmy.ai/#app",
+          "name": "Talkmy",
+          "url": "https://talkmy.ai/",
+          "downloadUrl": "https://apps.apple.com/app/id6835621732",
+          "operatingSystem": "iOS",
+          "applicationCategory": "LifestyleApplication",
+          "description": "Talkmy is the AI for everyone. Hold one button and talk in your own language. It answers out loud, in big clear text. No sign-in, no passwords, no settings menu.",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "author": { "@id": "https://talkmy.ai/#org" }
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://talkmy.ai/#site",
+          "name": "Talkmy",
+          "url": "https://talkmy.ai/",
+          "publisher": { "@id": "https://talkmy.ai/#org" }
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <!-- Reusable Talkmy bubble mark: marigold bubble, charcoal word, soft rounded tail (bottom right) -->
@@ -1042,7 +1087,7 @@
               <svg width="76" height="59" aria-hidden="true"><use href="#talkmy-mark"/></svg>
               <p class="f-tag" data-i18n="footerTag">talkmy™, The AI for everyone.</p>
             </div>
-            <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a></p>
+            <p class="f-sub"><a href="whitepaper.html" data-i18n="footerWhitepaper">White Paper</a> &nbsp;·&nbsp; <a href="privacy.html" data-i18n="footerPrivacy">Privacy Policy</a> &nbsp;·&nbsp; <a href="family.html" data-i18n="footerFamily">For Families</a></p>
           </div>
           <div class="f-side">
             <div class="f-apps">
